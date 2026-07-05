@@ -85,6 +85,43 @@ Return a complete, deterministic CadQuery program as a string:
 `standard` is the anchoring spec (`"ISO 4014"`) or `null`; `base_plane` ∈
 `XY|XZ|YZ` is the natural sketch plane of the part.
 
+## Shared curves: `bench2.geomlib` (don't copy-paste tooth math)
+
+Standard curve generators (sprocket tooth profile, gear involute, …) live in
+`framework/bench2/geomlib/`. If your part needs one:
+
+```python
+from bench2.geomlib import inline_source, sprocket_profile
+
+def build(p):
+    lines = [
+        "import math", "import cadquery as cq", "", "",
+        inline_source("sprocket_profile"),   # embeds the helper's SOURCE
+        "",
+        f"pts = sprocket_profile({p['n_teeth']}, {p['pitch']:.3f}, ...)",
+        ...
+    ]
+```
+
+- The emitted program stays **stand-alone** — it carries the helper's source
+  and imports only `math` + `cadquery`. Never make a generated program import
+  benchcad code.
+- Declare what you use in `family.json`: `"geomlib": ["sprocket_profile"]`.
+  `bench2 validate` checks the declaration against the registry and confirms
+  the helper is actually inlined.
+- Need a curve that doesn't exist yet? Add it to `geomlib/` in the same PR
+  (self-contained function, `math`-only, deterministic) — the next family
+  gets it for free. See `designs/simplex_sprocket/` for the working example.
+
+## Heterogeneous variants inside one family
+
+Catalogs often ship the same part in several structural forms (norelem 22250:
+Form A disc-with-boss vs Form B barrel hub). Model them as ONE family with a
+`feature`-flagged discrete parameter (`form_b: 0/1`), branch in `build()`, and
+give each variant its own constraint set in `check()` (Form B legitimately
+allows bores to 0.58·df where Form A stops at 0.50·df). One family, several
+stand-alone parameterized cases.
+
 ## What you do NOT write
 
 QA items and edit pairs are derived downstream: QA templates instantiate over

@@ -48,10 +48,18 @@ pairs are **derived, not hand-written**: question templates instantiate over
 `askable` parameters; edit pairs perturb parameters (T1/T3) and toggle optional
 features (T2/T4). Derivation runs in the private factory (§4).
 
+Shared curve generators (tooth profiles, involutes, …) live in
+`bench2.geomlib`; `build()` embeds their **source** into the emitted program
+(`inline_source`), so generated CadQuery stays fully stand-alone while the
+math lives in one audited place. Families declare usage in `family.json`.
+Heterogeneous catalog variants (e.g. hub Form A/B) are one family with a
+`feature`-flagged variant parameter and per-variant constraints.
+
 Machine gates (CI, same command locally): samples at every difficulty pass
-`check`, programs execute to non-degenerate solids, same seed ⇒ byte-identical
-program, difficulties are distinguishable, geometry hashes don't collide with
-released parts. Humans review exactly two things: the constraints in
+`check` **and stay inside their declared `PARAM_SPEC` ranges (the spec is a
+contract)**, programs execute to non-degenerate solids, same seed ⇒
+byte-identical program, difficulties are distinguishable, geometry hashes
+don't collide with released parts. Humans review exactly two things: the constraints in
 `check`/`PARAM_SPEC` (engineering truth) and the labels in `family.json`.
 
 ## 4. Public / private boundary

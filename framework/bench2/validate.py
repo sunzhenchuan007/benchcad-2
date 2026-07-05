@@ -143,6 +143,21 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
             if n_ok == seeds:
                 ok(f"{diff}: {n_ok}/{seeds} seeds sample+check+build+execute clean")
 
+    # geomlib declaration: names must exist in the registry AND be inlined in
+    # the emitted (stand-alone) program.
+    declared = meta.get("geomlib") or []
+    if declared:
+        from .geomlib import REGISTRY as _REG
+
+        unknown = [n for n in declared if n not in _REG]
+        first = next((pr for progs in programs.values() for pr in progs), None)
+        if unknown:
+            bad(f"family.json geomlib: unknown helper(s) {unknown} (have: {sorted(_REG)})")
+        elif first and any(f"def {n}(" not in first for n in declared):
+            bad("family.json geomlib: declared helpers are not inlined in the emitted program")
+        elif first:
+            ok(f"geomlib: {declared} registered + inlined (program stays stand-alone)")
+
     flat = [p for progs in programs.values() for p in progs]
     if flat:
         if len({min(progs) for progs in programs.values() if progs}) == 1 and len(

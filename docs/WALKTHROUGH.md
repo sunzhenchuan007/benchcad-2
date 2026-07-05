@@ -52,7 +52,8 @@ Two references show the two source patterns — copy whichever matches yours:
 | pattern | free proportions | **table-driven** (standards rows) |
 | PARAM_SPEC | independent ranges | jointly-sampled table row + free params |
 | check() | proportion rules (1.5·d edge distance…) | row-membership + z ≥ 9 + rim/hub walls |
-| build() | box/hole/chamfer | standard's tooth equations → polyline |
+| build() | box/hole/chamfer | `geomlib` tooth profile, source-inlined into the program |
+| variants | — | `form_b` (catalog Form A/B) — heterogeneous cases in one family |
 
 Rules that make review painless (details in [DESIGN_SPEC.md](DESIGN_SPEC.md)):
 - every `PARAM_SPEC.source` and `check()` message cites the table/rule — or
