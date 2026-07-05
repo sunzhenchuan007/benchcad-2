@@ -1,0 +1,70 @@
+"""__FAMILY__ — parametric design (BenchCAD 2.0 four-piece interface).
+
+Fill in the four pieces below, then:
+    uv run bench2 validate __FAMILY__
+    uv run bench2 preview  __FAMILY__
+Reference implementation: designs/example_tee_bracket/design.py
+Spec: docs/DESIGN_SPEC.md
+"""
+
+# ── 1. PARAM_SPEC ────────────────────────────────────────────────────────────
+# Every parameter: meaning, unit, per-difficulty range, and WHERE THE RANGE
+# COMES FROM (standard table / engineering rule / proportion convention).
+PARAM_SPEC = {
+    "length": dict(
+        desc="TODO: what this parameter physically is",
+        unit="mm",
+        range={"easy": (40.0, 80.0), "medium": (40.0, 120.0), "hard": (30.0, 160.0)},
+        source="TODO: e.g. 'ISO 4014 table' or 'proportion'",
+        askable=True,  # numeric QA may target this parameter
+    ),
+    # TODO: add the rest. Mark optional-feature toggles with feature=True.
+}
+
+
+# ── 2. check ─────────────────────────────────────────────────────────────────
+def check(p: dict) -> list[str]:
+    """Inter-parameter engineering constraints. THE part humans review.
+
+    Return the list of violated constraints (empty = valid). Every constraint
+    carries its reason — cite the rule or standard.
+    """
+    bad = []
+    # TODO — examples of the kind of constraint that belongs here:
+    # if p["wall_t"] > p["height"] / 4:
+    #     bad.append("wall_t > height/4: must stay plate-like (structural convention)")
+    return bad
+
+
+# ── 3. sample ────────────────────────────────────────────────────────────────
+def sample(difficulty: str, rng) -> dict:
+    """Draw a parameter set from PARAM_SPEC ranges that passes check().
+
+    `rng` is a numpy Generator — use ONLY rng for randomness (same seed must
+    reproduce the same parameters).
+    """
+    for _ in range(200):
+        p = {}
+        for name, spec in PARAM_SPEC.items():
+            lo, hi = spec["range"][difficulty]
+            p[name] = round(float(rng.uniform(lo, hi)), 2)
+        # TODO: draw feature toggles / integer params explicitly, e.g.:
+        # p["n_holes"] = int(rng.choice([0, 2])) if difficulty != "easy" else 0
+        if not check(p):
+            return p
+    raise RuntimeError("could not sample valid parameters in 200 tries — widen ranges or relax check()")
+
+
+# ── 4. build ─────────────────────────────────────────────────────────────────
+def build(p: dict) -> str:
+    """Parameters -> a complete, deterministic CadQuery program (string).
+
+    Format every number with fixed rounding (f"{v:.2f}") so the same p gives
+    a byte-identical program. Bind the final solid to `result`.
+    """
+    return f'''import cadquery as cq
+
+L = {p["length"]:.2f}
+# TODO: build the part
+result = cq.Workplane("XY").box(L, L / 2.0, L / 4.0)
+'''

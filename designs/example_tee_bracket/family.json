@@ -1,0 +1,8 @@
+{
+  "family": "example_tee_bracket",
+  "standard": null,
+  "base_plane": "XY",
+  "description": "T-section mounting bracket: flange plate + central web, optional bolt holes, hard-tier chamfer. Reference/teaching design — not part of the released dataset.",
+  "source": "structural-bracket proportions; machinery-handbook bolt edge-distance (1.5d) and spacing (3d) rules",
+  "contributor": "BenchCAD"
+}

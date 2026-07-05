@@ -1,0 +1,40 @@
+name: validate-designs
+
+on:
+  pull_request:
+    paths: ["designs/**", "framework/**", "pyproject.toml"]
+  push:
+    branches: [main]
+    paths: ["designs/**", "framework/**", "pyproject.toml"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - run: uv sync
+      - name: validate every design (same gates as `bench2 validate`)
+        run: |
+          set -e
+          for d in designs/*/; do
+            fam=$(basename "$d")
+            echo "::group::$fam"
+            uv run bench2 validate "$fam" --seeds 4
+            echo "::endgroup::"
+          done
+      - name: render previews
+        if: github.event_name == 'pull_request'
+        run: |
+          for d in designs/*/; do
+            uv run bench2 preview "$(basename "$d")" --per-diff 3 || true
+          done
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: previews
+          path: designs/*/preview.png
+          if-no-files-found: ignore
