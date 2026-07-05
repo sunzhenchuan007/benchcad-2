@@ -10,11 +10,14 @@ Real-world anchor: catalog "single sprockets 5/8" x 3/8", DIN/ISO 606, ready to
 install" — a toothed disc with a one-sided hub, pilot bore, and (on larger
 sizes) a DIN 6885A keyway.
 
-Tooth geometry (ISO 606:2015 §8.2):
-    dp = p / sin(pi/z)          pitch circle diameter
+Tooth geometry (ISO 606:2015 §8.2; tip offset fitted to the catalog):
+    dp = p / sin(pi/z)          pitch circle diameter   (== catalog D1, exact)
     ri = 0.505 * d1             roller seating radius
-    da = dp + 0.6 * d1          tip circle diameter
+    da = dp + 0.68 * d1         tip circle diameter     (fits catalog D column)
     df = dp - 1.01 * d1         root circle diameter
+
+Primary source: norelem 22250 datasheet (single sprockets 5/8" x 3/8" DIN ISO
+606, ready to install) — the dimension-symbol mapping is in NOTES.md.
 """
 
 import math
@@ -30,27 +33,34 @@ _ISO606 = [
     ("16B", 25.400, 15.88, 14.4),
 ]
 
-# DIN 6885 Form A parallel keys — (bore_min, bore_max, key_width b, key_height h), mm
+# DIN 6885-1 Form A parallel keys — (bore_min, bore_max, key_width b, hub-seat depth t2), mm.
+# t2 is the HUB-side keyway depth (what a sprocket bore carries). The 5–12 mm key
+# rows are cross-checked against the norelem 22250 datasheet T2 column (2,3 / 2,8 / 3,3).
 _DIN6885A = [
-    (6, 8, 2, 2), (8, 10, 3, 3), (10, 12, 4, 4), (12, 17, 5, 5),
-    (17, 22, 6, 6), (22, 30, 8, 7), (30, 38, 10, 8), (38, 44, 12, 8),
-    (44, 50, 14, 9), (50, 58, 16, 10), (58, 65, 18, 11), (65, 75, 20, 12),
+    (6, 8, 2, 1.0), (8, 10, 3, 1.4), (10, 12, 4, 1.8), (12, 17, 5, 2.3),
+    (17, 22, 6, 2.8), (22, 30, 8, 3.3), (30, 38, 10, 3.3), (38, 44, 12, 3.3),
+    (44, 50, 14, 3.8), (50, 58, 16, 4.3), (58, 65, 18, 4.4), (65, 75, 20, 4.9),
 ]
 
 
 def _keyway(bore_d):
-    """(key width b, hub-side seat depth) per DIN 6885A; proportional fallback."""
-    for lo, hi, b, h in _DIN6885A:
+    """(key width b, hub-side seat depth t2) per DIN 6885-1; proportional fallback."""
+    for lo, hi, b, t2 in _DIN6885A:
         if lo <= bore_d < hi:
-            return float(b), round(h / 2.0, 1)
+            return float(b), t2
     b = round(bore_d * 0.25, 0)
-    return b, round(b * 0.5, 1)
+    return b, round(b * 0.4, 1)
 
 
 def _derived(p):
-    """ISO 606 §8.2 derived circles for the sampled chain row + tooth count."""
+    """ISO 606 §8.2 derived circles for the sampled chain row + tooth count.
+
+    Tip circle: ISO 606 allows a band [dp + p(1-1.6/z) - d1, dp + 1.25p - d1];
+    the 0.68*d1 offset reproduces the norelem 22250 catalog D column across
+    z = 10..25 (measured Δ = 6.86–6.94 mm on 10B, d1 = 10.16).
+    """
     dp = p["pitch"] / math.sin(math.pi / p["n_teeth"])
-    da = dp + 0.6 * p["roller_d"]
+    da = dp + 0.68 * p["roller_d"]
     df = dp - 1.01 * p["roller_d"]
     return dp, da, df
 
@@ -139,11 +149,11 @@ def check(p: dict) -> list[str]:
     if p["bore_d"] < 3.0:
         bad.append("bore_d < 3 mm: below practical shaft sizes")
     if p["hub_d"]:
-        # hub wall >= 0.3*bore each side; hub must clear the root circle
-        if p["hub_d"] < 1.6 * p["bore_d"]:
-            bad.append("hub_d < 1.6*bore_d: hub wall too thin for a set screw / key")
-        if p["hub_d"] > 0.8 * df:
-            bad.append("hub_d > 0.8*root_diameter: hub would merge into the tooth rim")
+        # catalog hub proportions (norelem 22250: D2/D3 = 1.58-1.9, D2/df up to 0.85)
+        if p["hub_d"] < 1.55 * p["bore_d"]:
+            bad.append("hub_d < 1.55*bore_d: hub wall too thin for a set screw / key")
+        if p["hub_d"] > 0.87 * df:
+            bad.append("hub_d > 0.87*root_diameter: hub would merge into the tooth rim")
         if p["hub_len"] < 0.5 * p["tooth_width"] or p["hub_len"] > 2.5 * p["tooth_width"]:
             bad.append("hub_len outside 0.5-2.5x tooth width: not a catalog proportion")
     if p["has_keyway"]:
@@ -171,10 +181,23 @@ def sample(difficulty: str, rng) -> dict:
             "has_keyway": 0,
         }
         _, _, df = _derived(p)
-        p["bore_d"] = round(float(rng.uniform(max(3.0, 0.2 * df), 0.45 * df)), 1)
+        # bore: rim proportion (0.2-0.45 df) clamped to the DECLARED spec range —
+        # the spec is the contract QA/edit derivation relies on.
+        b_lo, b_hi = PARAM_SPEC["bore_d"]["range"][difficulty]
+        hi = min(0.45 * df, b_hi)
+        lo = max(3.0, b_lo, 0.2 * df)
+        if lo >= hi:  # very large sprockets: the spec cap binds; keep a plate-hub look
+            lo = 0.6 * hi
+        p["bore_d"] = round(float(rng.uniform(lo, hi)), 1)
         if difficulty in ("medium", "hard"):
-            p["hub_d"] = round(float(rng.uniform(1.7 * p["bore_d"], 0.75 * df)), 1)
-            p["hub_len"] = round(b1 * float(rng.uniform(1.0, 2.2)), 1)
+            h_lo, h_hi = PARAM_SPEC["hub_d"]["range"][difficulty]
+            hub_lo = max(1.7 * p["bore_d"], h_lo)
+            hub_hi = min(0.8 * df, h_hi)
+            if hub_lo >= hub_hi:
+                continue  # reject this draw; try a new chain row / tooth count
+            p["hub_d"] = round(float(rng.uniform(hub_lo, hub_hi)), 1)
+            # catalog hub protrusion: L - B1 = 1.7-2.3x tooth width (norelem 22250)
+            p["hub_len"] = round(b1 * float(rng.uniform(1.5, 2.4)), 1)
         if difficulty == "hard":
             p["has_keyway"] = 1
         if not check(p):
@@ -183,15 +206,20 @@ def sample(difficulty: str, rng) -> dict:
 
 
 # ── 4. build ─────────────────────────────────────────────────────────────────
-def _profile(z, pitch, d1, n_arc=8):
-    """Closed CCW tooth-profile polyline per ISO 606 §8.2 (root arc + flank + tip)."""
+def _profile(z, pitch, d1, n_arc=8, phase=0.0):
+    """Closed CCW tooth-profile polyline per ISO 606 §8.2 (root arc + flank + tip).
+
+    `phase` rotates the whole profile; build() uses it to put a tooth TIP on the
+    +Y axis so the keyway is tip-aligned ("keyway is aligned with the tooth
+    tip" — norelem 22250 datasheet note).
+    """
     dp = pitch / math.sin(math.pi / z)
-    do = dp + 0.6 * d1
+    do = dp + 0.68 * d1
     ri = 0.505 * d1
     beta_half = math.radians(140 - 90 / z) / 2
     pts = []
     for i in range(z):
-        base = i * (2 * math.pi / z)
+        base = i * (2 * math.pi / z) + phase
         cg, sg = math.cos(base), math.sin(base)
         right = []
         for j in range(n_arc):
@@ -211,7 +239,10 @@ def _profile(z, pitch, d1, n_arc=8):
 def build(p: dict) -> str:
     b1 = p["tooth_width"]
     ch = round(0.15 * b1, 2)  # deburr chamfer on the tooth-disc rims
-    pts = _profile(p["n_teeth"], p["pitch"], p["roller_d"])
+    # rotate so a tooth tip sits on +Y — the keyway (cut toward +Y) is then
+    # tip-aligned, matching the catalog note.
+    z = p["n_teeth"]
+    pts = _profile(z, p["pitch"], p["roller_d"], phase=math.pi / 2 - math.pi / z)
     pts_lines = []
     for i in range(0, len(pts), 6):
         row = ", ".join(f"({x:.4f}, {y:.4f})" for x, y in pts[i : i + 6])

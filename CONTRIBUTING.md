@@ -4,8 +4,12 @@ A contribution is **one file of engineering knowledge**: a parametric design
 whose ranges and constraints are true. You do not write QA items, edit pairs,
 or rendering code — those are derived downstream from your design.
 
-**Merged family ⇒ named credit in the dataset card + co-authorship on the
-BenchCAD 2.0 paper.**
+**Merged family ⇒ your row in [CONTRIBUTORS.md](CONTRIBUTORS.md), named credit
+in the dataset card + co-authorship on the BenchCAD 2.0 paper.**
+
+**Start here → [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)** — the full
+workflow demonstrated on a real family (`simplex_sprocket`, built from the
+norelem 22250 datasheet), including all three verification layers.
 
 ## The loop
 

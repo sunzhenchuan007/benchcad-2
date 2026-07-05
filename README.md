@@ -12,8 +12,9 @@ inter-parameter engineering constraints that make a part *manufacturable* —
 written and reviewed by people who know the domain.
 
 - **Design blueprint / decision record** → [`DESIGN.md`](DESIGN.md)
-- **How to write a family** → [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) + [`designs/example_tee_bracket/`](designs/example_tee_bracket/)
-- **Contributing** (merged family ⇒ co-authorship) → [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- **End-to-end walkthrough** (datasheet → merged family, on a real example) → [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md)
+- **The interface** → [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md); references: [`designs/example_tee_bracket/`](designs/example_tee_bracket/) (proportions) · [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven, from the norelem 22250 datasheet)
+- **Contributing** (merged family ⇒ co-authorship, [`CONTRIBUTORS.md`](CONTRIBUTORS.md)) → [`CONTRIBUTING.md`](CONTRIBUTING.md)
 - Scoring engine (shared with 1.0) → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
 
 ## The 60-second contributor loop

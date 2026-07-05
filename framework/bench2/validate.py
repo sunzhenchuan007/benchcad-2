@@ -108,6 +108,19 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
                     if violations:
                         bad(f"{diff}/seed{seed}: sample violates check: {violations[:2]}")
                         continue
+                    # the declared spec is a contract: every sampled value must
+                    # fall inside its own PARAM_SPEC range for this difficulty
+                    oob = []
+                    for name, entry in d.PARAM_SPEC.items():
+                        if name not in p:
+                            oob.append(f"{name} missing from sample")
+                            continue
+                        lo, hi = entry["range"][diff]
+                        if not (lo - 1e-9 <= p[name] <= hi + 1e-9):
+                            oob.append(f"{name}={p[name]} outside declared ({lo}, {hi})")
+                    if oob:
+                        bad(f"{diff}/seed{seed}: sample breaks PARAM_SPEC contract: {oob[:2]}")
+                        continue
                     prog = d.build(p)
                     if not isinstance(prog, str) or "result" not in prog:
                         bad(f"{diff}/seed{seed}: build() must return a program binding `result`")

@@ -3,6 +3,6 @@
   "standard": "ISO 606",
   "base_plane": "XY",
   "description": "Single-strand roller-chain sprocket per ISO 606 / DIN 8187: toothed disc (ISO 606 §8.2 tooth form) with optional one-sided hub, center bore, and DIN 6885A keyway on hard tier. Reference design for the table-driven parameter pattern.",
-  "source": "ISO 606 Table 1 (B-series chains) + §8.2 tooth equations; DIN 6885 Form A key seats; catalog form: single sprockets 5/8\" x 3/8\" DIN/ISO 606 ready-to-install (one-sided hub)",
-  "contributor": "BenchCAD"
+  "source": "norelem 22250 datasheet (single sprockets 5/8\" x 3/8\" DIN ISO 606, ready to install) — see NOTES.md for the symbol mapping; ISO 606 Table 1 + §8.2 tooth equations; DIN 6885-1 Form A key seats",
+  "contributor": "HaozheZhang6"
 }
