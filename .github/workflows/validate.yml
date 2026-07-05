@@ -11,6 +11,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -18,23 +21,55 @@ jobs:
           python-version: "3.11"
       - run: uv sync
       - name: validate every design (same gates as `bench2 validate`)
+        id: validate
         run: |
-          set -e
-          for d in designs/*/; do
-            fam=$(basename "$d")
-            echo "::group::$fam"
-            uv run bench2 validate "$fam" --seeds 4
-            echo "::endgroup::"
-          done
+          set -o pipefail
+          {
+            echo "## bench2 validate"
+            echo
+            fail=0
+            for d in designs/*/; do
+              fam=$(basename "$d")
+              echo "### $fam"
+              echo '```'
+              uv run bench2 validate "$fam" --seeds 4 | tee /tmp/v_$fam.txt || fail=1
+              echo '```'
+            done
+            exit $fail
+          } | tee report.md
       - name: render previews
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         run: |
           for d in designs/*/; do
             uv run bench2 preview "$(basename "$d")" --per-diff 3 || true
           done
       - uses: actions/upload-artifact@v4
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         with:
           name: previews
           path: designs/*/preview.png
           if-no-files-found: ignore
+      - name: post validate report as PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '<!-- bench2-validate-report -->\n';
+            try { body += fs.readFileSync('report.md', 'utf8'); }
+            catch { body += 'validate report missing — check the job log.'; }
+            body += '\n_Previews: see the `previews` artifact on this run._';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, per_page: 100 });
+            const mine = comments.find(c =>
+              c.body.startsWith('<!-- bench2-validate-report -->'));
+            if (mine) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: mine.id, body });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, body });
+            }

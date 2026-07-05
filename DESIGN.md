@@ -111,3 +111,21 @@ benchcad-main        the scoring engine (voxel IoU, QA scoring) — stable, shar
 (private factory)    rendering, QA/edit derivation, held-out draws, HF ingest
 HF: BenchCAD/*       released, versioned data artifacts
 ```
+
+## 10. Roadmap — adopted from Terminal-Bench 3, deliberately deferred
+
+TB-3's review machinery is the mature form of what §8 starts. We adopt the
+shape now (AGENTS/CLAUDE/REVIEWING docs, PR + proposal templates, validate
+report auto-posted on PRs, label state machine) and defer the heavy pieces
+until contribution volume justifies them:
+
+- **LLM rubric review** (`rubrics/design-review.toml` + a `bench2 check --llm`)
+  grading constraint quality and citation plausibility — TB-3's `harbor check`.
+- **Known-bad regression designs** (`ci_checks/test-designs/`): intentionally
+  broken designs that must FAIL validation, testing the validator itself.
+- **Difficulty trials** (TB-3's `/run`): sample instances, run a reference
+  model, report solve rates on the PR — evidence the family isn't trivial.
+- **Reviewer pool + auto-assignment** once there is more than one reviewer.
+- **Public dashboard** (proposals / PRs / coverage vs the wanted-200 list),
+  reading only public state.
+
