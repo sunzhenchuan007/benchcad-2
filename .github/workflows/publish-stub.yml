@@ -1,4 +1,4 @@
-name: publish-stub benchcad
+name: publish-stub
 on: workflow_dispatch
 jobs:
   publish:
@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv build pypi-stub/ --out-dir dist
+      - run: uv build pypi-stub/benchcad --out-dir dist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist
