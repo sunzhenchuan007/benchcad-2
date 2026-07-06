@@ -73,3 +73,20 @@ jobs:
                 owner: context.repo.owner, repo: context.repo.repo,
                 issue_number: context.issue.number, body });
             }
+
+  status-board:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: regenerate STATUS.md
+        run: |
+          python3 -c "import sys; sys.path.insert(0,'framework'); from pathlib import Path; from bench2.status import main; main(Path('.'))"
+      - name: commit if changed
+        run: |
+          git config user.name "benchcad-bot"
+          git config user.email "actions@github.com"
+          git add STATUS.md
+          git diff --cached --quiet || (git commit -m "status: refresh board [skip ci]" && git push)

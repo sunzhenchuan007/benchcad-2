@@ -3,6 +3,7 @@
     bench2 new <family>        scaffold designs/<family>/ from the template
     bench2 validate <family>   run every machine gate locally (same as CI)
     bench2 preview <family>    render a difficulty x seed grid PNG
+    bench2 status              regenerate STATUS.md (the progress board)
 
 Run from the repo root (the directory containing designs/).
 """
@@ -76,6 +77,18 @@ def cmd_preview(family: str, per_diff: int) -> int:
     return 0
 
 
+def cmd_status() -> int:
+    from pathlib import Path as _P
+
+    from .status import main as status_main
+
+    root = _P.cwd()
+    if not (root / "designs").is_dir():
+        sys.exit("bench2: run from the repo root (no designs/ directory here)")
+    print(f"status → {status_main(root)}")
+    return 0
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(prog="bench2", description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -88,6 +101,7 @@ def main() -> None:
     p_pre = sub.add_parser("preview", help="render a difficulty x seed grid")
     p_pre.add_argument("family")
     p_pre.add_argument("--per-diff", type=int, default=3, help="seeds per difficulty row")
+    sub.add_parser("status", help="regenerate STATUS.md")
     a = ap.parse_args()
     if a.cmd == "new":
         sys.exit(cmd_new(a.family))
@@ -95,3 +109,5 @@ def main() -> None:
         sys.exit(cmd_validate(a.family, a.seeds, a.fast))
     if a.cmd == "preview":
         sys.exit(cmd_preview(a.family, a.per_diff))
+    if a.cmd == "status":
+        sys.exit(cmd_status())
