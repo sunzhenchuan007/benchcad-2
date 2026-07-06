@@ -126,7 +126,7 @@ count per family is a measured property of its parameter space, not a quota.
 ## 9. Repo layout (this repo) and its siblings
 
 ```
-benchcad-2.0/        this repo — the 2.0 home: framework, specs, designs, CI, leaderboard
+benchcad-agent/      this repo — agent protocol, framework, specs, designs, CI, leaderboard
 benchcad-main        the scoring engine (voxel IoU, QA scoring) — stable, shared
 (private factory)    rendering, QA/edit derivation, held-out draws, HF ingest
 HF: BenchCAD/*       released, versioned data artifacts
