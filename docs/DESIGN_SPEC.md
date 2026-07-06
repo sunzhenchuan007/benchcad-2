@@ -24,6 +24,7 @@ One entry per parameter:
 | `source` | ✓ | where the range comes from: a standard table (`"ISO 4014"`), an engineering rule (`"AISC edge-distance rule"`), or `"proportion"` for conventional ratios |
 | `askable` | – | `True` if a numeric QA question may target it (visible or derivable from the part) |
 | `feature` | – | `True` if this parameter toggles an optional feature (drives T2/T4 edit derivation) |
+| `coverage` | – | list of discrete values sampling **must** be able to produce (e.g. every pitch row of the anchored table). The validator samples ~120 draws and fails if any declared value never appears |
 
 Difficulty semantics: **easy** = core geometry, optional features off, tight
 conventional ranges. **medium** = optional features on, wider ranges.
@@ -137,6 +138,11 @@ QA items and edit pairs are derived downstream: QA templates instantiate over
 4. determinism: same seed ⇒ byte-identical program
 5. difficulty separation: the three difficulties don't produce identical programs
 6. geometry-hash report: duplicate rate within the sample batch
+7. coverage: every value declared in a `coverage=[...]` list is produced at
+   least once across a cheap 120-draw pass — proof the standard table is
+   fully covered, not just one row
 
-`bench2 preview <family>` renders difficulty × seed as one grid PNG — check
-your part looks like what it claims to be before opening the PR.
+`bench2 preview <family>` renders two PNGs: `preview.png` (difficulty × seed
+overview) and `preview_views.png` (the benchmark's four diagonal views — what
+the model will actually see). Compare both against the drawing in your family
+issue before opening the PR.

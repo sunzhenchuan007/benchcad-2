@@ -75,6 +75,8 @@ PARAM_SPEC = {
         range={"easy": (8.0, 25.4), "medium": (8.0, 25.4), "hard": (8.0, 25.4)},
         source="ISO 606 Table 1 / DIN 8187 (discrete rows 05B–16B)",
         askable=True,
+        # every chain row of the anchored table must be reachable by sampling
+        coverage=[8.000, 9.525, 12.700, 15.875, 19.050, 25.400],
     ),
     "roller_d": dict(
         desc="chain roller diameter d1 (same table row as pitch)",

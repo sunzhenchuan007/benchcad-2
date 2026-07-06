@@ -13,6 +13,8 @@ from pathlib import Path
 import numpy as np
 
 ISO_FRONT = (-1.0, -1.0, -1.0)  # classic above-front iso octant
+# the benchmark's four diagonal cameras (matches BenchCAD-main scoring/views.py)
+BENCH_FRONTS = [(1.0, 1.0, 1.0), (-1.0, -1.0, -1.0), (-1.0, 1.0, -1.0), (1.0, -1.0, 1.0)]
 LOOKAT = np.array([0.5, 0.5, 0.5], dtype=np.float64)
 CAMERA_DISTANCE = -0.9
 TEAL01 = (110 / 255, 195 / 255, 192 / 255)
@@ -62,12 +64,12 @@ def step_to_normalized_mesh(step_path: Path):
     return verts, tris
 
 
-def render_iso(verts, tris, img_size: int = 320):
+def render_iso(verts, tris, img_size: int = 320, front=ISO_FRONT):
     """One off-screen VTK render (teal + dark feature edges) -> PIL Image."""
     import vtk
     from vtk.util.numpy_support import numpy_to_vtk
 
-    front_arr = np.array(ISO_FRONT, dtype=np.float64)
+    front_arr = np.array(front, dtype=np.float64)
     eye = LOOKAT + front_arr * CAMERA_DISTANCE
     up = np.array([0.0, 0.0, 1.0])
     right = np.cross(up, front_arr)
@@ -165,3 +167,8 @@ def compose_grid(rows: list[list], row_labels: list[str], out_png: Path, cell: i
     out_png.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(out_png)
     return out_png
+
+
+def render_bench_views(verts, tris, img_size: int = 320):
+    """The four diagonal views exactly as the benchmark renders them."""
+    return [render_iso(verts, tris, img_size, front=f) for f in BENCH_FRONTS]

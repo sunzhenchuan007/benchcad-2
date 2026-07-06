@@ -31,6 +31,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["framework/bench2"]
 
+[dependency-groups]
+dev = ["ruff>=0.8"]
+
 [tool.uv]
 # cadquery 2.3's dep chain still uses np.bool8 (removed in numpy 2) — force 1.26.
 override-dependencies = ["numpy==1.26.4"]

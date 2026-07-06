@@ -18,6 +18,7 @@
 3. 点开你熟的零件(没有的话点 **New issue** 新建,标题写 `[family] 零件名`)。
 4. 回帖,内容包含:
    - **datasheet 或选型手册链接**(诺锐来姆/米思米/怡合达/标准表格…)
+   - **一张图**——把 datasheet 工程图截图或零件照片直接拖进评论框
    - **参数表**(哪些尺寸是变量、各自范围)
    - **工程约束,用大白话写**——"老师傅一眼毙掉"的规则(比如
      *"螺栓孔中心到板边必须 ≥1.5 倍孔径,否则拉脱"*)。这些规则就是全部重点。
@@ -60,9 +61,10 @@
 9. 自查,两条命令,本机秒出结果:
    ```bash
    uv run bench2 validate my_family   # PASS = 你的代码没问题,这就是标准
-   uv run bench2 preview my_family    # 渲染 3x3 九宫格 —— 用眼睛看一遍
+   uv run bench2 preview my_family    # 渲染 preview.png + preview_views.png
    ```
-   改到 PASS、图看着像真零件为止。
+   `preview_views.png` 是**模型将看到的 4 个视角**——拿它和 issue 里的
+   datasheet 工程图并排对照。改到 PASS、渲染像真零件为止。
 
 ### 提交
 

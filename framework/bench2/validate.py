@@ -143,6 +143,26 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
             if n_ok == seeds:
                 ok(f"{diff}: {n_ok}/{seeds} seeds sample+check+build+execute clean")
 
+    # coverage gate: params declaring `coverage: [...]` must produce every
+    # declared value across a cheap large sampling pass (no geometry).
+    cov_params = {n: e["coverage"] for n, e in d.PARAM_SPEC.items() if "coverage" in e}
+    if cov_params:
+        seen: dict[str, set] = {n: set() for n in cov_params}
+        for diff in DIFFS:
+            for seed in range(40):
+                try:
+                    p = d.sample(diff, np.random.default_rng(1000 + seed))
+                except Exception:
+                    continue
+                for n in cov_params:
+                    seen[n].add(round(float(p[n]), 6))
+        for n, values in cov_params.items():
+            missing = [v_ for v_ in values if not any(abs(v_ - s) < 1e-6 for s in seen[n])]
+            if missing:
+                bad(f"coverage: {n} never produced declared value(s) {missing} in 120 samples")
+            else:
+                ok(f"coverage: {n} reaches all {len(values)} declared values (standard table fully covered)")
+
     # geomlib declaration: names must exist in the registry AND be inlined in
     # the emitted (stand-alone) program.
     declared = meta.get("geomlib") or []

@@ -23,6 +23,7 @@ the code.
    `[family] part_name`).
 4. Write a comment containing:
    - a **datasheet or catalog link** (norelem, Misumi, McMaster, a standard table…),
+   - a **picture** — drag the datasheet drawing or a photo straight into the comment box,
    - the **parameter table** (which dimensions vary, their ranges),
    - the **engineering constraints** in plain words — the "a machinist would
      reject this because…" rules (e.g. *"bolt hole center must be ≥1.5×d from
@@ -70,9 +71,11 @@ the code.
 9. Check yourself — two commands, on your machine, instant:
    ```bash
    uv run bench2 validate my_family   # PASS = your code works. That's the rule.
-   uv run bench2 preview my_family    # renders a 3x3 image — LOOK at it
+   uv run bench2 preview my_family    # renders preview.png + preview_views.png
    ```
-   Fix and re-run until PASS and the picture looks like the real part.
+   `preview_views.png` shows the four views **the model will see** — hold it
+   next to the datasheet drawing from your issue. Fix and re-run until PASS
+   and the renders look like the real part.
 
 ### Submit
 

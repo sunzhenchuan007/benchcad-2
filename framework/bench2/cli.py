@@ -59,7 +59,7 @@ def cmd_preview(family: str, per_diff: int) -> int:
     if not fam_dir.is_dir():
         sys.exit(f"bench2: designs/{family}/ not found")
     d = load_design(fam_dir)
-    rows, labels = [], []
+    rows, labels, view_rows = [], [], []
     with tempfile.TemporaryDirectory() as td:
         for diff in DIFFS:
             row = []
@@ -69,11 +69,15 @@ def cmd_preview(family: str, per_diff: int) -> int:
                 execute_cq_to_step(d.build(p), step)
                 verts, tris = render.step_to_normalized_mesh(step)
                 row.append(render.render_iso(verts, tris))
+                if seed == 0:  # what the MODEL will see: the 4 benchmark views
+                    view_rows.append(render.render_bench_views(verts, tris))
                 print(f"  rendered {diff}/seed{seed}")
             rows.append(row)
             labels.append(diff)
     out = render.compose_grid(rows, labels, fam_dir / "preview.png")
+    out2 = render.compose_grid(view_rows, labels, fam_dir / "preview_views.png")
     print(f"preview → {out}")
+    print(f"benchmark views (what the model sees) → {out2}")
     return 0
 
 
