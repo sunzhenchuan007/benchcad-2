@@ -19,6 +19,10 @@ written and reviewed by people who know the domain.
 - **Contributing** (merged family ⇒ co-authorship, [`CONTRIBUTORS.md`](CONTRIBUTORS.md)) → [`CONTRIBUTING.md`](CONTRIBUTING.md)
 - Scoring engine (shared with 1.0) → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
 
+> **🧑‍🔧 New here / not a GitHub person?** Step-by-step guide for engineers:
+> **[English](docs/GETTING_STARTED.md) · [中文](docs/GETTING_STARTED.zh.md)** —
+> including a zero-code path: bring a datasheet, we write the code, you get credit.
+
 ## The 60-second contributor loop
 
 ```bash
