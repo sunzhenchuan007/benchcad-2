@@ -3,7 +3,7 @@
 ## Family
 
 - Family: `<name>`
-- Proposal issue: #<!-- required once the proposal process opens; see CONTRIBUTING.md -->
+- Closes #<!-- the family issue number (required) -->
 - What the part is (one sentence):
 
 ## Checklist
