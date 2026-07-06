@@ -1,7 +1,8 @@
-# BenchCAD 2.0 <sub>(in preparation)</sub>
+# BenchCAD-Agent <sub>(in preparation)</sub>
 
-**A community-grounded parametric CAD benchmark — 200 industrial part
-families, every one defined by an auditable parametric design.**
+**The agentic successor to BenchCAD: tool use, execution feedback, and
+multi-turn refinement over community-grounded parametric CAD — 200 industrial
+part families, every one an auditable parametric design (dataset v2.0).**
 
 BenchCAD 2.0 is the successor to
 [BenchCAD](https://github.com/BenchCAD/BenchCAD-main) (17,900 parts / 106

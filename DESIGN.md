@@ -1,13 +1,25 @@
-# BenchCAD 2.0 — Design Blueprint
+# BenchCAD-Agent — Design Blueprint
 
-Decision record for BenchCAD 2.0. Everything here was settled before the first
+Decision record for BenchCAD-Agent (the repo/brand) and dataset v2.0 (the data release it ships with). Naming is two-layer by design: **BenchCAD-Agent** is the product and future paper; **v2.0** is an HF revision tag — version numbers live on datasets, never in repo names (Terminal-Bench burned itself with terminal-bench-2 → terminal-bench-2-1). Everything here was settled before the first
 line of code; change it by PR, not by drift.
 
-## 1. What 2.0 is
+## 1. What this is
 
-A community-grounded parametric CAD benchmark: **200 part families**, each
-defined by an auditable *parametric design* whose engineering constraints are
-written and reviewed by people who know the domain — not guessed by an LLM.
+**BenchCAD-Agent = agentic evaluation + community-grounded data.** Two pillars:
+
+*Agentic evaluation (the headline).* 1.0 measured one-shot generation; frontier
+labs already run BenchCAD agentically (Anthropic's system card: Sonnet 5
+Vision2Code 0.266 without tools → 0.373 with Python tools). BenchCAD-Agent
+makes that first-class: the agent gets `execute` / `render` / `compare` /
+`measure` tools (all straight from the scoring engine), a turn/token budget,
+and is scored as IoU-vs-budget curves with pass@budget. One-shot is the 1-turn
+special case, so every 1.0 score remains a baseline. Anti-gaming rule: the
+agent NEVER sees its numeric score — only renders of its own output vs the
+target.
+
+*Community-grounded data (dataset v2.0).* **200 part families**, each defined
+by an auditable *parametric design* whose engineering constraints are written
+and reviewed by people who know the domain — not guessed by an LLM.
 
 **Positioning: eval-first.** BenchCAD 2.0 is an evaluation benchmark. We do not
 ship an official train split. Our own 1.0 experiments are the reason: training
