@@ -1,15 +1,15 @@
-# BenchCAD-Agent — Design Blueprint
+# BenchCAD 2.0 — Design Blueprint
 
-Decision record for BenchCAD-Agent (the repo/brand) and dataset v2.0 (the data release it ships with). Naming is two-layer by design: **BenchCAD-Agent** is the product and future paper; **v2.0** is an HF revision tag — version numbers live on datasets, never in repo names (Terminal-Bench burned itself with terminal-bench-2 → terminal-bench-2-1). Everything here was settled before the first
+Decision record for BenchCAD 2.0. Naming layers, fixed: **BenchCAD 2.0** = the benchmark generation and future paper; **benchcad-2** = this repo; **v2.0** = the HF dataset revision tag; **BenchCAD-Agent** = the reference agent/harness (planned, separate — the SWE-agent/Terminus slot; PyPI name already reserved). Benchmarks that are agentic don't carry an -Agent suffix (Terminal-Bench, SWE-bench, OSWorld precedent). Everything here was settled before the first
 line of code; change it by PR, not by drift.
 
 ## 1. What this is
 
-**BenchCAD-Agent = agentic evaluation + community-grounded data.** Two pillars:
+**BenchCAD 2.0 = agentic evaluation + community-grounded data.** Two pillars:
 
 *Agentic evaluation (the headline).* 1.0 measured one-shot generation; frontier
 labs already run BenchCAD agentically (Anthropic's system card: Sonnet 5
-Vision2Code 0.266 without tools → 0.373 with Python tools). BenchCAD-Agent
+Vision2Code 0.266 without tools → 0.373 with Python tools). BenchCAD 2.0
 makes that first-class: the agent gets `execute` / `render` / `compare` /
 `measure` tools (all straight from the scoring engine), a turn/token budget,
 and is scored as IoU-vs-budget curves with pass@budget. One-shot is the 1-turn
@@ -126,7 +126,7 @@ count per family is a measured property of its parameter space, not a quota.
 ## 9. Repo layout (this repo) and its siblings
 
 ```
-benchcad-agent/      this repo — agent protocol, framework, specs, designs, CI, leaderboard
+benchcad-2/          this repo — agent protocol, framework, specs, designs, CI, leaderboard
 benchcad-main        the scoring engine (voxel IoU, QA scoring) — stable, shared
 (private factory)    rendering, QA/edit derivation, held-out draws, HF ingest
 HF: BenchCAD/*       released, versioned data artifacts
