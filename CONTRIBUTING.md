@@ -42,8 +42,21 @@ A maintainer reviews exactly two things:
 
 ## What else you can contribute
 
-- **Fixes to any public design** — PR straight at `designs/<family>/`.
+- **Bugs** — *Bug report* form (a design, the CLI, CI, or docs); a fix PR
+  links the issue with `Closes #N`, same flow as families.
+- **Framework features** — *Feature request* form; big ideas belong to a
+  [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21) workstream's
+  `[tracking]` issue.
+- **Triage** — run the [evidence check](docs/TRIAGE.md) on `needs-triage`
+  issues, or complete a `needs-evidence` package; both are recorded on the
+  [provenance board](CONTRIBUTORS.md).
+- **Review** — verify a family PR per [REVIEWING.md](REVIEWING.md); the
+  approving reviewer is credited as the family's verifier.
 - **Errata against released 1.0 data** — the 1.0 generators are private, so
   file an issue with the record id + the engineering reason; fixes land in the
   next dataset version.
-- **Framework improvements** (`framework/bench2/`) — normal OSS flow.
+
+Every issue starts `needs-triage`; after the [TRIAGE.md](docs/TRIAGE.md) check
+it becomes `triaged` (claimable) or `needs-evidence` (needs your help). The
+full station-by-station lifecycle — including exactly where each role is
+recorded — is [docs/SOP.md](docs/SOP.md).

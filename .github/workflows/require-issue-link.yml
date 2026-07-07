@@ -1,5 +1,5 @@
 name: require-issue-link
-# Station 3 of docs/SOP.md: a family PR must link its family issue
+# Station 4 of docs/SOP.md: a family PR must link its family issue
 # (`Closes #N`) — otherwise merge won't close the issue and dossier.yml
 # can't post the acceptance evidence back to it.
 
@@ -24,7 +24,7 @@ jobs:
             if (!m) {
               core.setFailed(
                 'PR description must link its family issue, e.g. `Closes #12` ' +
-                '(SOP station 3). Edit the PR description — no new push needed. ' +
+                '(SOP station 4). Edit the PR description — no new push needed. ' +
                 '/ PR 描述里需要写 `Closes #<issue编号>` 关联 family issue,' +
                 '直接编辑 PR 描述即可,不用重新 push。');
               return;
