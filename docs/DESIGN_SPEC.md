@@ -142,7 +142,9 @@ QA items and edit pairs are derived downstream: QA templates instantiate over
    least once across a cheap 120-draw pass — proof the standard table is
    fully covered, not just one row
 
-`bench2 preview <family>` renders two PNGs: `preview.png` (difficulty × seed
-overview) and `preview_views.png` (the benchmark's four diagonal views — what
-the model will actually see). Compare both against the drawing in your family
-issue before opening the PR.
+`bench2 preview <family>` renders three PNGs: `preview.png` (difficulty × seed
+overview), `preview_views.png` (the benchmark's four diagonal views — what the
+model will actually see), and `preview_extremes.png` (the smallest and largest
+sampled draw — acceptance evidence that both ends of your declared ranges
+produce sane geometry; compare against the min/max rows of the dimension table
+in your family issue).

@@ -19,24 +19,28 @@ distinct, geometry-novelty report. If CI is red, stop — back to the author.
    see them**. Put them next to the drawing/photo in the family issue: is it
    the same part? Are easy/medium/hard plausible tiers — not three different
    parts, not clones?
-2. **Check the coverage gate.** If the family is table-driven, validate prints
+2. **Check the extremes.** `preview_extremes.png` shows the smallest and the
+   largest sampled part in the four benchmark views. Hold them against the
+   dimension table's min/max rows in the issue: does the small end still have
+   sane proportions, does the large end still render correct features?
+3. **Check the coverage gate.** If the family is table-driven, validate prints
    `coverage: <param> reaches all N declared values` — that is the proof the
    sampling covers the *whole* standard table, not just one row. No coverage
    line on a table-anchored family? Ask for a `coverage=[...]` declaration.
-3. **Audit `check()` — the heart of the review.** For every constraint:
+4. **Audit `check()` — the heart of the review.** For every constraint:
    - Is it *engineering-true*? (Would a machinist/designer agree?)
    - Is the cited rule real? Spot-check any standard number the author cites.
      **Fabricated citations ⇒ reject the PR**, not just the line.
    - What's *missing*? Think about how this part fails in the real world
      (tear-out, thin walls, tool clearance, unstable proportions) and check
      whether those failure modes are constrained.
-4. **Audit `PARAM_SPEC`.** Ranges physically sensible per tier; `source`
+5. **Audit `PARAM_SPEC`.** Ranges physically sensible per tier; `source`
    fields specific (a table, a rule, or honest `"proportion"`); `askable`
    only on parameters actually visible/derivable from the part; `feature`
    on the optional-feature toggles.
-5. **Check `family.json`.** Family name accurate, `standard` correct or null,
+6. **Check `family.json`.** Family name accurate, `standard` correct or null,
    `base_plane` matches the build, description honest.
-6. Scope: PR touches only `designs/<family>/`; commits DCO-signed.
+7. Scope: PR touches only `designs/<family>/`; commits DCO-signed.
 
 ## Labels
 

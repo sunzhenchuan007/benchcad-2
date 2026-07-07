@@ -76,8 +76,47 @@ def cmd_preview(family: str, per_diff: int) -> int:
             labels.append(diff)
     out = render.compose_grid(rows, labels, fam_dir / "preview.png")
     out2 = render.compose_grid(view_rows, labels, fam_dir / "preview_views.png")
+
+    # extremes: scan cheap samples across all difficulties, pick the overall
+    # smallest / largest parameter draw (mean of range-normalized numeric
+    # params), render each in the 4 benchmark views — acceptance evidence
+    # that BOTH ends of the declared ranges produce sane geometry.
+    # normalize against the GLOBAL range (union across difficulties) so the
+    # absolute-largest part (e.g. hard-tier max) wins, not a per-tier extreme
+    glob = {}
+    for name, entry in d.PARAM_SPEC.items():
+        los, his = zip(*(entry["range"][diff] for diff in DIFFS))
+        glob[name] = (min(los), max(his))
+    cands = []
+    for diff in DIFFS:
+        for seed in range(100, 130):
+            try:
+                p = d.sample(diff, np.random.default_rng(seed))
+            except Exception:
+                continue
+            scores = []
+            for name, (lo, hi) in glob.items():
+                v = p.get(name)
+                if isinstance(v, (int, float)) and hi > lo:
+                    scores.append((float(v) - lo) / (hi - lo))
+            if scores:
+                cands.append((sum(scores) / len(scores), diff, p))
+    ex_rows, ex_labels = [], []
+    with tempfile.TemporaryDirectory() as td:
+        for tag, (s, diff, p) in (("min", min(cands, key=lambda c: c[0])),
+                                  ("max", max(cands, key=lambda c: c[0]))):
+            step = Path(td) / f"ex_{tag}.step"
+            execute_cq_to_step(d.build(p), step)
+            verts, tris = render.step_to_normalized_mesh(step)
+            ex_rows.append(render.render_bench_views(verts, tris))
+            ex_labels.append(f"{tag} ({diff})")
+            summary = ", ".join(f"{k}={p[k]}" for k, e in d.PARAM_SPEC.items()
+                                if e.get("askable") and k in p)
+            print(f"  extreme {tag} [{diff}]: {summary}")
+    out3 = render.compose_grid(ex_rows, ex_labels, fam_dir / "preview_extremes.png")
     print(f"preview → {out}")
     print(f"benchmark views (what the model sees) → {out2}")
+    print(f"extremes (smallest & largest draw) → {out3}")
     return 0
 
 
