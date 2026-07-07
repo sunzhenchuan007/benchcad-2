@@ -35,7 +35,7 @@ uv run bench2 preview <family>       # LOOK at the three images yourself
 5. **Pick work from the [family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily)**
    (easiest: [`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)).
    No issue for your part? Open a *Family request* first.
-6. **No code? Still credited.** File an *Expert contribution* issue (datasheet
+6. **No code? Still credited.** File a *Part proposal (no code)* issue (datasheet
    + table + constraints in plain words); a maintainer implements; both of you
    land on the provenance board.
 7. **Work lives in issues and PRs.** [Discord](https://discord.gg/be9AtvrDyK)
@@ -93,7 +93,7 @@ Always name the source with a link.
 | `[workstream] <name>` | one roadmap line: goals, task list, all its discussion | maintainers | `workstream` |
 | `[category] <name>` | a part-family category: live checklist of its families | maintainers | `category`, `cat:*` |
 | `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
-| `[expert] <part name>` | zero-code expert proposal — we write the code | **anyone** (form) | `family`, `expert-input` |
+| `[proposal] <part name>` | zero-code part proposal — we write the code | **anyone** (form) | `family`, `proposal` |
 | `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
 | `[feat] <short description>` | framework improvement | **anyone** (form) | `enhancement` |
 
