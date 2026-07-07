@@ -12,6 +12,7 @@ design**: a parameter table with units, ranges and sources, plus the
 inter-parameter engineering constraints that make a part *manufacturable* —
 written and reviewed by people who know the domain.
 
+- **Full lifecycle SOP** (nothing → released, all evidence in the issue) → [`docs/SOP.md`](docs/SOP.md)
 - **Development roadmap** → [#21](../../issues/21) · **Rules (one page)** → [`RULES.md`](RULES.md) · **Progress board** → [`STATUS.md`](STATUS.md) · **Claim a family** → [family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) · easiest first: [`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 - **Design blueprint / decision record** → [`DESIGN.md`](DESIGN.md)
 - **End-to-end walkthrough** (datasheet → merged family, on a real example) → [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md)

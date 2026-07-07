@@ -1,7 +1,8 @@
 # Rules
 
-One page. Rules replace meetings. If a situation isn't covered, open an issue —
-the answer becomes a rule here.
+One page. Rules replace meetings. The full lifecycle (who does what, station
+by station) is [docs/SOP.md](docs/SOP.md). If a situation isn't covered, open
+an issue — the answer becomes a rule here.
 
 1. **One family = one issue = one PR.** Claim the family's issue (self-assign),
    submit one PR containing only `designs/<family>/` (design.py, family.json,
