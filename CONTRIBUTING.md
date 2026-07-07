@@ -85,13 +85,31 @@ Store images in `docs/assets/refs/<family>_{photo,drawing}.png` — never
 drag-and-drop into the issue — and embed via raw.githubusercontent URLs.
 Always name the source with a link.
 
+## Issue taxonomy — the title prefix says what it is
+
+| Title pattern | What it is | Who opens it | Labels |
+|---|---|---|---|
+| `[roadmap] BenchCAD 2.0 — <quarter>` | the quarterly plan; pinned; one per quarter | maintainers | `roadmap` |
+| `[workstream] <name>` | one roadmap line: goals, task list, all its discussion | maintainers | `workstream` |
+| `[category] <name>` | a part-family category: live checklist of its families | maintainers | `category`, `cat:*` |
+| `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
+| `[expert] <part name>` | zero-code expert proposal — we write the code | **anyone** (form) | `family`, `expert-input` |
+| `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
+| `[feat] <short description>` | framework improvement | **anyone** (form) | `enhancement` |
+
+Hierarchy (GitHub sub-issues, visible as a tree on each issue):
+`[roadmap]` ⊃ `[workstream]` / `[category]` ⊃ `[family]` / `[bug]` / `[feat]`.
+The forms set prefixes and labels for you — just don't delete them. Status is
+one extra label only: `needs-evidence` (plus `good first issue` as an
+invitation).
+
 ## Bugs, features, everything else
 
 - **Bug** → *Bug report* form (command + output; for a design bug, an
   engineering reason). Fix PRs link the issue with `Closes #N`.
-- **Framework feature** → *Feature request* form; big ideas belong to a
-  [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21) workstream's
-  `[tracking]` issue.
+- **Framework feature** → *Feature request* form; big ideas belong to an
+  existing `[workstream]` issue on the
+  [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21).
 - **Review** → verify a family PR per [REVIEWING.md](REVIEWING.md); the
   approving reviewer is credited as that family's verifier.
 - **Errata against released 1.0 data** → issue with the record id + the
