@@ -5,6 +5,7 @@ engineering knowledge**: a parametric design whose ranges and constraints are
 true. Merged family ⇒ your row on the [provenance board](CONTRIBUTORS.md),
 named credit in the dataset card, co-authorship on the BenchCAD 2.0 paper.
 
+Questions / want to say hi → [Discord](https://discord.gg/be9AtvrDyK).
 Not a GitHub person? → step-by-step guide
 [EN](docs/GETTING_STARTED.md)/[中文](docs/GETTING_STARTED.zh.md) (zero-code
 path included). Want a worked example first? →
@@ -37,7 +38,9 @@ uv run bench2 preview <family>       # LOOK at the three images yourself
 6. **No code? Still credited.** File an *Expert contribution* issue (datasheet
    + table + constraints in plain words); a maintainer implements; both of you
    land on the provenance board.
-7. **Everything happens in issues and PRs.** No DMs, no meetings;
+7. **Work lives in issues and PRs.** [Discord](https://discord.gg/be9AtvrDyK)
+   is for questions and chatter — decisions land back in the issue. No
+   meetings;
    [STATUS.md](STATUS.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md) regenerate
    themselves.
 8. **Rule changes are PRs** to this file. Merge = in effect.

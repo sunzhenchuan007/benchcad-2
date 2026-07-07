@@ -4,6 +4,8 @@
 multi-turn refinement over community-grounded parametric CAD — 200 industrial
 part families, every one an auditable parametric design (dataset v2.0).**
 
+[![Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/be9AtvrDyK)
+
 BenchCAD 2.0 is the successor to
 [BenchCAD](https://github.com/BenchCAD/BenchCAD-main) (17,900 parts / 106
 families, used in frontier-model system cards). Where 1.0's parameter ranges
