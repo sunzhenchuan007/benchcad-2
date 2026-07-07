@@ -23,6 +23,10 @@ Open a **Family request** issue (form provided). Three mandatory pieces
 An issue without the package is labeled `expert-input` until someone completes
 it — completing the package is itself a credited contribution (RULES.md #6).
 
+**No render images at this stage** — nothing has been implemented yet. The
+only images in a fresh issue are the *datasheet's* drawing/photo. Our renders
+(4-views, extremes) arrive at station 7, as a comment.
+
 ## 1. Claim
 
 📌 Self-assign the issue (or comment "I'll take it" and a maintainer assigns).
@@ -40,7 +44,9 @@ Assignee visible on the issue = nobody else starts it.
 ## 3. PR
 
 One PR, only `designs/<family>/`, description contains `Closes #<issue>`.
-📌 GitHub auto-links the PR in the issue timeline.
+📌 GitHub auto-links the PR in the issue timeline. **CI enforces this**
+(`require-issue-link.yml`): a designs PR without a valid open-issue link goes
+red — edit the PR description to fix, no new push needed.
 
 ## 4. CI (automatic)
 
