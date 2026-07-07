@@ -17,7 +17,7 @@ special case, so every 1.0 score remains a baseline. Anti-gaming rule: the
 agent NEVER sees its numeric score — only renders of its own output vs the
 target.
 
-*Community-grounded data (dataset v2.0).* **200 part families**, each defined
+*Community-grounded data (dataset v2.0).* **300 part families**, each defined
 by an auditable *parametric design* whose engineering constraints are written
 and reviewed by people who know the domain — not guessed by an LLM.
 
@@ -35,7 +35,7 @@ held-out split are drawn privately and stay clean.
   enter 2.0 automatically. Each is upgraded to the explicit-parameter design
   interface (§3), its numeric ranges re-grounded against standards tables and
   engineering rules, and only then promoted. Weak families are repaired or
-  dropped. Community contributions take the roster to 200.
+  dropped. Community contributions take the roster to 300.
 - **Instance level — full regeneration.** No 1.0 data row is copied. Every 2.0
   instance is freshly sampled: corrected parameters require re-rendering
   anyway, and one year of public exposure means 1.0 instances must be assumed
@@ -78,11 +78,11 @@ don't collide with released parts. Humans review exactly two things: the constra
 
 | Public | Private |
 |---|---|
-| this repo: framework, specs, **all 200 designs** (ours + community's) | the factory: rendering, QA template engine, edit derivation, ingest |
+| this repo: framework, specs, **all 300 designs** (ours + community's) | the factory: rendering, QA template engine, edit derivation, ingest |
 | released dataset versions on HF | unreleased families & unreleased renders |
 | leaderboard + validation CI | **held-out split: private parameter draws + answers** |
 
-All 200 designs are public and auditable — the benchmark's trust story. The
+All 300 designs are public and auditable — the benchmark's trust story. The
 moat is not design secrecy; it is the leaderboard's authority, the private
 held-out draws, and the factory. Anyone may sample public designs to make
 their own training data; official eval instances are private draws, so
@@ -165,6 +165,6 @@ until contribution volume justifies them:
 - **Difficulty trials** (TB-3's `/run`): sample instances, run a reference
   model, report solve rates on the PR — evidence the family isn't trivial.
 - **Reviewer pool + auto-assignment** once there is more than one reviewer.
-- **Public dashboard** (proposals / PRs / coverage vs the wanted-200 list),
+- **Public dashboard** (proposals / PRs / coverage vs the wanted-300 list),
   reading only public state.
 

@@ -1,7 +1,7 @@
 # BenchCAD 2.0 <sub>(in preparation)</sub>
 
 **The agentic generation of BenchCAD: tool use, execution feedback, and
-multi-turn refinement over community-grounded parametric CAD — 200 industrial
+multi-turn refinement over community-grounded parametric CAD — 300 industrial
 part families, every one an auditable parametric design (dataset v2.0).**
 
 [![Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/be9AtvrDyK)

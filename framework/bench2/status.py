@@ -18,7 +18,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-TARGET = 200
+TARGET = 300
 
 
 def generate(root: Path) -> str:
