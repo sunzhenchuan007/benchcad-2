@@ -1,7 +1,7 @@
 name: "Expert contribution (no code)"
 description: "Contribute a part with engineering knowledge only — we write the code, you get the credit."
 title: "[expert] <part name>"
-labels: ["family", "expert-input", "needs-triage"]
+labels: ["family", "expert-input"]
 body:
   - type: markdown
     attributes:

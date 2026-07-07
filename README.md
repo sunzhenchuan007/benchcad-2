@@ -12,13 +12,17 @@ design**: a parameter table with units, ranges and sources, plus the
 inter-parameter engineering constraints that make a part *manufacturable* —
 written and reviewed by people who know the domain.
 
-- **Full lifecycle SOP** (nothing → released, all evidence in the issue) → [`docs/SOP.md`](docs/SOP.md)
-- **Development roadmap** → [#21](../../issues/21) · **Rules (one page)** → [`RULES.md`](RULES.md) · **Progress board** → [`STATUS.md`](STATUS.md) · **Claim a family** → [family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) · easiest first: [`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-- **Design blueprint / decision record** → [`DESIGN.md`](DESIGN.md)
-- **End-to-end walkthrough** (datasheet → merged family, on a real example) → [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md)
-- **The interface** → [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md); references: [`designs/example_tee_bracket/`](designs/example_tee_bracket/) (proportions) · [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven, from the norelem 22250 datasheet)
-- **Contributing** (merged family ⇒ co-authorship, [`CONTRIBUTORS.md`](CONTRIBUTORS.md)) → [`CONTRIBUTING.md`](CONTRIBUTING.md)
-- Scoring engine (shared with 1.0) → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
+**Three documents cover everything:**
+
+- **[`CONTRIBUTING.md`](CONTRIBUTING.md)** — rules, the full lifecycle, how to
+  claim & verify an issue, bugs/features. *(Contributors start here; merged
+  family ⇒ co-authorship — see the [provenance board](CONTRIBUTORS.md).)*
+- **[`REVIEWING.md`](REVIEWING.md)** — how to verify a family PR (renders vs
+  drawing, extremes vs table, three-layer equation check).
+- **[`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)** — the four-piece interface;
+  copy [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven reference).
+
+Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · deep dives: [walkthrough](docs/WALKTHROUGH.md), [decision record](DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
 
 > **🧑‍🔧 New here / not a GitHub person?** Step-by-step guide for engineers:
 > **[English](docs/GETTING_STARTED.md) · [中文](docs/GETTING_STARTED.zh.md)** —

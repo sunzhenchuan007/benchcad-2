@@ -29,7 +29,7 @@ the code.
      reject this because…" rules (e.g. *"bolt hole center must be ≥1.5×d from
      the edge or it tears out"*). These rules are the whole point.
 5. Done. A maintainer turns it into code; **you are credited by name** in the
-   dataset and as a co-author on the paper (see RULES.md #9).
+   dataset and as a co-author on the paper (see CONTRIBUTING.md rule 9).
 
 ## Path 1 — full contribution, with code (~half a day, basic Python needed)
 
@@ -108,4 +108,4 @@ the code.
   constraints disagree; widen the range or fix the rule (don't delete the rule
   to make it pass — reviewers read the rules first).
 - **Stuck > 20 minutes** → comment on your issue. Someone will answer there.
-  (No DMs needed — everything lives in the issue, see RULES.md #7.)
+  (No DMs needed — everything lives in the issue, see CONTRIBUTING.md rule 7.)

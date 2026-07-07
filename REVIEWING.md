@@ -1,8 +1,8 @@
 # Reviewing a family PR
 
 Every design PR must pass the automated gates and one human review by someone
-who is not the author (RULES.md #3). Machines already proved the design
-*runs*; your job is to judge whether it is *true*. Budget: ~15 minutes.
+who is not the author (CONTRIBUTING.md rule 3). Machines already proved the
+design *runs*; your job is to judge whether it is *true*. Budget: ~15 minutes.
 
 ## What is already machine-checked (don't re-do it)
 
@@ -15,6 +15,11 @@ the author. CI green = start here.
 
 ## Review order
 
+0. **Is the issue's evidence real?** The implementer verified it when
+   claiming (CONTRIBUTING.md "Claiming an issue = you verify it") — you are
+   the only other pair of eyes. Glance: standard link live, dimension table
+   has min/max rows, no obvious mismatch with the PR. Thin evidence = request
+   changes on the issue, not the code.
 1. **Renders vs the source pictures.** Put `preview_views.png` (the four
    diagonal views exactly as the model will see them) next to the dimensioned
    drawing in the family issue: is it the same part? Are easy/medium/hard
@@ -78,15 +83,15 @@ constraints ✓ (bore/groove wall rule is sound; no missing failure mode found)
 Or request changes, comments limited to the topics above. One pass, verdict
 within days.
 
-## Label flow (issues, not PRs)
+## Labels
 
-Issues: `needs-triage` → `triaged` (see [docs/TRIAGE.md](docs/TRIAGE.md)) →
-closed by the PR. PRs need no labels: CI status + GitHub review states
-(approve / request changes) are the workflow.
+Only one matters: `needs-evidence` on an issue whose package is incomplete.
+PRs need no labels — CI status + GitHub review states (approve / request
+changes) are the workflow.
 
 ## After merge — all automatic
 
 `dossier.yml` posts the acceptance evidence back to the family issue;
 STATUS.md flips the family to MERGED; the credits workflow adds the full
-provenance row (proposed / triaged / implemented / reviewed) to
+provenance row (proposed / implemented / verified) to
 CONTRIBUTORS.md. You do nothing.

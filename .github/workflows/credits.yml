@@ -1,5 +1,5 @@
 name: credits-board
-# Station 8 of docs/SOP.md (📒): after a family PR merges, regenerate
+# Station 7 of the lifecycle (CONTRIBUTING.md, 📒): after a family PR merges, regenerate
 # CONTRIBUTORS.md from the actual issue/PR provenance records.
 
 on:

@@ -1,9 +1,9 @@
 """Regenerate CONTRIBUTORS.md — the per-family provenance board.
 
-For every designs/<family>/ it records the full chain the SOP leaves behind:
+For every designs/<family>/ it records the chain the lifecycle leaves behind:
   proposed by   = author + date of the earliest `[family] <name>` issue
-  triaged by    = actor of the `triaged` label event on that issue
-  implemented   = author + number of the merged PR that closed it
+  implemented   = author + number of the merged PR that closed it (the
+                  implementer also verified the issue's evidence at claim time)
   verified by   = reviewer(s) who APPROVED that PR
 Sources: GitHub REST API (token via GITHUB_TOKEN). Manual edits are overwritten.
 """
@@ -52,13 +52,9 @@ def main(root: Path):
         cand = [i for i in issues if i["title"].startswith(f"[family] {fam}")]
         issue = min(cand, key=lambda i: i["created_at"]) if cand else None
 
-        proposed = triaged = implemented = verified = "—"
+        proposed = implemented = verified = "—"
         if issue:
             proposed = f"[@{issue['user']['login']}](https://github.com/{issue['user']['login']}) · {issue['created_at'][:10]} · #{issue['number']}"
-            for ev in paged(f"{API}/issues/{issue['number']}/events"):
-                if ev["event"] == "labeled" and ev.get("label", {}).get("name") == "triaged":
-                    triaged = f"[@{ev['actor']['login']}](https://github.com/{ev['actor']['login']})"
-                    break
             pr = next(
                 (p for p in pulls
                  if (m := CLOSE_RE.search(p.get("body") or "")) and int(m.group(1)) == issue["number"]
@@ -80,7 +76,7 @@ def main(root: Path):
             proposed = "bootstrap (pre-SOP)"
         contributor = meta.get("contributor", "—")
         rows.append(
-            f"| `{fam}` | [@{contributor}](https://github.com/{contributor}) | {proposed} | {triaged} | {implemented} | {verified} | {src} |"
+            f"| `{fam}` | [@{contributor}](https://github.com/{contributor}) | {proposed} | {implemented} | {verified} | {src} |"
         )
 
     out = f"""# Contributors — the provenance board
@@ -90,12 +86,13 @@ themselves (SOP 📒 records) — do not edit by hand. Merged family ⇒ the row
 below, named credit in the dataset card of the release that ships it, and
 co-authorship on the BenchCAD 2.0 paper (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
-| Family | Design author | Proposed | Triaged | Implemented | Verified | Primary source |
-|---|---|---|---|---|---|---|
+| Family | Design author | Proposed | Implemented | Verified | Primary source |
+|---|---|---|---|---|---|
 {chr(10).join(rows)}
 
-*Proposed = family-issue author · Triaged = who ran the [evidence check](docs/TRIAGE.md) ·
-Implemented = merged-PR author · Verified = approving [reviewer](REVIEWING.md).
+*Proposed = family-issue author · Implemented = merged-PR author (who also
+verified the issue's evidence at claim time, per CONTRIBUTING.md) · Verified =
+approving [reviewer](REVIEWING.md).
 "bootstrap (pre-SOP)" marks the reference designs that predate this workflow.*
 """
     (root / "CONTRIBUTORS.md").write_text(out)

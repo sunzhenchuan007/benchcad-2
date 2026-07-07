@@ -1,5 +1,5 @@
 name: dossier-closeout
-# Station 8 of docs/SOP.md: when a family PR merges, post the acceptance
+# Station 7 of the lifecycle (CONTRIBUTING.md): when a family PR merges, post the acceptance
 # evidence (previews + validate summary) back to the family issue, so the
 # issue reads as the complete dossier.
 

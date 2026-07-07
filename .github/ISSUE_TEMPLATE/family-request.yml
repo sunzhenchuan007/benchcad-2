@@ -1,7 +1,7 @@
 name: "Family request"
 description: "Propose a mechanical part family for the benchmark (standard + pictures required)"
 title: "[family] <part_name>"
-labels: ["family", "needs-triage"]
+labels: ["family"]
 body:
   - type: markdown
     attributes:

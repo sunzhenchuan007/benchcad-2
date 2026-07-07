@@ -1,7 +1,7 @@
 name: "Feature request"
 description: "Propose an improvement to the framework, CLI, gates, or docs (NOT a new part family — use Family request)"
 title: "[feat] <short description>"
-labels: ["enhancement", "needs-triage"]
+labels: ["enhancement"]
 body:
   - type: markdown
     attributes:

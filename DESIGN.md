@@ -117,7 +117,7 @@ count per family is a measured property of its parameter space, not a quota.
 Sized for ~10 people: one owner, 1–2 co-maintainers, a handful of contributors,
 an automated factory. Three roles with hard boundaries; two communication
 channels (the PR itself + review comments limited to two topics); one page of
-rules — see [RULES.md](RULES.md). No meetings, no approval queue, no bots
+rules — see [CONTRIBUTING.md](CONTRIBUTING.md). No meetings, no approval queue, no bots
 pinging humans.
 
 **Family lifecycle (all stages machine-derived, board = [STATUS.md](STATUS.md),
