@@ -8,8 +8,8 @@ named credit in the dataset card, co-authorship on the BenchCAD 2.0 paper.
 Questions / want to say hi → [Discord](https://discord.gg/be9AtvrDyK).
 Not a GitHub person? → step-by-step guide
 [EN](docs/GETTING_STARTED.md)/[中文](docs/GETTING_STARTED.zh.md) (zero-code
-path included). Want a worked example first? →
-[docs/WALKTHROUGH.md](docs/WALKTHROUGH.md).
+path included). Want a worked example first? → illustrated tutorial
+[EN](docs/WALKTHROUGH.md)/[中文](docs/WALKTHROUGH.zh.md).
 
 ## The 60-second loop
 

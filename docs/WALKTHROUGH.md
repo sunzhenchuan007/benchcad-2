@@ -1,127 +1,149 @@
-# Walkthrough: contributing a family, end to end
+# Tutorial: your first family, end to end (with pictures)
 
-This is the complete workflow, demonstrated on a real family —
-[`designs/simplex_sprocket/`](../designs/simplex_sprocket/) — built from a real
-manufacturer datasheet. Follow it step by step for your own part; every file it
-mentions exists in this repo as a working example.
+*中文版: [WALKTHROUGH.zh.md](WALKTHROUGH.zh.md)*
 
+Everything below is real: the issues, the images, the code and the CI runs all
+exist in this repo. Follow along with your own part — same stations, same
+commands. Time budget for a first family: **one evening**.
+
+## What you'll build
+
+A *parametric design*: one Python file that can generate every size of one
+catalog part, with engineering constraints a machinist would agree with.
+The benchmark then renders your part like this — four diagonal views, three
+difficulty tiers:
+
+![what the model sees](../designs/simplex_sprocket/preview_views.png)
+
+## The lifecycle at a glance
+
+```mermaid
+flowchart LR
+  A[0 propose\nevidence package] --> B[1 claim & verify\nyou check the evidence]
+  B --> C[2 build\nbench2 new/validate/preview]
+  C --> D[3 PR\nCloses #N]
+  D --> E[4 CI\nsame gates, public]
+  E --> F[5 review\none non-author]
+  F --> G[6 merge\nissue auto-closes]
+  G --> H[7 dossier\nbot posts renders back]
+  H --> I[8 factory & release\nSTATUS.md flips]
 ```
-input (datasheet/standard) → proposal → scaffold → four pieces → VERIFY → sign → PR → credit
-```
 
-## 0. Input: start from something real
+Bots handle the arrows; humans only propose, verify, build, review.
 
-A family starts from a **real engineering source**, not imagination:
+## Station 0 — propose (or pick) an issue
 
-- a manufacturer datasheet (our example: *norelem 22250 — sprockets single
-  5/8" × 3/8" DIN ISO 606, ready to install*),
-- a standard's table/equations (ISO 606 Table 1 + §8.2), and/or
-- a shop rule you can cite.
+Every family starts from a **real source**. The issue must carry the three-piece
+evidence package — here's what a complete one looks like
+([issue #1](../../../issues/1), the duplex sprocket):
 
-From the source you extract three things:
-1. **the parameter list** — what varies across the catalog (tooth count, bore,
-   hub Ø, …),
-2. **the relations** — formulas tying them together (dp = p/sin(π/z)),
-3. **the limits** — what combinations the catalog/standard never sells
-   (these become `check()`).
+| Product photo (catalog) | Dimensioned drawing (datasheet) |
+|---|---|
+| ![photo](assets/refs/duplex_sprocket_photo.png) | ![drawing](assets/refs/duplex_sprocket_drawing.png) |
 
-Record the mapping as you go — it becomes your family's `NOTES.md`
-([example](../designs/simplex_sprocket/NOTES.md)): one table, datasheet symbol
-→ meaning → formula → your parameter. That file is what makes review fast.
+1. **anchoring standard/catalog link** — norelem 22253, DIN ISO 606
+2. **dimensioned drawing** — the symbols (D, D1, B1, B2, L…) become your parameter names
+3. **dimension table with min & max rows** — z = 9 … 95, so review can check both ends
 
-## 1. Propose (before you build)
+Don't want to invent one? **Pick from the wanted lists** — every `[category]`
+issue carries a table of ~25–50 part families with verified anchors
+([roadmap #21](../../../issues/21) links them all). The welcome bot
+auto-checks your name against [`registry.json`](../registry.json) (600+ known
+names) the moment you open the issue.
 
-Open a **Family Proposal** issue (template provided): part, why it adds
-coverage, parameter sketch, the 2–3 constraints you already know, source.
-Wait for the `approved` label — it protects you from building something
-duplicate or out of scope.
+## Station 1 — claim it, then verify it (5 minutes)
 
-## 2. Scaffold
+Self-assign, then run the check in
+[CONTRIBUTING.md](../CONTRIBUTING.md#claiming-an-issue--you-verify-it) — link
+alive, drawing has symbols, table has min/max, **recompute two numbers**.
+For the sprocket: the table says D1 = 46,42 at z = 9; the standard says
+D1 = p / sin(π/z) = 15.875 / sin(20°) = **46.415** ✓. If a spot-check fails,
+label `needs-evidence` and say what's wrong — that comment is itself a
+credited contribution.
+
+## Station 2 — build
 
 ```bash
-uv sync
-uv run bench2 new my_family        # designs/my_family/{design.py, family.json}
+uv sync                              # once
+uv run bench2 new my_family          # scaffolds designs/my_family/
 ```
 
-## 3. Fill the four pieces (copy the reference's shape)
+Fill the four pieces in `design.py` (spec: [DESIGN_SPEC.md](DESIGN_SPEC.md);
+copy the shape of
+[`designs/simplex_sprocket/design.py`](../designs/simplex_sprocket/design.py)):
 
-Two references show the two source patterns — copy whichever matches yours:
-
-| | [`example_tee_bracket`](../designs/example_tee_bracket/design.py) | [`simplex_sprocket`](../designs/simplex_sprocket/design.py) |
+| Piece | What it is | The sprocket example |
 |---|---|---|
-| pattern | free proportions | **table-driven** (standards rows) |
-| PARAM_SPEC | independent ranges | jointly-sampled table row + free params |
-| check() | proportion rules (1.5·d edge distance…) | row-membership + z ≥ 9 + rim/hub walls |
-| build() | box/hole/chamfer | `geomlib` tooth profile, source-inlined into the program |
-| variants | — | `form_b` (catalog Form A/B) — heterogeneous cases in one family |
+| `PARAM_SPEC` | every parameter: unit, per-difficulty range, **source** | `pitch` cites "ISO 606 Table 1", declares `coverage=[8.0, …, 25.4]` |
+| `check(p)` | inter-parameter constraints, each with its reason | `bore_d > 0.5·df → "tooth rim too thin"` |
+| `sample(difficulty, rng)` | draws a valid parameter set | picks an ISO 606 chain **row**, not free numbers |
+| `build(p)` | parameters → stand-alone CadQuery program | emits `sprocket_profile(...)` with the helper source inlined |
 
-Rules that make review painless (details in [DESIGN_SPEC.md](DESIGN_SPEC.md)):
-- every `PARAM_SPEC.source` and `check()` message cites the table/rule — or
-  honestly says `"proportion"`; **never invent a citation**
-- randomness only through `rng`; numbers formatted with fixed rounding
-- `askable=True` on parameters QA may target; `feature=True` on toggles
+Table-driven parts keep a `NOTES.md` mapping datasheet symbols → formulas →
+parameters ([example](../designs/simplex_sprocket/NOTES.md)) — reviewers
+verify equations against it, layer by layer.
 
-## 4. VERIFY — three layers, all before the PR
+Iterate until the gates pass:
 
-**Layer 1 — machine gates** (same command CI runs):
+```
+$ uv run bench2 validate my_family
+  ✓ family.json: keys + base_plane valid
+  ✓ PARAM_SPEC: 9 params, all entries complete
+  ✓ easy/medium/hard: 4/4 seeds sample+check+build+execute clean
+  ✓ coverage: pitch reaches all 6 declared values
+  ✓ geomlib: ['sprocket_profile'] registered + inlined
+  ✓ difficulty separation · geometry novelty 12/12 unique
+PASS — designs/my_family
+```
+
+Then **look at your part before anyone else does**:
+
 ```bash
-uv run bench2 validate my_family
+uv run bench2 preview my_family      # writes three PNGs
 ```
+
+| `preview.png` — difficulty × seed grid | `preview_extremes.png` — smallest & largest draw |
+|---|---|
+| ![grid](../designs/simplex_sprocket/preview.png) | ![extremes](../designs/simplex_sprocket/preview_extremes.png) |
+
+Hold the extremes against the table's min/max rows yourself: does the small
+end still have sane proportions, does the big end still render every feature?
+That's exactly what your reviewer will do.
+
+## Stations 3–5 — PR, CI, review
+
+Open **one PR touching only `designs/my_family/`** with `Closes #<issue>` in
+the description — CI *enforces* the link, then re-runs the same validate gates
+publicly. One non-author reviews per [REVIEWING.md](../REVIEWING.md) and
+approves with a three-line verdict:
+
 ```
-✓ family.json: keys + base_plane valid
-✓ PARAM_SPEC: 8 params, all entries complete
-✓ easy/medium/hard: 4/4 seeds sample+check+build+execute clean
-✓ difficulty separation: difficulties produce distinct programs
-✓ geometry novelty: 12/12 unique shapes (0% duplicate)
-PASS
+views ✓ (against the 22253 drawing)
+equations ✓ (recomputed D1 @ z=17; pt column vs Renold table)
+constraints ✓ (bore/groove wall rule is sound)
 ```
-What each gate proves: constraints and ranges agree (sampling converges);
-**every sampled value stays inside its own declared `PARAM_SPEC` range** (the
-spec is a contract — downstream QA/edit derivation relies on it; this gate
-caught a real bug in this very reference, where proportional bore sampling
-escaped the declared range on large sprockets); programs execute to
-non-degenerate solids; same seed ⇒ byte-identical program (determinism);
-tiers differ; you're not cloning one shape.
 
-**Layer 2 — your eyes**:
-```bash
-uv run bench2 preview my_family    # difficulty × seed grid PNG
-```
-Machines can't tell a sprocket from a starfish. Look at the grid: is it the
-part? Are easy/medium/hard plausible tiers of the *same* part?
+## Stations 6–8 — everything after merge is automatic
 
-**Layer 3 — numbers vs the source** (the step that catches wrong formulas):
-pick 2–3 catalog rows and check your derived values against them by hand.
-From our example (norelem D1 column vs `dp = p/sin(π/z)`):
+The instant your PR merges: the issue closes, the category checklist ticks,
+and the dossier bot posts the acceptance renders **back onto your issue**, so
+it reads end-to-end — proposal evidence at the top, final geometry at the
+bottom ([see it live on #22](../../../issues/22)). The provenance board
+[CONTRIBUTORS.md](../CONTRIBUTORS.md) regenerates with your name in the
+*Implemented* column — that row is the paper-authorship record. Release
+qualification happens per batch in the private factory;
+[STATUS.md](../STATUS.md) shows your family move MERGED → GENERATED →
+QUALIFIED → RELEASED.
 
-| z | formula | catalog D1 |
-|---|---|---|
-| 10 | 51.372 | 51,37 ✓ |
-| 13 | 66.335 | 66,32 ✓ |
-| 25 | 126.66 | 126,66 ✓ |
+## FAQ
 
-Same for the DIN 6885 keyway rows (bore 16→5, 19→6, 25→8 — all match).
-Put these spot-checks in `NOTES.md`: they are the strongest evidence your
-design is *true*, not just runnable.
-
-## 5. Sign your work
-
-- `family.json` → `"contributor": "your-github-handle"`
-- add your row to [`CONTRIBUTORS.md`](../CONTRIBUTORS.md)
-- commit with DCO: `git commit -s`
-
-## 6. PR
-
-One PR = one family = `designs/my_family/` only (`design.py`, `family.json`,
-`NOTES.md`, `preview.png`). The PR template checklist mirrors everything
-above. CI re-runs the machine gates and posts the report + preview on the PR;
-a maintainer then reviews exactly two things (see [REVIEWING.md](../REVIEWING.md)):
-are your constraints **true**, and are your labels correct.
-
-## 7. After merge
-
-Your row in CONTRIBUTORS.md is permanent; the release that ships your family
-credits you in the dataset card, and merged-family contributors are invited as
-co-authors on the BenchCAD 2.0 paper. Instance generation (rendering, QA,
-edits, held-out draws) happens downstream in the maintainers' pipeline — your
-design is the contribution.
+- **`uv sync` fails / no Python?** → the zero-code path still works: post the
+  datasheet + table on an issue (*Part proposal* form), a maintainer builds it,
+  both of you are credited.
+- **My preview doesn't look like the drawing.** → fix before PR; the #1 review
+  rejection cause is geometry-vs-drawing mismatch.
+- **`validate` says a sampled value left the declared range.** → your
+  `sample()` must clamp to `PARAM_SPEC` ranges — the spec is a contract
+  (this gate caught a real bug in our own reference sprocket).
+- **Question?** → [Discord](https://discord.gg/be9AtvrDyK), or comment on your
+  issue.

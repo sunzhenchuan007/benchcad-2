@@ -24,7 +24,7 @@ written and reviewed by people who know the domain.
 - **[`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)** — the four-piece interface;
   copy [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven reference).
 
-Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · deep dives: [walkthrough](docs/WALKTHROUGH.md), [decision record](DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
+Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · **illustrated tutorial** [EN](docs/WALKTHROUGH.md)/[中文](docs/WALKTHROUGH.zh.md) · deep dive: [decision record](DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
 
 > **🧑‍🔧 New here / not a GitHub person?** Step-by-step guide for engineers:
 > **[English](docs/GETTING_STARTED.md) · [中文](docs/GETTING_STARTED.zh.md)** —
