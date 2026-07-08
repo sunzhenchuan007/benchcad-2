@@ -16,11 +16,34 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need history to diff against the base for changed-family detection
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.11"
       - run: uv sync
-      - name: validate every design (same gates as `bench2 validate`)
+      # Only validate the families this change actually touches — a framework or
+      # pyproject change re-validates every family (it can affect any of them),
+      # but a family PR validates just that family. Keeps CI fast + scoped as the
+      # dataset grows to hundreds of families.
+      - name: pick families to validate
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch -q origin "${{ github.base_ref }}"
+            DIFF=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            DIFF=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+          else
+            DIFF=""
+          fi
+          if [ -z "$DIFF" ] || echo "$DIFF" | grep -qE '^(framework/|pyproject\.toml)'; then
+            ls -d designs/*/ | xargs -n1 basename > /tmp/fams.txt   # framework/unknown change -> validate all
+            echo "framework/tooling change (or no diff) -> validating all families"
+          else
+            echo "$DIFF" | grep -oE '^designs/[^/]+/' | cut -d/ -f2 | sort -u > /tmp/fams.txt
+          fi
+          echo "families to validate:"; cat /tmp/fams.txt
+      - name: validate the changed families (same gates as `bench2 validate`)
         id: validate
         run: |
           set -o pipefail
@@ -28,21 +51,22 @@ jobs:
             echo "## bench2 validate"
             echo
             fail=0
-            for d in designs/*/; do
-              fam=$(basename "$d")
+            if [ ! -s /tmp/fams.txt ]; then echo "_(no design families touched by this change)_"; fi
+            while read -r fam; do
+              [ -d "designs/$fam" ] || continue
               echo "### $fam"
               echo '```'
-              uv run bench2 validate "$fam" --seeds 4 | tee /tmp/v_$fam.txt || fail=1
+              uv run bench2 validate "$fam" --seeds 4 || fail=1
               echo '```'
-            done
+            done < /tmp/fams.txt
             exit $fail
           } | tee report.md
       - name: render previews
         if: always() && github.event_name == 'pull_request'
         run: |
-          for d in designs/*/; do
-            uv run bench2 preview "$(basename "$d")" --per-diff 3 || true
-          done
+          while read -r fam; do
+            [ -d "designs/$fam" ] && (uv run bench2 preview "$fam" --per-diff 3 || true)
+          done < /tmp/fams.txt
       - uses: actions/upload-artifact@v4
         if: always() && github.event_name == 'pull_request'
         with:
