@@ -1,0 +1,12 @@
+{
+  "family": "duplex_sprocket",
+  "standard": "ISO 606",
+  "base_plane": "XY",
+  "geomlib": [
+    "sprocket_profile",
+    "keyway_dims"
+  ],
+  "description": "Double-strand roller-chain sprocket per ISO 606 / DIN 8187: two in-phase tooth discs (ISO 606 \u00a78.2 tooth form) one transverse pitch pt apart, joined by an intermediate groove cylinder that clears the chain's inner link plates; one-sided hub boss on medium/hard, center bore, DIN 6885A keyway on hard. Chain row sampled jointly as (pitch, roller, tooth width, transverse pitch).",
+  "source": "norelem 22253 datasheet (sprockets duplex 5/8\" x 3/8\" DIN ISO 606) \u2014 see NOTES.md for the symbol mapping; ISO 606 Table 1 + \u00a78.2 tooth equations; pt column per Renold DIN 8187 duplex tables (10B-2 confirmed by norelem B2 = 25,5); DIN 6885-1 Form A key seats",
+  "contributor": "HaozheZhang6"
+}
