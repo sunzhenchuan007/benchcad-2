@@ -143,23 +143,30 @@ def render_iso(verts, tris, img_size: int = 320, front=ISO_FRONT):
     return Image.fromarray(arr[:, :, :3])
 
 
-def compose_grid(rows: list[list], row_labels: list[str], out_png: Path, cell: int = 320):
-    """rows[i][j] = PIL image; one row per difficulty. Labeled grid -> PNG."""
+def compose_grid(rows: list[list], row_labels: list[str], out_png: Path,
+                 cell: int = 320, label_w: int = 300):
+    """rows[i][j] = PIL image; one row per difficulty. Labeled grid -> PNG.
+
+    Row labels may be multi-line (e.g. difficulty + a parameter summary); they
+    render left of the row, vertically centered.
+    """
     from PIL import Image, ImageDraw, ImageFont
 
-    pad, label_w = 10, 110
+    pad = 10
     ncol = max(len(r) for r in rows)
     W = label_w + ncol * (cell + pad) + pad
     H = len(rows) * (cell + pad) + pad
     canvas = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(canvas)
     try:
-        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 22)
+        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 18)
     except OSError:
         font = ImageFont.load_default()
     for i, (row, lab) in enumerate(zip(rows, row_labels)):
         y = pad + i * (cell + pad)
-        d.text((pad, y + cell // 2 - 12), lab, fill=(20, 20, 20), font=font)
+        nlines = str(lab).count("\n") + 1
+        d.multiline_text((pad, y + max(4, cell // 2 - nlines * 12)), str(lab),
+                         fill=(20, 20, 20), font=font, spacing=6)
         for j, im in enumerate(row):
             if im.size != (cell, cell):
                 im = im.resize((cell, cell))
