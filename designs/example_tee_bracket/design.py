@@ -10,6 +10,9 @@ holes), a hard-only feature (chamfer), and real engineering constraints
 This family is a TEACHING ARTIFACT — it does not enter the released dataset.
 """
 
+import cadquery as cq
+
+
 # ── 1. PARAM_SPEC ────────────────────────────────────────────────────────────
 PARAM_SPEC = {
     "length": dict(
@@ -72,10 +75,11 @@ PARAM_SPEC = {
 
 
 # ── 2. check — the engineering truth reviewers audit ─────────────────────────
-def _hole_layout(p):
-    """Shared geometry helpers: lateral hole offset and 4-hole axial offset."""
-    y_off = (p["flange_w"] + p["web_t"]) / 4.0  # mid-line of each exposed flange strip
-    x_off = p["length"] / 2.0 - max(2.0 * p["hole_d"], 8.0)  # end margin >= 2d (>=8 mm)
+def _hole_layout(flange_w, web_t, length, hole_d):
+    """Lateral hole offset + 4-hole axial offset (explicit args so build()'s
+    derived program stays self-contained)."""
+    y_off = (flange_w + web_t) / 4.0  # mid-line of each exposed flange strip
+    x_off = length / 2.0 - max(2.0 * hole_d, 8.0)  # end margin >= 2d (>=8 mm)
     return y_off, x_off
 
 
@@ -90,7 +94,7 @@ def check(p: dict) -> list[str]:
     if p["web_h"] > 3.0 * p["flange_w"]:
         bad.append("web_h > 3*flange_w: unstable proportion")
     if p["n_holes"]:
-        y_off, x_off = _hole_layout(p)
+        y_off, x_off = _hole_layout(p["flange_w"], p["web_t"], p["length"], p["hole_d"])
         # bolt-hole edge distance >= 1.5 d (machinery-handbook tear-out rule)
         if p["flange_w"] / 2.0 - y_off < 1.5 * p["hole_d"]:
             bad.append("hole center < 1.5d from flange edge: tear-out risk")
@@ -132,35 +136,31 @@ def sample(difficulty: str, rng) -> dict:
     raise RuntimeError("no valid sample in 200 tries — ranges vs constraints too tight")
 
 
-# ── 4. build — parameters -> deterministic CadQuery program ──────────────────
-def build(p: dict) -> str:
-    lines = [
-        "import cadquery as cq",
-        "",
-        f"L, FW, FT = {p['length']:.2f}, {p['flange_w']:.2f}, {p['flange_t']:.2f}",
-        f"WT, WH = {p['web_t']:.2f}, {p['web_h']:.2f}",
-        "",
-        "# flange plate on the XY plane, web standing on its centerline",
-        'flange = cq.Workplane("XY").box(L, FW, FT, centered=(True, True, False))',
-        'web = cq.Workplane("XY").workplane(offset=FT).box(L, WT, WH, centered=(True, True, False))',
-        "result = flange.union(web)",
-    ]
+# ── 4. build ────────────────────────────────────────────
+def build(p):
+    """Parameterized CadQuery — plain code, no string emission. bench2 derives
+    the stand-alone instance program from this body (params -> globals, the
+    _hole_layout helper inlined)."""
+    # flange plate on the XY plane, web standing on its centerline
+    flange = cq.Workplane("XY").box(
+        p["length"], p["flange_w"], p["flange_t"], centered=(True, True, False)
+    )
+    web = cq.Workplane("XY").workplane(offset=p["flange_t"]).box(
+        p["length"], p["web_t"], p["web_h"], centered=(True, True, False)
+    )
+    result = flange.union(web)
+
     if p["n_holes"]:
-        y_off, x_off = _hole_layout(p)
+        y_off, x_off = _hole_layout(p["flange_w"], p["web_t"], p["length"], p["hole_d"])
         if p["n_holes"] == 2:
             pts = [(0.0, y_off), (0.0, -y_off)]
         else:
             pts = [(x, y) for x in (x_off, -x_off) for y in (y_off, -y_off)]
-        pts_lit = ", ".join(f"({x:.2f}, {y:.2f})" for x, y in pts)
-        lines += [
-            "",
-            f"# {p['n_holes']} bolt holes through the flange, clear of the web",
-            f'result = result.faces("<Z").workplane().pushPoints([{pts_lit}]).hole({p["hole_d"]:.2f})',
-        ]
+        # bolt holes through the flange, clear of the web
+        result = result.faces("<Z").workplane().pushPoints(pts).hole(p["hole_d"])
+
     if p["chamfer_c"]:
-        lines += [
-            "",
-            "# deburr chamfer on the web top edges",
-            f'result = result.edges(">Z").chamfer({p["chamfer_c"]:.2f})',
-        ]
-    return "\n".join(lines) + "\n"
+        # deburr chamfer on the web top edges
+        result = result.edges(">Z").chamfer(p["chamfer_c"])
+
+    return result

@@ -3,9 +3,10 @@
 Gates (see docs/DESIGN_SPEC.md):
   1. family.json present, required keys, valid base_plane
   2. design.py exposes the four pieces with the right shapes
-  3. per difficulty x N seeds: sample() passes check(); build() returns a
-     program; the program executes to a non-degenerate solid
-  4. determinism: same seed => byte-identical program
+  3. per difficulty x N seeds: sample() passes check(); build() is a
+     parameterized CadQuery function; the DERIVED stand-alone program
+     (framework/derive.py) executes to a non-degenerate solid
+  4. determinism: same seed => byte-identical derived program
   5. difficulty separation: the three difficulties aren't all identical
   6. geometry-hash duplicate report within the sampled batch
 """
@@ -17,6 +18,8 @@ import importlib.util
 import json
 import tempfile
 from pathlib import Path
+
+from .derive import derive_program
 
 DIFFS = ("easy", "medium", "hard")
 FAMILY_KEYS = ("family", "standard", "base_plane", "description", "contributor")
@@ -121,13 +124,17 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
                     if oob:
                         bad(f"{diff}/seed{seed}: sample breaks PARAM_SPEC contract: {oob[:2]}")
                         continue
-                    prog = d.build(p)
-                    if not isinstance(prog, str) or "result" not in prog:
-                        bad(f"{diff}/seed{seed}: build() must return a program binding `result`")
+                    # build() is a parameterized CadQuery function; the tool
+                    # derives the stand-alone instance program from its source
+                    # + params (framework/derive.py) so the contributor never
+                    # writes a code generator.
+                    prog = derive_program(d, p)
+                    if "result" not in prog:
+                        bad(f"{diff}/seed{seed}: derived program binds no `result` — build() must assign `result`")
                         continue
-                    # determinism: same seed => identical params and program
+                    # determinism: same seed => identical params => byte-identical program
                     p2 = d.sample(diff, np.random.default_rng(seed))
-                    if d.build(p2) != prog:
+                    if derive_program(d, p2) != prog:
                         bad(f"{diff}/seed{seed}: NOT deterministic (same seed, different program)")
                         continue
                     programs[diff].append(prog)

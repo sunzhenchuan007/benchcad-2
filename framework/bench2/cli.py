@@ -52,6 +52,7 @@ def cmd_preview(family: str, per_diff: int) -> int:
     import numpy as np
 
     from . import render
+    from .derive import derive_program
     from .execute import execute_cq_to_step
     from .validate import DIFFS, load_design
 
@@ -66,7 +67,7 @@ def cmd_preview(family: str, per_diff: int) -> int:
             for seed in range(per_diff):
                 p = d.sample(diff, np.random.default_rng(seed))
                 step = Path(td) / f"{diff}_{seed}.step"
-                execute_cq_to_step(d.build(p), step)
+                execute_cq_to_step(derive_program(d, p), step)
                 verts, tris = render.step_to_normalized_mesh(step)
                 row.append(render.render_iso(verts, tris))
                 if seed == 0:  # what the MODEL will see: the 4 benchmark views
@@ -106,7 +107,7 @@ def cmd_preview(family: str, per_diff: int) -> int:
         for tag, (s, diff, p) in (("min", min(cands, key=lambda c: c[0])),
                                   ("max", max(cands, key=lambda c: c[0]))):
             step = Path(td) / f"ex_{tag}.step"
-            execute_cq_to_step(d.build(p), step)
+            execute_cq_to_step(derive_program(d, p), step)
             verts, tris = render.step_to_normalized_mesh(step)
             ex_rows.append(render.render_bench_views(verts, tris))
             ex_labels.append(f"{tag} ({diff})")

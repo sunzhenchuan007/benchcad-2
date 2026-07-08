@@ -25,7 +25,8 @@ Tooth geometry (ISO 606:2015 §8.2; tip offset fitted to the catalog):
 
 import math
 
-from bench2.geomlib import inline_source, sprocket_profile  # noqa: F401 (used in build)
+import cadquery as cq
+from bench2.geomlib import sprocket_profile
 
 # ── standards tables ─────────────────────────────────────────────────────────
 # ISO 606 / DIN 8187 B-series chains — (chain no., pitch p, roller d1, tooth width b1), mm
@@ -220,60 +221,48 @@ def sample(difficulty: str, rng) -> dict:
 
 
 # ── 4. build ─────────────────────────────────────────────────────────────────
-def build(p: dict) -> str:
-    b1 = p["tooth_width"]
-    ch = round(0.15 * b1, 2)  # deburr chamfer on the tooth-disc rims
+def build(p):
+    """Parameterized CadQuery: bind the finished solid to `result`.
+
+    Plain, directly-runnable CadQuery — no string emission. `bench2` derives
+    each instance's stand-alone program from this body (see framework/derive.py):
+    the params become module globals and helpers (sprocket_profile, _keyway)
+    are inlined, so the emitted program imports only cadquery + math.
+    """
     z = p["n_teeth"]
+    b1 = p["tooth_width"]
+    ch = 0.15 * b1  # deburr chamfer on the tooth-disc rims
     # rotate so a tooth tip sits on +Y — the keyway (cut toward +Y) is then
     # tip-aligned ("keyway is aligned with the tooth tip", catalog note).
-    phase = round(math.pi / 2 - math.pi / z, 6)
-    form = "B" if p["form_b"] else "A"
+    phase = math.pi / 2 - math.pi / z
 
-    lines = [
-        "import math",
-        "import cadquery as cq",
-        "",
-        "",
-        inline_source("sprocket_profile"),
-        "",
-        "",
-        f"# ISO 606 simplex sprocket — chain {p['chain']} "
-        f"(p={p['pitch']:.3f}, d1={p['roller_d']:.2f}), z={z}, Form {form}",
-        f"pts = sprocket_profile({z}, {p['pitch']:.3f}, {p['roller_d']:.2f}, phase={phase})",
-        f'disc = cq.Workplane("XY").polyline(pts).close().extrude({b1:.2f})',
-        f'disc = disc.edges(">Z").chamfer({ch:.2f}).edges("<Z").chamfer({ch:.2f})',
-        "result = disc",
-    ]
-    if p["hub_d"]:
-        if p["form_b"]:
-            # barrel protrudes symmetrically on BOTH faces (catalog drawing B)
-            total = round(b1 + p["hub_len"], 2)
-            z0 = round(-p["hub_len"] / 2, 2)
-            lines += [
-                "",
-                "# Form B: straight barrel hub through the disc, symmetric overhang",
-                f'result = result.union(cq.Workplane("XY").workplane(offset={z0:.2f})'
-                f".circle({p['hub_d'] / 2:.2f}).extrude({total:.2f}))",
-            ]
-        else:
-            lines += [
-                "",
-                "# Form A: one-sided hub boss",
-                f'result = result.union(cq.Workplane("XY").workplane(offset={b1:.2f})'
-                f".circle({p['hub_d'] / 2:.2f}).extrude({p['hub_len']:.2f}))",
-            ]
-    lines += [
-        "",
-        "# center bore",
-        f'result = result.faces(">Z").workplane().hole({p["bore_d"]:.2f})',
-    ]
+    pts = sprocket_profile(z, p["pitch"], p["roller_d"], phase=phase)
+    result = cq.Workplane("XY").polyline(pts).close().extrude(b1)
+    result = result.edges(">Z").chamfer(ch).edges("<Z").chamfer(ch)
+
+    if p["hub_d"] and p["form_b"]:
+        # Form B: straight barrel hub through the disc, symmetric overhang
+        result = result.union(
+            cq.Workplane("XY").workplane(offset=-p["hub_len"] / 2)
+            .circle(p["hub_d"] / 2).extrude(b1 + p["hub_len"])
+        )
+    elif p["hub_d"]:
+        # Form A: one-sided hub boss on the top face
+        result = result.union(
+            cq.Workplane("XY").workplane(offset=b1)
+            .circle(p["hub_d"] / 2).extrude(p["hub_len"])
+        )
+
+    # center bore
+    result = result.faces(">Z").workplane().hole(p["bore_d"])
+
     if p["has_keyway"]:
         kw, kd = _keyway(p["bore_d"])
-        rect_h = round(kd + p["bore_d"] / 2, 2)
-        lines += [
-            "",
-            "# DIN 6885A keyway (tip-aligned)",
-            f'result = result.faces(">Z").workplane().center(0, {rect_h / 2:.2f})'
-            f".rect({kw:.2f}, {rect_h:.2f}).cutThruAll()",
-        ]
-    return "\n".join(lines) + "\n"
+        rect_h = kd + p["bore_d"] / 2
+        # DIN 6885A keyway (tip-aligned)
+        result = (
+            result.faces(">Z").workplane()
+            .center(0, rect_h / 2).rect(kw, rect_h).cutThruAll()
+        )
+
+    return result

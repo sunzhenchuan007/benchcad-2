@@ -59,16 +59,45 @@ Draw a parameter set from `PARAM_SPEC[<difficulty>]` ranges that **passes
 `check`** (rejection-sample internally). `rng` is a `numpy.random.Generator`;
 use only `rng` for randomness — same seed must give the same parameters.
 
-## 4. `build(p: dict) -> str`
+## 4. `build(p) -> cq.Workplane`
 
-Return a complete, deterministic CadQuery program as a string:
+Write **plain parameterized CadQuery** — ordinary code a human reads, *not* a
+code generator. Read parameters as `p["name"]`, bind the finished solid to
+`result`, and `return result`:
 
-- starts with `import cadquery as cq`, ends with the solid bound to `result`
-- all numbers formatted from `p` with fixed rounding (e.g. `f"{v:.2f}"`) —
-  same `p` must yield a byte-identical program
-- no randomness, no I/O, no imports beyond `cadquery`/`math`
-- must execute in the pinned environment (`cadquery==2.3.0`) to a single
+```python
+import cadquery as cq
+import math
+from bench2.geomlib import sprocket_profile   # optional shared curves
+
+def build(p):
+    z = p["n_teeth"]
+    pts = sprocket_profile(z, p["pitch"], p["roller_d"])
+    result = cq.Workplane("XY").polyline(pts).close().extrude(p["tooth_width"])
+    if p["bore_d"]:                       # branch on feature params directly
+        result = result.faces(">Z").workplane().hole(p["bore_d"])
+    return result
+```
+
+You never format numbers into strings or emit code. `bench2` **derives** each
+instance's stand-alone program from this function automatically
+(`framework/bench2/derive.py`): the params it reads become module globals
+(flat variables — `n_teeth = 17`), and any helper it calls (geomlib curves,
+your own `_local` functions, module constants) is inlined, so the emitted
+program imports only `cadquery` + `math`. The derivation is a pure text
+transform — same `p` in ⇒ byte-identical program out — and `bench2 validate`
+proves the derived program executes to the *same* solid as calling `build(p)`
+directly, so the final coding is machine-guaranteed consistent.
+
+Rules:
+- bind `result`; use only `cq` / `math` / geomlib helpers / your own
+  module-level `_helpers` and constants (no I/O, no randomness, no other imports)
+- deterministic: same `p` ⇒ same geometry
+- executes in the pinned environment (`cadquery==2.3.0`) to a single
   non-degenerate solid
+- a heterogeneous family branches on a `feature` param (`if p["form_b"]: …`)
+  in ordinary `if`/`else` — the derived program keeps the branch, evaluated
+  against that instance's values
 
 ## `family.json`
 

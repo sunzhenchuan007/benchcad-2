@@ -53,7 +53,7 @@ A family is one `design.py` exposing:
 | `PARAM_SPEC` | every parameter: meaning, unit, per-difficulty range, source (standard table / engineering rule), `askable` flag | the knowledge is *inspectable*, not buried in code |
 | `check(p)` | inter-parameter engineering constraints, each with its reason | **this is what humans review** — the grounding |
 | `sample(difficulty, rng)` | draws a parameter set satisfying `check` | reproducible sampling |
-| `build(p)` | parameters → executable CadQuery program (deterministic) | geometry |
+| `build(p)` | parameters → CadQuery solid (plain parameterized code; the tool derives each instance's stand-alone program) | geometry |
 
 Contributors submit **only** `design.py` + `family.json`. QA items and edit
 pairs are **derived, not hand-written**: question templates instantiate over
@@ -61,8 +61,8 @@ pairs are **derived, not hand-written**: question templates instantiate over
 features (T2/T4). Derivation runs in the private factory (§4).
 
 Shared curve generators (tooth profiles, involutes, …) live in
-`bench2.geomlib`; `build()` embeds their **source** into the emitted program
-(`inline_source`), so generated CadQuery stays fully stand-alone while the
+`bench2.geomlib`; `build()` calls them directly; the tool inlines their **source** into each
+derived program, so generated CadQuery stays fully stand-alone while the
 math lives in one audited place. Families declare usage in `family.json`.
 Heterogeneous catalog variants (e.g. hub Form A/B) are one family with a
 `feature`-flagged variant parameter and per-variant constraints.

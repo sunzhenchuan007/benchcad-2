@@ -3,9 +3,11 @@
 Fill in the four pieces below, then:
     uv run bench2 validate __FAMILY__
     uv run bench2 preview  __FAMILY__
-Reference implementation: designs/example_tee_bracket/design.py
+Reference implementation: designs/simplex_sprocket/design.py
 Spec: docs/DESIGN_SPEC.md
 """
+
+import cadquery as cq
 
 # ── 1. PARAM_SPEC ────────────────────────────────────────────────────────────
 # Every parameter: meaning, unit, per-difficulty range, and WHERE THE RANGE
@@ -56,15 +58,16 @@ def sample(difficulty: str, rng) -> dict:
 
 
 # ── 4. build ─────────────────────────────────────────────────────────────────
-def build(p: dict) -> str:
-    """Parameters -> a complete, deterministic CadQuery program (string).
+def build(p):
+    """Parameterized CadQuery — write PLAIN code, not a code generator.
 
-    Format every number with fixed rounding (f"{v:.2f}") so the same p gives
-    a byte-identical program. Bind the final solid to `result`.
+    Read parameters as `p["name"]`, bind the finished solid to `result`, and
+    return it. `bench2` derives each instance's stand-alone program from this
+    body automatically (params become module globals, any geomlib helper you
+    call is inlined) — so you never format numbers into strings or emit code.
+    Import `cadquery as cq` / `math` / geomlib helpers at the top of the file.
     """
-    return f'''import cadquery as cq
-
-L = {p["length"]:.2f}
-# TODO: build the part
-result = cq.Workplane("XY").box(L, L / 2.0, L / 4.0)
-'''
+    length = p["length"]
+    # TODO: build the part with ordinary CadQuery calls
+    result = cq.Workplane("XY").box(length, length / 2.0, length / 4.0)
+    return result
