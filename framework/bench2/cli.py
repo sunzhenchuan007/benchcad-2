@@ -48,6 +48,16 @@ def cmd_validate(family: str, seeds: int, fast: bool) -> int:
     return 0 if passed else 1
 
 
+def _param_caption(spec, p) -> str:
+    """Compact `name=value` summary of the meaningful params (~2 per line) for a
+    preview row label — lets a reviewer map the rendered part to its numbers and
+    to the source drawing. Covers askable dimensions plus feature params (a hub
+    diameter, a keyway toggle) so every catalog symbol is legible."""
+    parts = [f"{k}={p[k]}" for k, e in spec.PARAM_SPEC.items()
+             if (e.get("askable") or e.get("feature")) and k in p]
+    return "\n".join(", ".join(parts[i:i + 2]) for i in range(0, len(parts), 2))
+
+
 def cmd_preview(family: str, per_diff: int) -> int:
     import numpy as np
 
@@ -62,7 +72,7 @@ def cmd_preview(family: str, per_diff: int) -> int:
     if not fam_dir.is_dir():
         sys.exit(f"bench2: designs/{family}/ not found")
     part, spec = load_family(fam_dir)
-    rows, labels, view_rows = [], [], []
+    rows, labels, view_rows, view_labels = [], [], [], []
     with tempfile.TemporaryDirectory() as td:
         for diff in DIFFS:
             row = []
@@ -74,11 +84,14 @@ def cmd_preview(family: str, per_diff: int) -> int:
                 row.append(render.render_iso(verts, tris))
                 if seed == 0:  # what the MODEL will see: the 4 benchmark views
                     view_rows.append(render.render_bench_views(verts, tris))
+                    # label the row with this instance's numbers so a reviewer can
+                    # map the rendered part to its parameters and the source drawing
+                    view_labels.append(f"{diff}\n{_param_caption(spec, p)}")
                 print(f"  rendered {diff}/seed{seed}")
             rows.append(row)
             labels.append(diff)
     out = render.compose_grid(rows, labels, fam_dir / "preview.png")
-    out2 = render.compose_grid(view_rows, labels, fam_dir / "preview_views.png")
+    out2 = render.compose_grid(view_rows, view_labels, fam_dir / "preview_views.png")
 
     # extremes: scan cheap samples across all difficulties, pick the overall
     # smallest / largest parameter draw (mean of range-normalized numeric
@@ -112,10 +125,10 @@ def cmd_preview(family: str, per_diff: int) -> int:
             execute_cq_to_step(derive_program(part, p), step)
             verts, tris = render.step_to_normalized_mesh(step)
             ex_rows.append(render.render_bench_views(verts, tris))
-            ex_labels.append(f"{tag} ({diff})")
-            summary = ", ".join(f"{k}={p[k]}" for k, e in spec.PARAM_SPEC.items()
-                                if e.get("askable") and k in p)
-            print(f"  extreme {tag} [{diff}]: {summary}")
+            ex_labels.append(f"{tag} ({diff})\n{_param_caption(spec, p)}")
+            print(f"  extreme {tag} [{diff}]: "
+                  + ", ".join(f"{k}={p[k]}" for k, e in spec.PARAM_SPEC.items()
+                              if e.get("askable") and k in p))
     out3 = render.compose_grid(ex_rows, ex_labels, fam_dir / "preview_extremes.png")
     print(f"preview → {out}")
     print(f"benchmark views (what the model sees) → {out2}")
