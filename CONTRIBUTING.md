@@ -75,7 +75,10 @@ The implementer is the triager — nobody else pre-checks issues for you:
    equation if there is one (a sprocket's D1 column must equal p/sin(π/z)).
 4. **Buildable?** ≥ 4 real parameters, visible easy→hard headroom, geometry
    within CadQuery reach (prismatic/revolved + profiles + booleans).
-5. **Not a duplicate?** Search `designs/` and open family issues.
+5. **Not a duplicate?** The welcome bot already ran a name check against
+   [`registry.json`](registry.json) (601+ known names: merged + proposed +
+   wanted) when the issue opened — read its comment. Same part type as
+   BenchCAD 1.0 is fine, the *name* must be unique.
 
 Getting the reference images: norelem product pages expose CDN originals
 (`Zoom-Default-<article>.png` = photo, `Zoom-Default-Z<article>.png` =

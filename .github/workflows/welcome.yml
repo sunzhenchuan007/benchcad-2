@@ -1,6 +1,7 @@
 name: family-welcome
 # Station 0→1 of the lifecycle (CONTRIBUTING.md): when a family issue opens,
-# tell the author and any would-be implementer what happens next.
+# run the duplicate check against registry.json and tell the author what
+# happens next.
 
 on:
   issues:
@@ -16,8 +17,43 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
+            const title = context.payload.issue.title || '';
+            const m = title.match(/\[(?:family|proposal)\]\s+([a-z0-9_]+)/);
+            const name = m ? m[1] : null;
+
+            // duplicate check against the registry
+            let dupBlock = '';
+            try {
+              const res = await fetch(`https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/registry.json`);
+              const reg = await res.json();
+              if (name) {
+                const norm = s => s.replace(/_\d+$/, '').replace(/_/g, '');
+                const lev = (a, b) => { // small edit-distance
+                  const d = Array.from({length: a.length + 1}, (_, i) => [i, ...Array(b.length).fill(0)]);
+                  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+                  for (let i = 1; i <= a.length; i++)
+                    for (let j = 1; j <= b.length; j++)
+                      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+                  return d[a.length][b.length];
+                };
+                const n1 = norm(name);
+                const hits = reg.filter(e => {
+                  if (e.name === name && `#${context.issue.number}` !== e.ref) return true;
+                  const n2 = norm(e.name);
+                  if (n1 === n2 && e.name !== name) return true;
+                  if (n1.length >= 6 && (n1.includes(n2) || n2.includes(n1)) && e.name !== name) return true;
+                  return lev(n1, n2) <= 2 && e.name !== name;
+                }).slice(0, 5);
+                if (hits.length)
+                  dupBlock = `⚠️ **Possible duplicates in the [registry](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/registry.json)** — check before building:\n` +
+                    hits.map(h => `- \`${h.name}\` (${h.status}${h.category ? ', ' + h.category : ''}, ${h.ref})`).join('\n') + '\n\n';
+                else
+                  dupBlock = `✅ Registry check: \`${name}\` collides with none of the ${reg.length} known names.\n\n`;
+              }
+            } catch (e) { core.info('registry check skipped: ' + e.message); }
+
             const c = `https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md`;
-            const body = [
+            const body = dupBlock + [
               `Thanks for the proposal! **Whoever claims this verifies it first** — the`,
               `5-minute evidence check in [CONTRIBUTING.md](${c}) ("Claiming an issue = you verify it"):`,
               `standard link real · dimensioned drawing · table with min/max rows · two numbers spot-checked.`,
