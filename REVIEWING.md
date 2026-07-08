@@ -6,7 +6,7 @@ design *runs*; your job is to judge whether it is *true*. Budget: ~15 minutes.
 
 ## What is already machine-checked (don't re-do it)
 
-`bench2 validate` in CI: file structure, the four pieces exist, every
+`bench2 validate` in CI: file structure, `part.py` + `spec.py` exist, every
 difficulty × seed samples within constraints **and within the declared
 PARAM_SPEC ranges** (spec-contract), programs execute to non-degenerate
 solids, same seed ⇒ byte-identical program, difficulties distinct, geometry
@@ -35,7 +35,7 @@ the author. CI green = start here.
    geometry from equations (gear involute, sprocket tooth form, thread helix)
    must ship a `NOTES.md` mapping datasheet symbols → parameters → formulas.
    Check the three layers in order:
-   - **(a) Formula vs standard.** Every derived quantity in `design.py` must
+   - **(a) Formula vs standard.** Every derived quantity in `part.py`/`spec.py` must
      trace to a cited clause or be declared a fit/proportion. Examples of
      what "correct" looks like: sprocket pitch Ø `dp = p / sin(π/z)`
      (ISO 606 §8.2 — exact, no tolerance); involute function

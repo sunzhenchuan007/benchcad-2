@@ -1,24 +1,26 @@
-"""Derive a stand-alone CadQuery program from a parameterized `build(p)`.
+"""Derive a stand-alone CadQuery program from a named-parameter `build()`.
 
-The contributor writes an ordinary parameterized function:
+The contributor writes an ordinary parametric part in `part.py` — named
+arguments, no dictionaries, no code generation:
 
     import cadquery as cq
     import math
     from bench2.geomlib import sprocket_profile
 
-    def build(p):
-        z = p["n_teeth"]
-        pts = sprocket_profile(z, p["pitch"], p["roller_d"])
-        result = cq.Workplane("XY").polyline(pts).close().extrude(p["tooth_width"])
+    def build(pitch, roller_d, tooth_width, n_teeth):
+        pts = sprocket_profile(n_teeth, pitch, roller_d)
+        result = cq.Workplane("XY").polyline(pts).close().extrude(tooth_width)
         return result
 
-For a concrete instance we DERIVE the stand-alone source that a model is asked
-to produce (style B — flat variables):
+For a concrete instance we DERIVE the stand-alone source a model is asked to
+produce (style B — flat variables). build()'s parameters become module globals
+bound to this instance's values; every helper the body calls travels with it,
+inlined:
 
     import cadquery as cq
     import math
 
-    def sprocket_profile(...):   # inlined: build's dependencies travel with it
+    def sprocket_profile(...):   # inlined from geomlib
         ...
 
     # parameters (this instance)
@@ -27,15 +29,14 @@ to produce (style B — flat variables):
     roller_d = 10.16
     tooth_width = 9.1
 
-    z = n_teeth
-    pts = sprocket_profile(z, pitch, roller_d)
+    pts = sprocket_profile(n_teeth, pitch, roller_d)
     result = cq.Workplane("XY").polyline(pts).close().extrude(tooth_width)
 
 The derivation is a pure text transform: same params in => byte-identical
-program out. Because the emitted body IS the contributor's body with the
-params bound as module globals, executing the derived program is equivalent to
-calling build(p) — the machine guarantees the final coding is consistent, the
-contributor never writes a code generator.
+program out. Because the emitted body IS build()'s body with the arguments
+bound as globals, executing the derived program is equivalent to calling
+build(**params) — the machine guarantees the final coding is consistent, and
+the contributor never writes a code generator.
 """
 
 from __future__ import annotations
@@ -43,11 +44,9 @@ from __future__ import annotations
 import ast
 import builtins
 import inspect
-import re
 import textwrap
 
 _BUILTINS = set(dir(builtins))
-_PARAM_RE = re.compile(r"""\bp\[\s*(['"])(\w+)\1\s*\]""")
 
 
 def _func_body_source(func) -> str:
@@ -86,38 +85,39 @@ def _free_names(code_text: str) -> set[str]:
     return loaded - bound - _BUILTINS
 
 
-def _collect(name, design, acc, seen):
+def _collect(name, part, acc, seen):
     """Recursively gather what a free `name` needs to become stand-alone."""
     if name in seen or name in acc["params"]:
         return
     seen.add(name)
-    val = getattr(design, name, None)
+    val = getattr(part, name, None)
     if inspect.ismodule(val):
         acc["imports"][name] = val.__name__
     elif inspect.isfunction(val):
         fsrc = textwrap.dedent(inspect.getsource(val)).rstrip()
         acc["funcs"][name] = fsrc
         for dep in _free_names(fsrc):
-            _collect(dep, design, acc, seen)
+            _collect(dep, part, acc, seen)
     elif val is not None:  # a module-level constant (table/number/str)
         acc["consts"][name] = f"{name} = {val!r}"
-    # else: unknown free name (a param handled elsewhere, or a builtin miss)
+    # else: unknown free name (bound elsewhere in the body, or a builtin miss)
 
 
-def derive_program(design, params: dict) -> str:
-    """Return the stand-alone CadQuery source for one instance of `design`."""
-    body = _rewritten_body(design)
+def derive_program(part, params: dict) -> str:
+    """Return the stand-alone CadQuery source for one instance of `part`."""
+    build = part.build
+    body = _func_body_source(build)
     free = _free_names(body)
+    argnames = set(inspect.signature(build).parameters)
 
     acc = {"imports": {}, "consts": {}, "funcs": {}, "params": {}}
-    # params first, so _collect skips them
-    for name in free:
-        if name in params:
-            acc["params"][name] = params[name]
+    # build()'s parameters become this instance's flat variables
+    for name in sorted(free & argnames):
+        acc["params"][name] = params[name]
     seen = set(acc["params"])
-    for name in sorted(free):
-        if name not in acc["params"]:
-            _collect(name, design, acc, seen)
+    # everything else the body reads travels with it: imports, helpers, consts
+    for name in sorted(free - argnames):
+        _collect(name, part, acc, seen)
 
     out: list[str] = []
     for alias in sorted(acc["imports"]):
@@ -141,19 +141,15 @@ def derive_program(design, params: dict) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
-def _rewritten_body(design) -> str:
-    """build()'s body with p["x"] rewritten to flat `x`."""
-    return _PARAM_RE.sub(r"\2", _func_body_source(design.build))
-
-
-def declared_helpers(design, params: dict) -> set[str]:
+def declared_helpers(part, params: dict) -> set[str]:
     """geomlib helper names the derived program actually inlines (for the
     validate cross-check against family.json)."""
-    body = _rewritten_body(design)
-    acc = {"imports": {}, "consts": {}, "funcs": {}, "params": dict.fromkeys(
-        n for n in _free_names(body) if n in params)}
-    seen = set(acc["params"])
-    for name in sorted(_free_names(body)):
-        if name not in acc["params"]:
-            _collect(name, design, acc, seen)
+    build = part.build
+    body = _func_body_source(build)
+    free = _free_names(body)
+    argnames = set(inspect.signature(build).parameters)
+    acc = {"imports": {}, "consts": {}, "funcs": {}, "params": {}}
+    seen = set(free & argnames)
+    for name in sorted(free - argnames):
+        _collect(name, part, acc, seen)
     return set(acc["funcs"])

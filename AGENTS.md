@@ -8,13 +8,14 @@ welcome. These are the rules that make agent-drafted contributions mergeable.
 
 The home of BenchCAD 2.0: a parametric CAD benchmark built from **explicit
 parametric designs** (200 part families target). A contribution is one
-`designs/<family>/design.py` exposing four pieces — `PARAM_SPEC`, `check`,
-`sample`, `build` — plus a `family.json`. Read `docs/DESIGN_SPEC.md` first;
-copy the shape of `designs/example_tee_bracket/design.py`.
+`designs/<family>/` with two source files — `part.py` (the parametric part: a
+`build(<named params>)` function) and `spec.py` (the benchmark generator:
+`PARAM_SPEC`, `check`, and an optional `refine`) — plus a `family.json`. Read
+`docs/DESIGN_SPEC.md` first; copy the shape of `designs/example_tee_bracket/`.
 
 ```
 DESIGN.md          decision record — why things are the way they are
-docs/DESIGN_SPEC.md the four-piece interface (the contract you implement)
+docs/DESIGN_SPEC.md the part + spec interface (the contract you implement)
 CONTRIBUTING.md    contributor loop
 REVIEWING.md       what human review checks
 framework/bench2/  the CLI: new / validate / preview
@@ -38,11 +39,11 @@ uv run bench2 preview <family>    # render the grid — a human must look at it
    write `"proportion"` — do not invent an ISO number. Fabricated citations
    are the fastest way to get a PR rejected and flagged.
 2. **Constraints must be engineering-true, not validator-appeasing.** Never
-   weaken `check()` to make `sample()` pass. If sampling fails, the ranges
-   and constraints disagree — fix the ranges.
-3. **Determinism is absolute.** Randomness only through the `rng` argument;
-   numbers formatted with fixed rounding in `build`. Same seed ⇒ byte-identical
-   program. `bench2 validate` enforces this.
+   weaken `check()` to make sampling pass. If the framework can't sample, the
+   ranges and constraints disagree — fix the ranges, not the constraint.
+3. **Determinism is absolute.** Randomness only through the `rng` argument in
+   `refine()` (there is no other randomness — `build()` is pure). Same seed ⇒
+   byte-identical derived program. `bench2 validate` enforces this.
 4. **A human must run `bench2 preview` and look at the image** before the PR
    is opened. Geometry that executes can still be nonsense; the render is the
    sanity check machines can't do.
@@ -53,6 +54,7 @@ uv run bench2 preview <family>    # render the grid — a human must look at it
 ## What review will do with your output
 
 Machines re-run everything `bench2 validate` checks. Humans audit exactly two
-things: whether the constraints in `check()`/`PARAM_SPEC` are *true*, and
-whether `family.json` labels are correct. Optimize for an auditable design:
-short, cited, physically-motivated constraints beat clever code.
+things: whether the constraints in `spec.py` (`check()`/`PARAM_SPEC`) are
+*true*, and whether `family.json` labels are correct. Optimize for an auditable
+design: a clean `part.py` and short, cited, physically-motivated constraints
+beat clever code.

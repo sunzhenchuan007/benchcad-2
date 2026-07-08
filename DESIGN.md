@@ -44,18 +44,24 @@ held-out split are drawn privately and stay clean.
   archived and reproducible (it is cited in published system cards). 2.0 scores
   are not comparable to 1.0 scores, by construction.
 
-## 3. The contribution unit: an explicit parametric design ("four-piece" interface)
+## 3. The contribution unit: an explicit parametric design (part + spec interface)
 
-A family is one `design.py` exposing:
+A family is two files — `part.py` (the human-readable part) and `spec.py` (the
+benchmark generator) — plus `family.json`:
 
-| Piece | What it is | Why it exists |
-|---|---|---|
-| `PARAM_SPEC` | every parameter: meaning, unit, per-difficulty range, source (standard table / engineering rule), `askable` flag | the knowledge is *inspectable*, not buried in code |
-| `check(p)` | inter-parameter engineering constraints, each with its reason | **this is what humans review** — the grounding |
-| `sample(difficulty, rng)` | draws a parameter set satisfying `check` | reproducible sampling |
-| `build(p)` | parameters → CadQuery solid (plain parameterized code; the tool derives each instance's stand-alone program) | geometry |
+| Piece | File | What it is | Why it exists |
+|---|---|---|---|
+| `build(<named params>)` | part.py | the parametric part, plain CadQuery; the tool derives each instance's stand-alone program from it | geometry a person can read and audit |
+| `PARAM_SPEC` | spec.py | every parameter: meaning, unit, per-difficulty range, source, and how it's drawn (`integer`/`choices`/`refine`) | the knowledge is *inspectable*, not buried in code |
+| `check(p)` | spec.py | inter-parameter engineering constraints, each with its reason | **this is what humans review** — the grounding |
+| `refine(p, difficulty, rng)` | spec.py | *optional* — fills coupled parameters; the framework does the sampling loop itself | reproducible sampling without a hand-written generator |
 
-Contributors submit **only** `design.py` + `family.json`. QA items and edit
+Splitting the part from the generator is what keeps `part.py` reading like a
+part rather than a code generator: the sampling machinery lives in `spec.py`,
+and the framework owns the rejection loop (`bench2.sampling`), so a contributor
+writes `refine()` only for genuinely coupled parameters.
+
+Contributors submit **only** `part.py` + `spec.py` + `family.json`. QA items and edit
 pairs are **derived, not hand-written**: question templates instantiate over
 `askable` parameters; edit pairs perturb parameters (T1/T3) and toggle optional
 features (T2/T4). Derivation runs in the private factory (§4).

@@ -1,4 +1,4 @@
-"""`bench2 new` — write a TODO-annotated four-piece skeleton."""
+"""`bench2 new` — write a TODO-annotated skeleton: part.py + spec.py + family.json."""
 
 from __future__ import annotations
 
@@ -10,8 +10,9 @@ _TEMPLATES = Path(__file__).parent / "templates"
 
 def create(fam_dir: Path, family: str) -> None:
     fam_dir.mkdir(parents=True)
-    design = (_TEMPLATES / "design.py.tmpl").read_text().replace("__FAMILY__", family)
-    (fam_dir / "design.py").write_text(design)
+    for fn in ("part.py", "spec.py"):
+        text = (_TEMPLATES / f"{fn}.tmpl").read_text().replace("__FAMILY__", family)
+        (fam_dir / fn).write_text(text)
     meta = {
         "family": family,
         "standard": None,

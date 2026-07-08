@@ -50,12 +50,12 @@
    ```bash
    uv run bench2 new my_family
    ```
-8. 填 `designs/my_family/design.py` 里的四件套,用工程师的话说:
-   - `PARAM_SPEC` —— **参数表**(名称、单位、每档难度的范围、**范围出处**:标准表格或"比例惯例")
-   - `check(p)` —— **否决规则**(哪些参数组合不可制造,每条写清理由)。人工评审读的就是这个。
-   - `sample(difficulty, rng)` —— 抽一组合法参数
-   - `build(p)` —— 参数 → CadQuery 程序(用 Python 把实体建出来)
-   照抄 `designs/simplex_sprocket/design.py` 的样子——它是教学模板,
+8. 填 `designs/my_family/` 下的两个文件 `part.py` 和 `spec.py`,用工程师的话说:
+   - `build(...)`(在 `part.py`)—— 零件本体:具名参数 → 实体,用普通 CadQuery 写(把形状建出来)
+   - `PARAM_SPEC`(在 `spec.py`)—— **参数表**(名称、单位、每档难度的范围、**范围出处**:标准表格或"比例惯例")
+   - `check(p)`(在 `spec.py`)—— **否决规则**(哪些参数组合不可制造,每条写清理由)。人工评审读的就是这个。
+   - `refine(p, difficulty, rng)`(在 `spec.py`)—— **仅当**参数之间有耦合(某个值由其它值算出,或整行取自标准表);抽样由框架自己完成,你不用手写生成器
+   照抄 `designs/simplex_sprocket/` 的样子——它是教学模板,
    从真实的 norelem datasheet 做出来的。再填 `family.json`(标签),
    把资料来源记进 `NOTES.md`。
 9. 自查,两条命令,本机秒出结果:

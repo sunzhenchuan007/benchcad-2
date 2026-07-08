@@ -1,11 +1,12 @@
-"""Machine gates for a contributed design — the same checks CI runs.
+"""Machine gates for a contributed family — the same checks CI runs.
 
 Gates (see docs/DESIGN_SPEC.md):
   1. family.json present, required keys, valid base_plane
-  2. design.py exposes the four pieces with the right shapes
-  3. per difficulty x N seeds: sample() passes check(); build() is a
-     parameterized CadQuery function; the DERIVED stand-alone program
-     (framework/derive.py) executes to a non-degenerate solid
+  2. part.py exposes build(); spec.py exposes PARAM_SPEC + check(); every
+     build() parameter is declared in PARAM_SPEC
+  3. per difficulty x N seeds: the framework sampler draws params that pass
+     check(); the DERIVED stand-alone program (derive.py) binds `result` and
+     executes to a non-degenerate solid
   4. determinism: same seed => byte-identical derived program
   5. difficulty separation: the three difficulties aren't all identical
   6. geometry-hash duplicate report within the sampled batch
@@ -14,24 +15,19 @@ Gates (see docs/DESIGN_SPEC.md):
 from __future__ import annotations
 
 import hashlib
-import importlib.util
+import inspect
 import json
 import tempfile
 from pathlib import Path
 
 from .derive import derive_program
+from .loader import load_family
+from .sampling import sample as sample_params
 
 DIFFS = ("easy", "medium", "hard")
 FAMILY_KEYS = ("family", "standard", "base_plane", "description", "contributor")
 BASE_PLANES = {"XY", "XZ", "YZ"}
 SPEC_REQUIRED = ("desc", "unit", "range", "source")
-
-
-def load_design(fam_dir: Path):
-    spec = importlib.util.spec_from_file_location(f"design_{fam_dir.name}", fam_dir / "design.py")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
 
 
 def _geom_hash(step_path: Path) -> str:
@@ -70,33 +66,46 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
     else:
         ok("family.json: keys + base_plane valid")
 
-    # -- 2. the four pieces --------------------------------------------------
+    # -- 2. the pieces: part.build + spec.PARAM_SPEC/check -------------------
     try:
-        d = load_design(fam_dir)
+        part, spec = load_family(fam_dir)
     except Exception as e:  # noqa: BLE001
-        bad(f"design.py failed to import: {type(e).__name__}: {e}")
+        bad(f"part.py/spec.py failed to import: {type(e).__name__}: {e}")
         return False, log
-    for piece in ("PARAM_SPEC", "check", "sample", "build"):
-        if not hasattr(d, piece):
-            bad(f"design.py: missing `{piece}`")
-    if not all(passed for passed, _ in log[-4:]):
+    missing_pieces = []
+    if not callable(getattr(part, "build", None)):
+        missing_pieces.append("part.py: build()")
+    if not isinstance(getattr(spec, "PARAM_SPEC", None), dict):
+        missing_pieces.append("spec.py: PARAM_SPEC")
+    if not callable(getattr(spec, "check", None)):
+        missing_pieces.append("spec.py: check()")
+    if missing_pieces:
+        bad(f"missing required piece(s): {missing_pieces}")
         return False, log
+
+    argnames = list(inspect.signature(part.build).parameters)
+    extra = [a for a in argnames if a not in spec.PARAM_SPEC]
+    if extra:
+        bad(f"part.build has parameter(s) not declared in PARAM_SPEC: {extra}")
+        return False, log
+    ok(f"pieces: build({len(argnames)} params) + PARAM_SPEC + check present")
+
     spec_bad = [
         f"{name}.{key}"
-        for name, entry in d.PARAM_SPEC.items()
+        for name, entry in spec.PARAM_SPEC.items()
         for key in SPEC_REQUIRED
         if key not in entry
     ]
     spec_bad += [
         f"{name}.range missing '{diff}'"
-        for name, entry in d.PARAM_SPEC.items()
+        for name, entry in spec.PARAM_SPEC.items()
         for diff in DIFFS
         if isinstance(entry.get("range"), dict) and diff not in entry["range"]
     ]
     if spec_bad:
         bad(f"PARAM_SPEC incomplete: {spec_bad[:6]}")
     else:
-        ok(f"PARAM_SPEC: {len(d.PARAM_SPEC)} params, all entries complete")
+        ok(f"PARAM_SPEC: {len(spec.PARAM_SPEC)} params, all entries complete")
 
     # -- 3-6. sampling, determinism, execution, hashes -----------------------
     programs: dict[str, list[str]] = {diff: [] for diff in DIFFS}
@@ -106,15 +115,15 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
             n_ok = 0
             for seed in range(seeds):
                 try:
-                    p = d.sample(diff, np.random.default_rng(seed))
-                    violations = d.check(p)
+                    p = sample_params(spec, diff, np.random.default_rng(seed))
+                    violations = spec.check(p)
                     if violations:
                         bad(f"{diff}/seed{seed}: sample violates check: {violations[:2]}")
                         continue
                     # the declared spec is a contract: every sampled value must
                     # fall inside its own PARAM_SPEC range for this difficulty
                     oob = []
-                    for name, entry in d.PARAM_SPEC.items():
+                    for name, entry in spec.PARAM_SPEC.items():
                         if name not in p:
                             oob.append(f"{name} missing from sample")
                             continue
@@ -124,17 +133,16 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
                     if oob:
                         bad(f"{diff}/seed{seed}: sample breaks PARAM_SPEC contract: {oob[:2]}")
                         continue
-                    # build() is a parameterized CadQuery function; the tool
-                    # derives the stand-alone instance program from its source
-                    # + params (framework/derive.py) so the contributor never
-                    # writes a code generator.
-                    prog = derive_program(d, p)
+                    # the framework derives the stand-alone instance program
+                    # from build()'s source + params (derive.py) so the
+                    # contributor never writes a code generator.
+                    prog = derive_program(part, p)
                     if "result" not in prog:
                         bad(f"{diff}/seed{seed}: derived program binds no `result` — build() must assign `result`")
                         continue
-                    # determinism: same seed => identical params => byte-identical program
-                    p2 = d.sample(diff, np.random.default_rng(seed))
-                    if derive_program(d, p2) != prog:
+                    # determinism: same seed => identical params => identical program
+                    p2 = sample_params(spec, diff, np.random.default_rng(seed))
+                    if derive_program(part, p2) != prog:
                         bad(f"{diff}/seed{seed}: NOT deterministic (same seed, different program)")
                         continue
                     programs[diff].append(prog)
@@ -152,13 +160,13 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
 
     # coverage gate: params declaring `coverage: [...]` must produce every
     # declared value across a cheap large sampling pass (no geometry).
-    cov_params = {n: e["coverage"] for n, e in d.PARAM_SPEC.items() if "coverage" in e}
+    cov_params = {n: e["coverage"] for n, e in spec.PARAM_SPEC.items() if "coverage" in e}
     if cov_params:
         seen: dict[str, set] = {n: set() for n in cov_params}
         for diff in DIFFS:
             for seed in range(40):
                 try:
-                    p = d.sample(diff, np.random.default_rng(1000 + seed))
+                    p = sample_params(spec, diff, np.random.default_rng(1000 + seed))
                 except Exception:
                     continue
                 for n in cov_params:

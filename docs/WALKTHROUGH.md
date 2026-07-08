@@ -8,8 +8,9 @@ commands. Time budget for a first family: **one evening**.
 
 ## What you'll build
 
-A *parametric design*: one Python file that can generate every size of one
-catalog part, with engineering constraints a machinist would agree with.
+A *parametric design*: two small Python files — the part and its spec — that
+generate every size of one catalog part, with engineering constraints a
+machinist would agree with.
 The benchmark then renders your part like this — four diagonal views, three
 difficulty tiers:
 
@@ -68,16 +69,15 @@ uv sync                              # once
 uv run bench2 new my_family          # scaffolds designs/my_family/
 ```
 
-Fill the four pieces in `design.py` (spec: [DESIGN_SPEC.md](DESIGN_SPEC.md);
-copy the shape of
-[`designs/simplex_sprocket/design.py`](../designs/simplex_sprocket/design.py)):
+Fill the two files (spec: [DESIGN_SPEC.md](DESIGN_SPEC.md); copy the shape of
+[`designs/simplex_sprocket/`](../designs/simplex_sprocket/)):
 
 | Piece | What it is | The sprocket example |
 |---|---|---|
-| `PARAM_SPEC` | every parameter: unit, per-difficulty range, **source** | `pitch` cites "ISO 606 Table 1", declares `coverage=[8.0, …, 25.4]` |
-| `check(p)` | inter-parameter constraints, each with its reason | `bore_d > 0.5·df → "tooth rim too thin"` |
-| `sample(difficulty, rng)` | draws a valid parameter set | picks an ISO 606 chain **row**, not free numbers |
-| `build(p)` | parameters → stand-alone CadQuery program | emits `sprocket_profile(...)` with the helper source inlined |
+| `build(...)` (part.py) | named parameters → the solid, plain CadQuery | calls `sprocket_profile(...)` directly; the tool derives the stand-alone program, inlining the helper |
+| `PARAM_SPEC` (spec.py) | every parameter: unit, per-difficulty range, **source** | `pitch` cites "ISO 606 Table 1", declares `coverage=[8.0, …, 25.4]` |
+| `check(p)` (spec.py) | inter-parameter constraints, each with its reason | `bore_d > 0.5·df → "tooth rim too thin"` |
+| `refine(p, difficulty, rng)` (spec.py, optional) | fills coupled params after the base draw — the framework samples | picks an ISO 606 chain **row**, not free numbers; sizes the bore off the root circle |
 
 Table-driven parts keep a `NOTES.md` mapping datasheet symbols → formulas →
 parameters ([example](../designs/simplex_sprocket/NOTES.md)) — reviewers
@@ -142,8 +142,9 @@ QUALIFIED → RELEASED.
   both of you are credited.
 - **My preview doesn't look like the drawing.** → fix before PR; the #1 review
   rejection cause is geometry-vs-drawing mismatch.
-- **`validate` says a sampled value left the declared range.** → your
-  `sample()` must clamp to `PARAM_SPEC` ranges — the spec is a contract
-  (this gate caught a real bug in our own reference sprocket).
+- **`validate` says a sampled value left the declared range.** → the framework
+  samples from `PARAM_SPEC`, so the declared range is the contract: widen the
+  range, or clamp a coupled value inside it in `refine()` (this gate caught a
+  real bug in our own reference sprocket).
 - **Question?** → [Discord](https://discord.gg/be9AtvrDyK), or comment on your
   issue.

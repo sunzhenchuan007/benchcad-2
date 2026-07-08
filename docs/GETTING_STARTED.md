@@ -58,14 +58,17 @@ the code.
    ```bash
    uv run bench2 new my_family
    ```
-8. Fill in the four pieces in `designs/my_family/design.py`. In engineer terms:
-   - `PARAM_SPEC` — the **parameter table** (name, unit, range per difficulty,
-     and *where the range comes from*: a standard table or "proportion")
-   - `check(p)` — the **rejection rules** (what combinations are unmanufacturable,
-     each with its reason). This is what the human reviewer reads.
-   - `sample(difficulty, rng)` — draw a valid parameter set
-   - `build(p)` — parameters → a CadQuery program (Python that builds the solid)
-   Copy the shape of `designs/simplex_sprocket/design.py` — it's commented as a
+8. Fill in the two files `part.py` and `spec.py` under `designs/my_family/`. In engineer terms:
+   - `build(...)` in `part.py` — the part itself: named parameters → the solid,
+     written as plain CadQuery (Python that builds the shape)
+   - `PARAM_SPEC` in `spec.py` — the **parameter table** (name, unit, range per
+     difficulty, and *where the range comes from*: a standard table or "proportion")
+   - `check(p)` in `spec.py` — the **rejection rules** (what combinations are
+     unmanufacturable, each with its reason). This is what the human reviewer reads.
+   - `refine(p, difficulty, rng)` in `spec.py` — *only if* your parameters are
+     coupled (one value computed from others, or a real table row); the framework
+     does the sampling itself, so you never hand-write a generator
+   Copy the shape of `designs/simplex_sprocket/` — it's commented as a
    tutorial, built from a real norelem datasheet. Fill `family.json` (labels)
    and jot your sources in `NOTES.md`.
 9. Check yourself — two commands, on your machine, instant:
