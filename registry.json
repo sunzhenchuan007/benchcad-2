@@ -245,6 +245,20 @@
 "anchor": "DIN 72331"
 },
 {
+"name": "battery_module_end_plate",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "EVE LF105/LF280K module kits (B2B-grade anchor — verify drawing at claim)"
+},
+{
+"name": "battery_vent_valve_body",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "GORE PolyVent screw-in / Ex+"
+},
+{
 "name": "beam_clamp_jaw",
 "status": "wanted",
 "ref": "#20",
@@ -488,6 +502,13 @@
 "ref": "#38",
 "category": "tooling",
 "anchor": "ASME B5.50"
+},
+{
+"name": "cell_holder_18650",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "Keystone 1042"
 },
 {
 "name": "cellular_pu_pad",
@@ -1078,6 +1099,13 @@
 "anchor": "DIN 238 (B10–B24)"
 },
 {
+"name": "drone_motor_mount",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "T-Motor / RJX tube mounts"
+},
+{
 "name": "drop_in_anchor",
 "status": "wanted",
 "ref": "#12",
@@ -1090,6 +1118,13 @@
 "ref": "#1",
 "category": "drivetrain",
 "anchor": ""
+},
+{
+"name": "dynamixel_horn",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "ROBOTIS HN05 series"
 },
 {
 "name": "e_clip",
@@ -1153,6 +1188,13 @@
 "ref": "#44",
 "category": "conveying-lab",
 "anchor": "DIN 15237"
+},
+{
+"name": "encoder_code_disc",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Broadcom HEDS-6140"
 },
 {
 "name": "encoder_mounting_bell",
@@ -1323,6 +1365,13 @@
 "anchor": "ISO 5167-3"
 },
 {
+"name": "folding_prop_hub",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "aero-naut folding prop hub"
+},
+{
 "name": "forked_clamp_din6315",
 "status": "wanted",
 "ref": "#35",
@@ -1335,6 +1384,20 @@
 "ref": "#36",
 "category": "vacuum",
 "anchor": "Lesker hydroformed bellows"
+},
+{
+"name": "frameless_stator_lamination",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "TQ RoboDrive ILM-E"
+},
+{
+"name": "frameless_torque_motor_rotor",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Kollmorgen TBM2G"
 },
 {
 "name": "front_ferrule",
@@ -1559,6 +1622,27 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "ASME B16.11"
+},
+{
+"name": "harmonic_circular_spline",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Harmonic Drive CSF/CSG"
+},
+{
+"name": "harmonic_flexspline",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Harmonic Drive CSF/CSG catalog"
+},
+{
+"name": "harmonic_wave_generator_cam",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Harmonic Drive CSF/CSG"
 },
 {
 "name": "helical_beam_coupling",
@@ -2177,6 +2261,13 @@
 "anchor": "KHK SM series"
 },
 {
+"name": "mk8_extruder_gear",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "MK8 40T (reseller-grade anchor)"
+},
+{
 "name": "modular_belt_link",
 "status": "wanted",
 "ref": "#44",
@@ -2506,6 +2597,20 @@
 "anchor": "ISO 8139"
 },
 {
+"name": "planetary_roller_screw_nut",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Rollvis RV"
+},
+{
+"name": "planetary_roller_screw_shaft",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Rollvis RV catalog"
+},
+{
 "name": "plate_cam",
 "status": "wanted",
 "ref": "#7",
@@ -2567,6 +2672,13 @@
 "ref": "#35",
 "category": "workholding",
 "anchor": "Ganter GN 50.3"
+},
+{
+"name": "printer_heatbreak_v6",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "E3D V6 HeatBreak"
 },
 {
 "name": "printing_blanket_bar",
@@ -2665,6 +2777,13 @@
 "ref": "#33",
 "category": "pneumatics-motion",
 "anchor": "Festo QS"
+},
+{
+"name": "qdd_actuator_housing",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "CubeMars AK80-9"
 },
 {
 "name": "quarter_turn_lock_housing",
@@ -2821,6 +2940,13 @@
 "anchor": "Gesipa"
 },
 {
+"name": "robot_joint_output_flange",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "CubeMars AK80-9 / HD housed units"
+},
+{
 "name": "robot_wrist_flange_plate",
 "status": "wanted",
 "ref": "#39",
@@ -2896,6 +3022,20 @@
 "ref": "#34",
 "category": "springs-damping",
 "anchor": "Rosta DO-A"
+},
+{
+"name": "rv_crankshaft",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Nabtesco RV"
+},
+{
+"name": "rv_reducer_pin_gear_housing",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "Nabtesco RV catalog"
 },
 {
 "name": "sae_flange_adapter",
@@ -3190,6 +3330,20 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "ASME B16.5"
+},
+{
+"name": "solar_end_clamp",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "K2 MiniClamp 2002610 / IronRidge EFO"
+},
+{
+"name": "solar_mid_clamp",
+"status": "wanted",
+"ref": "#44",
+"category": "conveying-lab",
+"anchor": "K2 Systems 2002609 / IronRidge UFO"
 },
 {
 "name": "solenoid_connector_housing",
@@ -3563,6 +3717,13 @@
 "anchor": "EN 10055"
 },
 {
+"name": "tendon_pulley",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "SDP/SI Synchromesh pulleys"
+},
+{
 "name": "terminal_end_bracket",
 "status": "wanted",
 "ref": "#40",
@@ -3694,6 +3855,13 @@
 "ref": "#20",
 "category": "structural",
 "anchor": "EN 60715 TH35"
+},
+{
+"name": "torque_sensor_flexure",
+"status": "wanted",
+"ref": "#39",
+"category": "robotics",
+"anchor": "SRI M2210X / ATI F/T catalog"
 },
 {
 "name": "track_cast_shoulder_sgci",
