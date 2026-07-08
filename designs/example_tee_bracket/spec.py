@@ -1,19 +1,17 @@
-"""example_tee_bracket — REFERENCE design for the BenchCAD 2.0 four-piece interface.
+"""example_tee_bracket — the benchmark generator spec.
 
-A T-section mounting bracket: a flange plate with a central web standing on it,
-optionally bolted through the flange, with a chamfered web top on hard parts.
-Chosen as the reference because it exercises every part of the interface in a
-part everyone can picture: continuous dimensions, an integer feature (bolt
-holes), a hard-only feature (chamfer), and real engineering constraints
-(plate proportions, bolt-hole edge distance).
-
-This family is a TEACHING ARTIFACT — it does not enter the released dataset.
+PARAM_SPEC declares every parameter (unit, per-difficulty range, source);
+check() is the engineering truth reviewers audit. The framework samples from
+this declaration (bench2.sampling) — there is no hand-written generator loop.
+n_holes uses `choices` (a discrete 0/2/4 set per difficulty); every other
+parameter is a plain range the sampler draws uniformly, so this family needs no
+refine() hook.
 """
 
-import cadquery as cq
+from part import _hole_layout
 
 
-# ── 1. PARAM_SPEC ────────────────────────────────────────────────────────────
+# ── PARAM_SPEC ───────────────────────────────────────────────────────────────
 PARAM_SPEC = {
     "length": dict(
         desc="overall bracket length (X)",
@@ -53,6 +51,7 @@ PARAM_SPEC = {
         desc="bolt holes through the flange (0 / 2 / 4, symmetric about the web)",
         unit="",
         range={"easy": (0, 0), "medium": (0, 2), "hard": (2, 4)},
+        choices={"easy": [0], "medium": [0, 2], "hard": [2, 4]},
         source="mounting convention (pairs, symmetric)",
         askable=True,
         feature=True,  # toggles a feature -> drives add/remove edit derivation
@@ -74,15 +73,7 @@ PARAM_SPEC = {
 }
 
 
-# ── 2. check — the engineering truth reviewers audit ─────────────────────────
-def _hole_layout(flange_w, web_t, length, hole_d):
-    """Lateral hole offset + 4-hole axial offset (explicit args so build()'s
-    derived program stays self-contained)."""
-    y_off = (flange_w + web_t) / 4.0  # mid-line of each exposed flange strip
-    x_off = length / 2.0 - max(2.0 * hole_d, 8.0)  # end margin >= 2d (>=8 mm)
-    return y_off, x_off
-
-
+# ── check — the engineering truth reviewers audit ────────────────────────────
 def check(p: dict) -> list[str]:
     bad = []
     # plates must stay plate-like, not blocks (structural-plate convention)
@@ -111,56 +102,3 @@ def check(p: dict) -> list[str]:
     if p["chamfer_c"] and p["chamfer_c"] >= p["web_t"] / 2.0:
         bad.append("chamfer_c >= web_t/2: chamfer would gut the web edge")
     return bad
-
-
-# ── 3. sample — rejection-sample within PARAM_SPEC until check passes ────────
-def sample(difficulty: str, rng) -> dict:
-    for _ in range(200):
-        p = {}
-        for name in ("length", "flange_w", "flange_t", "web_h", "web_t", "hole_d"):
-            lo, hi = PARAM_SPEC[name]["range"][difficulty]
-            p[name] = round(float(rng.uniform(lo, hi)), 2)
-        # discrete feature draws are explicit, not uniform floats:
-        p["n_holes"] = {
-            "easy": 0,
-            "medium": int(rng.choice([0, 2])),
-            "hard": int(rng.choice([2, 4])),
-        }[difficulty]
-        if difficulty == "hard":
-            lo, hi = PARAM_SPEC["chamfer_c"]["range"]["hard"]
-            p["chamfer_c"] = round(float(rng.uniform(lo, hi)), 2)
-        else:
-            p["chamfer_c"] = 0.0
-        if not check(p):
-            return p
-    raise RuntimeError("no valid sample in 200 tries — ranges vs constraints too tight")
-
-
-# ── 4. build ────────────────────────────────────────────
-def build(p):
-    """Parameterized CadQuery — plain code, no string emission. bench2 derives
-    the stand-alone instance program from this body (params -> globals, the
-    _hole_layout helper inlined)."""
-    # flange plate on the XY plane, web standing on its centerline
-    flange = cq.Workplane("XY").box(
-        p["length"], p["flange_w"], p["flange_t"], centered=(True, True, False)
-    )
-    web = cq.Workplane("XY").workplane(offset=p["flange_t"]).box(
-        p["length"], p["web_t"], p["web_h"], centered=(True, True, False)
-    )
-    result = flange.union(web)
-
-    if p["n_holes"]:
-        y_off, x_off = _hole_layout(p["flange_w"], p["web_t"], p["length"], p["hole_d"])
-        if p["n_holes"] == 2:
-            pts = [(0.0, y_off), (0.0, -y_off)]
-        else:
-            pts = [(x, y) for x in (x_off, -x_off) for y in (y_off, -y_off)]
-        # bolt holes through the flange, clear of the web
-        result = result.faces("<Z").workplane().pushPoints(pts).hole(p["hole_d"])
-
-    if p["chamfer_c"]:
-        # deburr chamfer on the web top edges
-        result = result.edges(">Z").chamfer(p["chamfer_c"])
-
-    return result

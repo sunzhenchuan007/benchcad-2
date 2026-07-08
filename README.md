@@ -21,7 +21,7 @@ written and reviewed by people who know the domain.
   family ⇒ co-authorship — see the [provenance board](CONTRIBUTORS.md).)*
 - **[`REVIEWING.md`](REVIEWING.md)** — how to verify a family PR (renders vs
   drawing, extremes vs table, three-layer equation check).
-- **[`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)** — the four-piece interface;
+- **[`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)** — the part + spec interface;
   copy [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven reference).
 
 Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · **illustrated tutorial** [EN](docs/WALKTHROUGH.md)/[中文](docs/WALKTHROUGH.zh.md) · deep dive: [decision record](DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
@@ -36,13 +36,13 @@ Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · c
 uv sync                          # once: Python 3.11 env (pinned CadQuery)
 
 uv run bench2 new corner_bracket        # scaffold designs/corner_bracket/
-# ... fill in PARAM_SPEC, check(), sample(), build() ...
+# ... fill part.py (build) + spec.py (PARAM_SPEC, check, optional refine) ...
 uv run bench2 validate corner_bracket   # every machine gate, locally
 uv run bench2 preview corner_bracket    # render a 3×3 grid (difficulty × seed)
 # open a PR — CI runs the same two commands and posts the preview
 ```
 
-You write **one file of engineering knowledge** (`design.py`); rendering, QA
+You write **two files of engineering knowledge** (`part.py` + `spec.py`); rendering, QA
 generation, and edit-pair derivation are done downstream by the maintainers'
 pipeline. Reviewers audit exactly two things: your constraints and your labels.
 

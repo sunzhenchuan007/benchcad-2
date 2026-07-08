@@ -23,11 +23,13 @@ from __future__ import annotations
 import inspect
 
 from .involute import involute_gear_profile
+from .keyway import keyway_dims
 from .sprocket import sprocket_profile
 
 REGISTRY = {
     "sprocket_profile": sprocket_profile,
     "involute_gear_profile": involute_gear_profile,
+    "keyway_dims": keyway_dims,
 }
 
 

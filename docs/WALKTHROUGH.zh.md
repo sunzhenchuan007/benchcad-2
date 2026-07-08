@@ -8,8 +8,8 @@
 
 ## 你要做出什么
 
-一个*参数化设计*:一个 Python 文件,能生成某个目录零件的所有尺寸,并带着
-机械师会认可的工程约束。benchmark 会把你的零件渲染成这样——四个对角视角、
+一个*参数化设计*:两个小 Python 文件(零件本体和它的 spec),就能生成某个
+目录零件的所有尺寸,并带着机械师会认可的工程约束。benchmark 会把你的零件渲染成这样——四个对角视角、
 三档难度:
 
 ![模型看到的四视角](../designs/simplex_sprocket/preview_views.png)
@@ -63,16 +63,16 @@ uv sync                              # 只需一次
 uv run bench2 new my_family          # 生成 designs/my_family/ 骨架
 ```
 
-在 `design.py` 里填四件套(接口规格:[DESIGN_SPEC.md](DESIGN_SPEC.md);
-照抄 [`designs/simplex_sprocket/design.py`](../designs/simplex_sprocket/design.py)
+填两个文件(接口规格:[DESIGN_SPEC.md](DESIGN_SPEC.md);
+照抄 [`designs/simplex_sprocket/`](../designs/simplex_sprocket/)
 的形状):
 
 | 件 | 是什么 | 链轮里的例子 |
 |---|---|---|
-| `PARAM_SPEC` | 每个参数:单位、分难度范围、**来源** | `pitch` 引 "ISO 606 Table 1",声明 `coverage=[8.0,…,25.4]` |
-| `check(p)` | 参数间工程约束,每条带理由 | `bore_d > 0.5·df → "齿圈壁太薄"` |
-| `sample(difficulty, rng)` | 抽一组合法参数 | 抽的是 ISO 606 链号**整行**,不是自由数字 |
-| `build(p)` | 参数 → 独立可执行的 CadQuery 程序 | 发出 `sprocket_profile(...)` 并内联其源码 |
+| `build(...)`(part.py) | 具名参数 → 实体,普通 CadQuery | 直接调用 `sprocket_profile(...)`;工具会派生出独立程序并内联该 helper |
+| `PARAM_SPEC`(spec.py) | 每个参数:单位、分难度范围、**来源** | `pitch` 引 "ISO 606 Table 1",声明 `coverage=[8.0,…,25.4]` |
+| `check(p)`(spec.py) | 参数间工程约束,每条带理由 | `bore_d > 0.5·df → "齿圈壁太薄"` |
+| `refine(p, difficulty, rng)`(spec.py,可选) | 在框架抽完基础参数后填耦合参数——抽样由框架完成 | 抽 ISO 606 链号**整行**而非自由数字;并按齿根圆定出 bore |
 
 表驱动的零件要配 `NOTES.md`:datasheet 符号 → 公式 → 参数的映射表
 ([示例](../designs/simplex_sprocket/NOTES.md))——评审就是拿它逐层核方程的。
@@ -131,8 +131,8 @@ QUALIFIED → RELEASED 一路翻牌。
   发到 issue(*Part proposal* 表单),维护者来写代码,两个人都记贡献。
 - **preview 和工程图长得不像。** → PR 前先修好;评审打回的第一大原因就是
   几何与图纸不符。
-- **validate 报"抽样值超出声明范围"。** → 你的 `sample()` 必须收在
-  `PARAM_SPEC` 范围内——spec 是契约(这道门禁在我们自己的参考链轮上就抓过
-  一个真 bug)。
+- **validate 报"抽样值超出声明范围"。** → 抽样由框架从 `PARAM_SPEC` 完成,
+  声明的范围就是契约:把范围放宽,或者若该值是耦合参数,就在 `refine()` 里
+  把它夹进范围内(这道门禁在我们自己的参考链轮上就抓过一个真 bug)。
 - **有问题?** → [Discord](https://discord.gg/be9AtvrDyK),或直接在你的
   issue 下评论。

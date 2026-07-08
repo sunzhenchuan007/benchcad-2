@@ -30,8 +30,8 @@ def cmd_new(family: str) -> int:
     if fam_dir.exists():
         sys.exit(f"bench2: designs/{family}/ already exists")
     scaffold.create(fam_dir, family)
-    print(f"scaffolded designs/{family}/  (design.py + family.json)")
-    print("next: fill in PARAM_SPEC / check / sample / build, then `bench2 validate`")
+    print(f"scaffolded designs/{family}/  (part.py + spec.py + family.json)")
+    print("next: write build() in part.py + PARAM_SPEC/check in spec.py, then `bench2 validate`")
     return 0
 
 
@@ -54,20 +54,22 @@ def cmd_preview(family: str, per_diff: int) -> int:
     from . import render
     from .derive import derive_program
     from .execute import execute_cq_to_step
-    from .validate import DIFFS, load_design
+    from .loader import load_family
+    from .sampling import sample as sample_params
+    from .validate import DIFFS
 
     fam_dir = _designs_root() / family
     if not fam_dir.is_dir():
         sys.exit(f"bench2: designs/{family}/ not found")
-    d = load_design(fam_dir)
+    part, spec = load_family(fam_dir)
     rows, labels, view_rows = [], [], []
     with tempfile.TemporaryDirectory() as td:
         for diff in DIFFS:
             row = []
             for seed in range(per_diff):
-                p = d.sample(diff, np.random.default_rng(seed))
+                p = sample_params(spec, diff, np.random.default_rng(seed))
                 step = Path(td) / f"{diff}_{seed}.step"
-                execute_cq_to_step(derive_program(d, p), step)
+                execute_cq_to_step(derive_program(part, p), step)
                 verts, tris = render.step_to_normalized_mesh(step)
                 row.append(render.render_iso(verts, tris))
                 if seed == 0:  # what the MODEL will see: the 4 benchmark views
@@ -85,14 +87,14 @@ def cmd_preview(family: str, per_diff: int) -> int:
     # normalize against the GLOBAL range (union across difficulties) so the
     # absolute-largest part (e.g. hard-tier max) wins, not a per-tier extreme
     glob = {}
-    for name, entry in d.PARAM_SPEC.items():
+    for name, entry in spec.PARAM_SPEC.items():
         los, his = zip(*(entry["range"][diff] for diff in DIFFS))
         glob[name] = (min(los), max(his))
     cands = []
     for diff in DIFFS:
         for seed in range(100, 130):
             try:
-                p = d.sample(diff, np.random.default_rng(seed))
+                p = sample_params(spec, diff, np.random.default_rng(seed))
             except Exception:
                 continue
             scores = []
@@ -107,11 +109,11 @@ def cmd_preview(family: str, per_diff: int) -> int:
         for tag, (s, diff, p) in (("min", min(cands, key=lambda c: c[0])),
                                   ("max", max(cands, key=lambda c: c[0]))):
             step = Path(td) / f"ex_{tag}.step"
-            execute_cq_to_step(derive_program(d, p), step)
+            execute_cq_to_step(derive_program(part, p), step)
             verts, tris = render.step_to_normalized_mesh(step)
             ex_rows.append(render.render_bench_views(verts, tris))
             ex_labels.append(f"{tag} ({diff})")
-            summary = ", ".join(f"{k}={p[k]}" for k, e in d.PARAM_SPEC.items()
+            summary = ", ".join(f"{k}={p[k]}" for k, e in spec.PARAM_SPEC.items()
                                 if e.get("askable") and k in p)
             print(f"  extreme {tag} [{diff}]: {summary}")
     out3 = render.compose_grid(ex_rows, ex_labels, fam_dir / "preview_extremes.png")

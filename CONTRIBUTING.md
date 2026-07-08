@@ -1,6 +1,6 @@
 # Contributing
 
-Everything you need is on this one page. A contribution is **one file of
+Everything you need is on this one page. A contribution is **two files of
 engineering knowledge**: a parametric design whose ranges and constraints are
 true. Merged family ⇒ your row on the [provenance board](CONTRIBUTORS.md),
 named credit in the dataset card, co-authorship on the BenchCAD 2.0 paper.
@@ -16,7 +16,7 @@ path included). Want a worked example first? → illustrated tutorial
 ```bash
 uv sync                              # once
 uv run bench2 new <family>           # scaffold designs/<family>/
-# fill the four pieces (docs/DESIGN_SPEC.md; copy designs/simplex_sprocket/)
+# fill part.py + spec.py (docs/DESIGN_SPEC.md; copy designs/simplex_sprocket/)
 uv run bench2 validate <family>      # every machine gate, locally
 uv run bench2 preview <family>       # LOOK at the three images yourself
 # open a PR with `Closes #<issue>` — CI re-runs the same gates
