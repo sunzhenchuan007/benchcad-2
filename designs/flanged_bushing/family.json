@@ -1,0 +1,8 @@
+{
+  "family": "flanged_bushing",
+  "standard": "ISO 3547 / DIN 1850 (proportion)",
+  "base_plane": "XY",
+  "description": "Plain sleeve bearing with a collar: a cylindrical sleeve (bore d, wall s, length L) with a wider collar/flange at one end, an internal circumferential oil groove fed by a radial lubrication cross-hole (medium/hard), and a lead-in chamfer on the open rim (hard). Wall, length, collar and lube features scale with the bore.",
+  "source": "norelem 23761 datasheet (plain bearing sintered bronze with collar, 61 articles over the bore series); no ISO/DIN number on the sheet, so the wall/length/collar proportions are declared as proportion (ISO 3547 / DIN 1850 wrapped-bushing style)",
+  "contributor": "BenchCAD"
+}
