@@ -1,0 +1,8 @@
+{
+  "family": "clevis_pin",
+  "standard": "ISO 2341 (clevis pin with head)",
+  "base_plane": "XY",
+  "description": "ISO 2341 clevis pin with head, form B (with transverse split-pin cotter hole): one connected solid on the XY plane, extruded up +Z. A plain cylindrical shank of diameter d and length L carries a flat cylindrical head (Ø dk ~ round(1.5 d), height k ~ round(0.4 d), min 1.5) at the top end, and a transverse cotter hole (Ø hd ~ the standard split-pin size, ~0.25 d) drilled straight through the shank near the free end so a split pin retains it. The head underside and the shank free end are lightly chamfered. The head diameter, head height and cotter-hole diameter are a single jointly-sampled ISO 2341 nominal-size row keyed by the shank Ø d (3..20 mm), so they are never mixed across sizes; only the length is free per difficulty.",
+  "source": "ISO 2341 clevis pin with head (form B). Head dk ~ round(1.5 d), head height k ~ round(0.4 d) (min 1.5), and transverse cotter hole hd ~ the standard split-pin size (~0.25 d, ISO 1234 / DIN 94), tabulated over the nominal shank series 3, 4, 5, 6, 8, 10, 12, 16, 20 mm.",
+  "contributor": "BenchCAD"
+}
