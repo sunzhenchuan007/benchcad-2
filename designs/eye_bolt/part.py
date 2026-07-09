@@ -13,7 +13,6 @@ Proportions (DIN 580 style, relative to the nominal thread Ø d):
 import math
 
 import cadquery as cq
-from cadquery import Solid, Vector
 
 # ISO 261 coarse pitch by nominal thread diameter, mm
 _PITCH = {6: 1.0, 8: 1.25, 10: 1.5, 12: 1.75, 16: 2.0, 20: 2.5, 24: 3.0}
@@ -32,7 +31,7 @@ def build(thread_d, length):
     # the lifting eye: a torus in the vertical (XZ) plane sitting on the collar,
     # overlapping it slightly so the union is one solid
     zc = l + col_h + eye_r - 0.6 * eye_w
-    eye = Solid.makeTorus(eye_r, eye_w, Vector(0, 0, zc), Vector(0, 1, 0))
+    eye = cq.Solid.makeTorus(eye_r, eye_w, cq.Vector(0, 0, zc), cq.Vector(0, 1, 0))
     result = shank.union(collar).union(cq.Workplane("XY").newObject([eye]))
 
     # external metric thread on the shank: helical V-groove, crests at the major Ø
