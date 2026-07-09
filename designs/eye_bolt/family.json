@@ -1,8 +1,0 @@
-{
-  "family": "eye_bolt",
-  "standard": "DIN 580 (lifting eye bolt)",
-  "base_plane": "XY",
-  "description": "DIN 580 lifting eye bolt: a threaded shank, a cylindrical collar, and a forged circular lifting eye (a torus loop) integral on top, as one connected solid. The shank carries a modelled external metric thread (ISO 261 coarse pitch helical V-groove). The eye and collar are fixed proportions of the nominal thread diameter (collar Ø 2 d, collar height 0.8 d, eye ring centreline radius 1.15 d, eye wire radius 0.55 d); the nominal thread size is the size driver and the shank length is a free dimension.",
-  "source": "DIN 580 lifting eye bolt (metric thread series); eye/collar proportions are proportion relative to the nominal thread diameter; ISO 261 coarse pitch",
-  "contributor": "BenchCAD"
-}

@@ -1,0 +1,8 @@
+{
+  "family": "lifting_eye_bolt",
+  "standard": "DIN 580 (lifting eye bolt)",
+  "base_plane": "XY",
+  "description": "DIN 580 lifting eye bolt: a threaded shank, a collar, and a forged circular lifting eye (a torus) integral on top, as one connected solid. The eye inner/outer diameters (DIN 580 d2/d3) and the thread length (l) are the tabulated values for the nominal thread size; the shank carries a modelled external metric thread (revolved sawtooth, flush ends). The collar is proportional to the thread size.",
+  "source": "DIN 580 dimension table (d2 eye inner, d3 eye outer, l thread length) per nominal thread size; ISO 261 coarse pitch",
+  "contributor": "BenchCAD"
+}
