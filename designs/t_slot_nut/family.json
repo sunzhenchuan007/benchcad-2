@@ -1,8 +1,0 @@
-{
-  "family": "t_slot_nut",
-  "standard": "DIN 508",
-  "base_plane": "XY",
-  "description": "T-slot nut (DIN 508): a prism with an inverted-T cross-section (wide base under the slot lips, narrower neck through the slot opening) and a central vertical bore. Slot width pairs with a thread size (DIN 508 catalog row) and the neck is the DIN 508 slot-fit width B1 = slot - 0.4; base/height/length are proportion. A lead-in chamfer appears on the hard tier. The central bore carries a modelled internal metric thread: drilled to the minor diameter, with a helical V-groove of the ISO coarse pitch cut out to the major diameter.",
-  "source": "norelem 07060 (nuts for T-slots, DIN 508) for the (slot -> thread) pairing and B1 = a - 0.4 (both DIN 508); base/neck-height, base width and length declared as proportion",
-  "contributor": "BenchCAD"
-}
