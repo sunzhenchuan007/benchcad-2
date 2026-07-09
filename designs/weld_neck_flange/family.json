@@ -1,9 +1,0 @@
-{
-  "family": "weld_neck_flange",
-  "standard": "ASME B16.5",
-  "base_plane": "XY",
-  "geomlib": [],
-  "description": "ASME B16.5 class-150 raised-face weld-neck pipe flange (NPS 1\"-24\"): a circular flange disc drilled with a bolt circle, a central bore, an optional raised-face gasket seat on the front, and a tapered weld-neck hub on the back that necks from the hub base X down to the pipe OD at the weld point. NPS size (bore, OD, thickness, bolt circle, bolt count, bolt-hole diameter, hub base X, pipe OD, length-through-hub) is one jointly-sampled B16.5 row; only the raised-face seat is a proportion coupled to the row.",
-  "source": "ASME B16.5 Pipe Flanges and Flanged Fittings — class-150 weld-neck flange dimension rows NPS 1\"-24\" (bore/OD/thickness/bolt circle/bolt count/bolt-hole dia/hub base X/length-through-hub Y, mm) + nominal pipe OD for the weld end. Raised-face height (~1/16 in = 1.6 mm) and the raised-face seat diameter are declared proportion (sized to clear the bolting and the bore).",
-  "contributor": "BenchCAD"
-}
