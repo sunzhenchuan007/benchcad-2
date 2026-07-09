@@ -125,7 +125,13 @@ def render_iso(verts, tris, img_size: int = 320, front=ISO_FRONT):
     cam.SetFocalPoint(*LOOKAT)
     cam.SetViewUp(*true_up)
     cam.ParallelProjectionOn()
-    cam.SetParallelScale(0.55)
+    # fit the whole part in frame: parallel scale = half the projected bounding
+    # box (onto the camera's right/up axes) plus a 12% margin, applied uniformly
+    # so every part is framed the same way relative to its own bounding box.
+    up_u = true_up / (np.linalg.norm(true_up) or 1.0)
+    rel = np.asarray(verts, dtype=np.float64) - LOOKAT
+    half_extent = max(float(np.ptp(rel @ right)), float(np.ptp(rel @ up_u))) / 2.0
+    cam.SetParallelScale(half_extent * 1.12)
     win = vtk.vtkRenderWindow()
     win.SetOffScreenRendering(1)
     win.SetSize(img_size, img_size)
