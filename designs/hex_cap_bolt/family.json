@@ -1,0 +1,8 @@
+{
+  "family": "hex_cap_bolt",
+  "standard": "ISO 4014",
+  "base_plane": "XY",
+  "description": "Hex-head cap bolt per ISO 4014: a hexagonal head (width across flats s, height k jointly locked to the nominal thread diameter) with a fillet under the head where it meets the cylindrical shank; the shank is a nominal ISO 888 length and carries a modelled external metric thread (ISO 261 coarse pitch) rendered as a real single-start helical V-groove over the tip, leaving a smooth grip under the head, with a head top-chamfer on the hard tier. Covers M6-M24.",
+  "source": "ISO 4014 (hexagon head bolts) head dimension table s/k; ISO 888 nominal length series; ISO 261 coarse thread diameters + coarse pitch series",
+  "contributor": "BenchCAD"
+}

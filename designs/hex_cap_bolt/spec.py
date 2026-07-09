@@ -1,9 +1,9 @@
-"""hex_bolt_2 — the benchmark generator spec.
+"""hex_cap_bolt — the benchmark generator spec.
 
 The head is table-driven: (thread_d, head_af, head_h) is one jointly-sampled row
 of the ISO 4014 hex-head table, so the width across flats and head height are
 locked to the nominal thread size. Difficulty is split by BOLT SIZE (easy = the
-small M4–M8 rows, medium = M10–M14, hard = M16–M24) so the tiers are genuinely
+small M6–M8 rows, medium = M10–M14, hard = M16–M24) so the tiers are genuinely
 distinct rather than the same bolt at three length caps. The shank length is a
 real ISO 888 nominal length, at least 2·d and at most a realistic 16·d
 slenderness; a head top-chamfer appears on the hard tier.
@@ -15,8 +15,6 @@ from bench2 import Resample
 
 # ISO 4014 — (name, thread d, s = width across flats, k = head height), mm
 _ISO4014 = [
-    ("M4", 4.0, 7.0, 2.8),
-    ("M5", 5.0, 8.0, 3.5),
     ("M6", 6.0, 10.0, 4.0),
     ("M8", 8.0, 13.0, 5.3),
     ("M10", 10.0, 16.0, 6.4),
@@ -30,7 +28,7 @@ _BY_NAME = {r[0]: r for r in _ISO4014}
 
 # tiers split by bolt size (not by a length cap) so the tiers don't overlap
 _TIER = {
-    "easy": ["M4", "M5", "M6", "M8"],
+    "easy": ["M6", "M8"],
     "medium": ["M10", "M12", "M14"],
     "hard": ["M16", "M20", "M24"],
 }
@@ -47,16 +45,16 @@ PARAM_SPEC = {
     "thread_d": dict(
         desc="nominal thread diameter d (ISO 4014 row, jointly with head_af, head_h)",
         unit="mm",
-        range={"easy": (4.0, 8.0), "medium": (10.0, 14.0), "hard": (16.0, 24.0)},
+        range={"easy": (6.0, 8.0), "medium": (10.0, 14.0), "hard": (16.0, 24.0)},
         source="ISO 4014 / ISO 261 coarse thread series",
         askable=True,
         refine=True,
-        coverage=[4.0, 5.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0, 24.0],
+        coverage=[6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0, 24.0],
     ),
     "head_af": dict(
         desc="head width across flats s (same table row as thread_d)",
         unit="mm",
-        range={"easy": (7.0, 13.0), "medium": (16.0, 21.0), "hard": (24.0, 36.0)},
+        range={"easy": (10.0, 13.0), "medium": (16.0, 21.0), "hard": (24.0, 36.0)},
         source="ISO 4014 (row-locked to thread_d)",
         askable=True,
         refine=True,
@@ -64,7 +62,7 @@ PARAM_SPEC = {
     "head_h": dict(
         desc="head height k (same table row as thread_d)",
         unit="mm",
-        range={"easy": (2.8, 5.3), "medium": (6.4, 8.8), "hard": (10.0, 15.0)},
+        range={"easy": (4.0, 5.3), "medium": (6.4, 8.8), "hard": (10.0, 15.0)},
         source="ISO 4014 (row-locked to thread_d)",
         askable=True,
         refine=True,
@@ -72,7 +70,7 @@ PARAM_SPEC = {
     "length": dict(
         desc="shank length L (ISO 888 nominal length series)",
         unit="mm",
-        range={"easy": (8.0, 120.0), "medium": (20.0, 120.0), "hard": (32.0, 120.0)},
+        range={"easy": (12.0, 120.0), "medium": (20.0, 120.0), "hard": (32.0, 120.0)},
         source="ISO 888 nominal length series",
         askable=True,
         refine=True,
