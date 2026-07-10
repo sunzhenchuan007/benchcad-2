@@ -42,16 +42,15 @@ def build(thread_d, eye_id, eye_od, thread_len):
 
     collar = cq.Workplane("XY").workplane(offset=l).circle(col_d / 2.0).extrude(col_h)
 
-    # eye-to-collar transition: a cylindrical neck, then a loft flaring up to the
-    # eye base (the benchcad 1.0 form) so the ring joins the collar smoothly
+    # eye-to-collar transition: a truncated cone (frustum) rising DIRECTLY from the
+    # collar — its bottom is the collar Ø, tapering up to the eye neck (DIN 580 form)
     z0 = l + col_h
-    neck_h, loft_h = 0.45 * d, 0.55 * d
-    neck_d, eye_neck_d = 1.3 * d, max(2.0 * rw, 0.85 * d)
-    neck = cq.Workplane("XY").workplane(offset=z0).circle(neck_d / 2.0).extrude(neck_h)
-    trans = (cq.Workplane("XY").workplane(offset=z0 + neck_h).circle(neck_d / 2.0)
-             .workplane(offset=loft_h).circle(eye_neck_d / 2.0).loft())
-    zc = z0 + neck_h + loft_h + R + rw - 0.35 * rw
+    frustum_h = 0.8 * d
+    eye_neck_d = max(2.2 * rw, 0.85 * d)
+    trans = (cq.Workplane("XY").workplane(offset=z0).circle(col_d / 2.0)
+             .workplane(offset=frustum_h).circle(eye_neck_d / 2.0).loft())
+    zc = z0 + frustum_h + R + rw - 0.4 * rw
     eye = cq.Solid.makeTorus(R, rw, cq.Vector(0, 0, zc), cq.Vector(0, 1, 0))
-    result = (shank.union(collar).union(neck).union(trans)
+    result = (shank.union(collar).union(trans)
               .union(cq.Workplane("XY").newObject([eye])))
     return result
