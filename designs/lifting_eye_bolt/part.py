@@ -45,11 +45,11 @@ def build(thread_d, eye_id, eye_od, thread_len):
     # eye-to-collar transition: a truncated cone (frustum) rising DIRECTLY from the
     # collar — its bottom is the collar Ø, tapering up to the eye neck (DIN 580 form)
     z0 = l + col_h
-    frustum_h = 0.8 * d
-    eye_neck_d = max(2.2 * rw, 0.85 * d)
+    frustum_h = 0.2 * d                       # short neck: ring sits low on the collar (DIN 580)
+    eye_neck_d = max(2.0 * rw, 0.85 * d)
     trans = (cq.Workplane("XY").workplane(offset=z0).circle(col_d / 2.0)
              .workplane(offset=frustum_h).circle(eye_neck_d / 2.0).loft())
-    zc = z0 + frustum_h + R + rw - 0.4 * rw
+    zc = z0 + frustum_h + R + rw - 0.2 * rw
     eye = cq.Solid.makeTorus(R, rw, cq.Vector(0, 0, zc), cq.Vector(0, 1, 0))
     result = (shank.union(collar).union(trans)
               .union(cq.Workplane("XY").newObject([eye])))
