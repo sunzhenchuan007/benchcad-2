@@ -28,7 +28,6 @@ def build(thread_d, eye_id, eye_od, thread_len):
     # cut into it (real single-start helix; isFrenet=False keeps the sweep stable),
     # swept a half-pitch past each end and cut flush by the shank
     shank = cq.Workplane("XY").circle(r_maj).extrude(l)
-    shank = shank.faces("<Z").fillet(0.08 * d)   # rounded bottom surface (per review)
     oc = 0.25 * pitch
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, l + pitch, r_maj))
     groove = (
