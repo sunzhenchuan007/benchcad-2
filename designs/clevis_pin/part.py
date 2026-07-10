@@ -25,8 +25,10 @@ def build(shank_d, length, head_d, head_h, hole_d):
     head = cq.Workplane("XY").workplane(offset=L).circle(dk / 2.0).extrude(k)
     result = shank.union(head)
 
-    # lightly chamfer the circular edges — head top/underside + shank free end
-    result = result.edges("%CIRCLE").chamfer(0.12 * d)
+    # lightly chamfer the head top edge and the shank free end only — the head
+    # underside (where it seats on the shank) is left sharp
+    result = result.faces(">Z").chamfer(0.12 * d)
+    result = result.faces("<Z").chamfer(0.12 * d)
 
     # transverse cotter hole through the shank, near the free end (z ~ 0.15 L).
     # Drilled on the XZ plane so its axis lies along Y (horizontal, perpendicular
