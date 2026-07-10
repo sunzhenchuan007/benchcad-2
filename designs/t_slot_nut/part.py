@@ -26,9 +26,9 @@ def build(slot_w, thread_d, base_w, neck_w, base_h, neck_h, length, chamfer=0.0)
     )
     result = base.union(neck)
 
-    if chamfer:
-        # lead-in chamfer on the base underside (before the bore, on clean edges)
-        result = result.edges("<Z").chamfer(chamfer)
+    # rounded corner on the base underside (before the bore, on clean edges)
+    fb = max(chamfer, 0.08 * base_h)
+    result = result.edges("<Z").fillet(fb)
 
     # threaded central bore: drill to the minor Ø, then cut a helical V-groove of
     # the coarse pitch out to the major Ø, leaving the thread crests at the minor Ø
@@ -37,6 +37,7 @@ def build(slot_w, thread_d, base_w, neck_w, base_h, neck_h, length, chamfer=0.0)
     r_min = r_maj - 0.5413 * pitch          # ISO internal-thread minor: d - 1.0825*P
     total_h = base_h + neck_h
     result = result.faces(">Z").workplane().hole(2.0 * r_min)
+    result = result.faces(">Z").edges("%CIRCLE").fillet(min(0.14 * thread_d, 0.35 * r_min))
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, total_h, r_min))
     groove = (
         cq.Workplane("XZ").center(r_min - 0.3, 0)
