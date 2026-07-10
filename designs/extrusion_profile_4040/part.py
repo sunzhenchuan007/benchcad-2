@@ -49,13 +49,14 @@ def build(length, core_bore=0.0, corner_r=0.0):
         .rect(CHAMBER_W, CHAMBER_DEPTH).extrude(length)
     )
     void = opening.union(chamber)
+    void = void.edges("|Z").fillet(1.0)   # rounded T-slot chamber corners (item section)
     result = bar
     for ang in angles:
         result = result.cut(void.rotate((0, 0, 0), (0, 0, 1), ang))
 
     # central boss + four diagonal webs ("arrows"), unioned AFTER the slot cuts
     # so they bridge the boss to the four corners as one connected solid
-    hub = cq.Workplane("XY").rect(HUB, HUB).extrude(length)
+    hub = cq.Workplane("XY").circle(HUB / 2.0).extrude(length)   # round boss around the core bore
     diag = FACE * 1.6
     web_a = cq.Workplane("XY").rect(diag, WEB).extrude(length).rotate((0, 0, 0), (0, 0, 1), 45.0)
     web_b = cq.Workplane("XY").rect(diag, WEB).extrude(length).rotate((0, 0, 0), (0, 0, 1), 135.0)
@@ -70,6 +71,13 @@ def build(length, core_bore=0.0, corner_r=0.0):
     result = result.union(outer.cut(inner))
     for ang in angles:
         result = result.cut(opening.rotate((0, 0, 0), (0, 0, 1), ang))
+
+    # clip everything to the 40x40 (R4) envelope so the diagonal webs cannot spike
+    # past the outline
+    boundary = cq.Workplane("XY").rect(FACE, FACE).extrude(length)
+    if corner_r:
+        boundary = boundary.edges("|Z").fillet(corner_r)
+    result = result.intersect(boundary)
 
     if core_bore:
         # central fastening bore down the boss, along the extrusion axis
