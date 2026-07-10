@@ -44,9 +44,9 @@ def build(thread_d, head_af, head_h, length):
     head = head.intersect(cone)
 
     shank = cq.Workplane("XY").circle(d / 2.0).extrude(-length)
-    # lead-in chamfer at the threaded end (ISO 4753 chamfered end, ~45 deg down to
-    # roughly the minor diameter) so the thread starts cleanly, cut before threading
-    shank = shank.faces("<Z").chamfer(0.75 * pitch)
+    # lead-in chamfer at the threaded end (ISO 4753 chamfered end, ~45 deg) so the
+    # thread starts cleanly into a nut, cut before threading
+    shank = shank.faces("<Z").chamfer(1.2 * pitch)
     result = head.union(shank)
 
     # fillet under the head, on the clean smooth junction (before threading keeps
