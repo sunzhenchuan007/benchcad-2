@@ -49,6 +49,10 @@ def build(bore, flange_od, flange_t, bolt_circle_d, n_bolts, bolt_hole_d,
                                  (hub_od / 2 + 0.6, hub_od / 2 + 0.6, z_hub + 0.4))
     ).fillet(fr)
 
+    # weld-end chamfer on the hub top outer edge (the top detail the drawing rings)
+    wc = min(0.35 * flange_t, 0.3 * hub_len, 0.35 * (pipe_od - bore) / 2.0)
+    result = result.faces(">Z").chamfer(wc)
+
     # central bore through the whole stack
     top = z_hub + hub_len
     result = result.cut(
