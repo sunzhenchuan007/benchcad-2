@@ -8,7 +8,8 @@ distinct rather than the same bolt at three length caps. The shank length is a
 real ISO 888 nominal length, at least 2·d and at most a realistic 16·d
 slenderness; a head top-chamfer appears on the hard tier.
 
-Anchor: ISO 4014 (hexagon head bolts) — s = width across flats, k = head height.
+Anchor: ISO 4017 (fully-threaded hexagon head screws); head dims s (across
+flats) and k (height) share the ISO 4014 hex-head table.
 """
 
 from bench2 import Resample

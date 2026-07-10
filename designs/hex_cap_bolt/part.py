@@ -1,11 +1,11 @@
 """hex_cap_bolt — the parametric part.
 
-Hex-head cap bolt, ISO 4014 (hexagon head + partially-threaded shank). A hex head
-(width across flats head_af, height head_h) with a fillet under the head where it
-meets the narrower shank; the shank has a plain grip and is threaded over the tip
-length b ~ 2d + 6 with a modelled external metric thread — a real single-start
-helical V-groove of the ISO 261 coarse pitch. A head top chamfer appears on the
-hard tier.
+Fully-threaded hex-head bolt, ISO 4017 (hexagon head + full-length thread). A hex
+head (width across flats head_af, height head_h) with a fillet under the head where
+it meets the shank; the shank carries a modelled external metric thread — a real
+single-start helical V-groove of the ISO 261 coarse pitch running the full length,
+leaving only a short unthreaded run-out under the head (for the fillet). A head top
+chamfer appears on the hard tier.
 
     across-corners = head_af * 2/sqrt(3)   (polygon diameter)
 """
@@ -37,12 +37,12 @@ def build(thread_d, head_af, head_h, length, head_chamfer=0.0):
                                  (d / 2.0 + 0.6, d / 2.0 + 0.6, 0.3))
     ).fillet(fr)
 
-    # external metric thread over the tip length b ~ 2d + 6, leaving a smooth grip
-    # under the head. Real single-start helix; isFrenet=False + a half-pitch of
-    # run-out keep the makeHelix sweep stable at every size (isFrenet=True
-    # silently deletes the shank on M12/M24).
-    grip = 1.5 * pitch                       # smooth grip under the head (for the fillet)
-    thread_len = min(length - grip, 2.0 * d + 6.0)
+    # full-length external metric thread (ISO 4017), leaving a short unthreaded
+    # run-out under the head for the fillet. Real single-start helix; isFrenet=False
+    # + a half-pitch of run-out keep the makeHelix sweep stable at every size
+    # (isFrenet=True silently deletes the shank on M12/M24).
+    grip = 1.5 * pitch                       # short unthreaded run-out under the head
+    thread_len = length - grip               # full-length thread
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, thread_len + 0.5 * pitch, r_maj))
     groove = (
         cq.Workplane("XZ").center(r_maj + 0.3, 0)
