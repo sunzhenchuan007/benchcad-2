@@ -26,7 +26,7 @@ def build(shank_d, length, head_d, head_h, hole_d):
     result = shank.union(head)
 
     # lightly chamfer the circular edges — head top/underside + shank free end
-    result = result.edges("%CIRCLE").chamfer(min(0.08 * d, 0.4))
+    result = result.edges("%CIRCLE").chamfer(0.12 * d)
 
     # transverse cotter hole through the shank, near the free end (z ~ 0.15 L).
     # Drilled on the XZ plane so its axis lies along Y (horizontal, perpendicular
