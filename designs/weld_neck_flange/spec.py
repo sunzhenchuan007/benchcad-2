@@ -12,7 +12,7 @@ Two coupling patterns, like the sprocket reference:
   * coupled proportion — only the raised-face seat diameter is sized off the
     drawn row (RF must clear the bolts), filled in refine() after the base draw.
 
-Difficulty: easy = small NPS (1–3", flat face); medium = mid NPS (4–10", raised
+Difficulty: easy = small NPS (1–3", raised face); medium = mid NPS (4–10", raised
 face); hard = large NPS (12–24", raised face, 12–20 bolts).
 
 Sources:
@@ -127,17 +127,17 @@ PARAM_SPEC = {
     ),
     # --- proportions coupled to the row (declared "proportion", not a table) ---
     "raised_face_d": dict(
-        desc="raised-face (gasket seat) diameter; 0 on the flat-face easy tier",
+        desc="raised-face (gasket seat) diameter; sized inboard of the bolts on every tier",
         unit="mm",
-        range={"easy": (0.0, 0.0), "medium": (150.0, 340.0), "hard": (390.0, 715.0)},
+        range={"easy": (50.0, 135.0), "medium": (150.0, 340.0), "hard": (390.0, 715.0)},
         source="proportion (RF seat inboard of the bolt holes, larger than the bore)",
         askable=True,
         refine=True,
     ),
     "rf_t": dict(
-        desc="raised-face height (0 = flat face; present on medium/hard)",
+        desc="raised-face height (class-150 ~1.6 mm; present on every tier)",
         unit="mm",
-        range={"easy": (0.0, 0.0), "medium": (1.6, 2.0), "hard": (1.6, 2.0)},
+        range={"easy": (1.6, 2.0), "medium": (1.6, 2.0), "hard": (1.6, 2.0)},
         source="proportion (class-150 raised face is nominally 1/16 in ~= 1.6 mm)",
         feature=True,  # toggles the raised-face feature -> drives add/remove edits
     ),
