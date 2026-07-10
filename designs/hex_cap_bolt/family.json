@@ -2,7 +2,7 @@
   "family": "hex_cap_bolt",
   "standard": "ISO 4017",
   "base_plane": "XY",
-  "description": "Fully-threaded hex-head bolt per ISO 4017: a hexagonal head (width across flats s, height k jointly locked to the nominal thread diameter, shared with the ISO 4014 hex-head table) with a fillet under the head where it meets the shank; the shank is a nominal ISO 888 length and carries a modelled external metric thread (ISO 261 coarse pitch) rendered as a real single-start helical V-groove running the full length, leaving a short unthreaded run-out under the head, with a head top-chamfer on the hard tier. Covers M6-M24.",
+  "description": "Fully-threaded hex-head bolt per ISO 4017: a hexagonal head (width across flats s, height k jointly locked to the nominal thread diameter, shared with the ISO 4014 hex-head table) whose top is washed by a conical chamfer to a circle inscribed in the hexagon (the standard hex-head washout); a fillet under the head where it meets the shank; and a shank of nominal ISO 888 length carrying a modelled external metric thread (ISO 261 coarse pitch) rendered as a real single-start helical V-groove running the full length, leaving a short unthreaded run-out under the head. Covers M6-M24.",
   "source": "ISO 4017 (hexagon head screws, full thread); hex-head dimension table s/k per ISO 4014; ISO 888 nominal length series; ISO 261 coarse thread diameters + coarse pitch series",
   "contributor": "BenchCAD"
 }

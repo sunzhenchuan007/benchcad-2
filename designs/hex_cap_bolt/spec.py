@@ -6,7 +6,7 @@ locked to the nominal thread size. Difficulty is split by BOLT SIZE (easy = the
 small M6–M8 rows, medium = M10–M14, hard = M16–M24) so the tiers are genuinely
 distinct rather than the same bolt at three length caps. The shank length is a
 real ISO 888 nominal length, at least 2·d and at most a realistic 16·d
-slenderness; a head top-chamfer appears on the hard tier.
+slenderness; the head top is washed to a circle inscribed in the hexagon by a conical chamfer (always present).
 
 Anchor: ISO 4017 (fully-threaded hexagon head screws); head dims s (across
 flats) and k (height) share the ISO 4014 hex-head table.
@@ -76,14 +76,6 @@ PARAM_SPEC = {
         askable=True,
         refine=True,
     ),
-    "head_chamfer": dict(
-        desc="head top chamfer (0 = none; hard only)",
-        unit="mm",
-        range={"easy": (0.0, 0.0), "medium": (0.0, 0.0), "hard": (0.0, 4.0)},
-        source="ISO 4014 head chamfer (deburr convention)",
-        feature=True,
-        refine=True,
-    ),
 }
 
 
@@ -104,8 +96,6 @@ def check(p: dict) -> list[str]:
         bad.append("length < 2*thread_d: below a usable bolt length")
     if p["length"] > _MAX_LD * p["thread_d"]:
         bad.append(f"length > {_MAX_LD:g}*thread_d: too slender a bolt proportion")
-    if p["head_chamfer"] and p["head_chamfer"] > 0.25 * p["head_h"]:
-        bad.append("head_chamfer > 0.25*head_h: chamfer would gut the head")
     return bad
 
 
@@ -122,4 +112,3 @@ def refine(p: dict, difficulty: str, rng) -> None:
     if not ok:
         raise Resample
     p["length"] = float(ok[int(rng.integers(len(ok)))])
-    p["head_chamfer"] = round(s * 0.08, 1) if difficulty == "hard" else 0.0
