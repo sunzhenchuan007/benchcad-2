@@ -12,11 +12,11 @@ socket width s per the standard; the coarse pitch is ISO 261.
 # ISO 4762 rows: nominal thread d -> (head Ø dk, head height k, socket width s), mm
 _ROWS = {
     "easy": [(6.0, 10.0, 6.0, 5.0), (8.0, 13.0, 8.0, 6.0)],
-    "medium": [(10.0, 16.0, 10.0, 8.0), (12.0, 18.0, 12.0, 10.0)],
+    "medium": [(10.0, 16.0, 10.0, 8.0), (12.0, 18.0, 12.0, 10.0), (14.0, 22.0, 14.0, 12.0)],
     "hard": [(16.0, 24.0, 16.0, 14.0), (20.0, 30.0, 20.0, 17.0)],
 }
 _ALL_ROWS = [r for rows in _ROWS.values() for r in rows]
-_PITCH = {6: 1.0, 8: 1.25, 10: 1.5, 12: 1.75, 16: 2.0, 20: 2.5}
+_PITCH = {6: 1.0, 8: 1.25, 10: 1.5, 12: 1.75, 14: 2.0, 16: 2.0, 20: 2.5}
 
 
 # ── PARAM_SPEC ───────────────────────────────────────────────────────────────
@@ -24,11 +24,11 @@ PARAM_SPEC = {
     "thread_d": dict(
         desc="nominal metric thread diameter M (ISO 4762 row)",
         unit="mm",
-        range={"easy": (6.0, 8.0), "medium": (10.0, 12.0), "hard": (16.0, 20.0)},
+        range={"easy": (6.0, 8.0), "medium": (10.0, 14.0), "hard": (16.0, 20.0)},
         source="ISO 4762 nominal thread size",
         askable=True,
         refine=True,
-        coverage=[6.0, 8.0, 10.0, 12.0, 16.0, 20.0],
+        coverage=[6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0],
     ),
     "head_d": dict(
         desc="head diameter dk (same ISO 4762 row)",

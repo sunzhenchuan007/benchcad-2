@@ -16,7 +16,7 @@ import math
 import cadquery as cq
 
 # ISO 261 coarse pitch by nominal thread diameter, mm
-_PITCH = {6: 1.0, 8: 1.25, 10: 1.5, 12: 1.75, 16: 2.0, 20: 2.5}
+_PITCH = {6: 1.0, 8: 1.25, 10: 1.5, 12: 1.75, 14: 2.0, 16: 2.0, 20: 2.5}
 
 
 def build(thread_d, head_d, head_h, socket_s, length):
@@ -45,16 +45,24 @@ def build(thread_d, head_d, head_h, socket_s, length):
     e = sh / math.cos(math.radians(30.0))          # across corners
     socket = cq.Workplane("XY").workplane(offset=l + k).polygon(6, e).extrude(-0.6 * k)
     result = result.cut(socket)
+    # 120-degree drill-point cone at the socket bottom (the drawing shows it, not flat)
+    sb = l + k - 0.6 * k
+    r_sock = sh / 2.0
+    cone = (cq.Workplane("XY").workplane(offset=sb).circle(r_sock)
+            .workplane(offset=-r_sock / math.tan(math.radians(60.0))).circle(0.1)
+            .loft(combine=True))
+    result = result.cut(cone)
 
     # external metric thread over the tip length b = 2d + 12 (ISO 4762), leaving a
     # plain grip under the head. Single-start helix swept a half-pitch past the tip
     # and cut flush by the shank end (isFrenet=False for sweep stability).
     grip = 1.5 * pitch
     b = min(l - grip, 2.0 * d + 12.0)
+    oc = 0.25 * pitch                        # overcut ~pitch (keeps a constant 60 deg flank)
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, b + 0.5 * pitch, r_maj))
     groove = (
-        cq.Workplane("XZ").center(r_maj + 0.3, 0)
-        .moveTo(0, -pitch / 2.0).lineTo(-(0.6134 * pitch + 0.3), 0).lineTo(0, pitch / 2.0)
+        cq.Workplane("XZ").center(r_maj + oc, 0)
+        .moveTo(0, -pitch / 2.0).lineTo(-(0.6134 * pitch + oc), 0).lineTo(0, pitch / 2.0)
         .close().sweep(helix, isFrenet=False).translate((0, 0, -0.5 * pitch))
     )
     result = result.cut(groove)
