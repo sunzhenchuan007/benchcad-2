@@ -4,13 +4,11 @@ DIN 580 lifting eye bolt: a threaded shank, a collar, and a forged circular
 lifting eye (a torus) integral on top, as one connected solid. The eye inner /
 outer diameters (DIN 580 d2 / d3) and the thread length (l) are the tabulated
 values for the nominal thread size; the shank carries a modelled external metric
-thread built as a revolved sawtooth section — robust, with flush ends and no
-partial run-out at the collar face.
+thread — a real single-start helical V-groove of the ISO 261 coarse pitch swept
+and cut into the shank, flush at both ends.
 
     eye centreline radius R = (eye_id + eye_od)/4 ;  wire radius = (eye_od - eye_id)/4
 """
-
-import math
 
 import cadquery as cq
 
@@ -25,19 +23,19 @@ def build(thread_d, eye_id, eye_od, thread_len):
     R = (eye_id + eye_od) / 4.0
     rw = (eye_od - eye_id) / 4.0
     r_maj = d / 2.0
-    r_min = r_maj - 0.6134 * pitch
 
-    # threaded shank: revolve a sawtooth section (crest at major Ø, root at minor Ø)
-    pts = [(0.0, 0.0), (r_maj, 0.0)]
-    k = 0
-    z = 0.0
-    while z < l - 1e-9:
-        pts.append((r_min, min((k + 0.5) * pitch, l)))
-        z = min((k + 1.0) * pitch, l)
-        pts.append((r_maj, z))
-        k += 1
-    pts.append((0.0, l))
-    shank = cq.Workplane("XZ").polyline(pts).close().revolve(360)
+    # threaded shank: a plain cylinder with a helical V-groove of the coarse pitch
+    # cut into it (real single-start helix; isFrenet=False keeps the sweep stable),
+    # swept a half-pitch past each end and cut flush by the shank
+    shank = cq.Workplane("XY").circle(r_maj).extrude(l)
+    oc = 0.25 * pitch
+    helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, l + pitch, r_maj))
+    groove = (
+        cq.Workplane("XZ").center(r_maj + oc, 0)
+        .moveTo(0, -pitch / 2.0).lineTo(-(0.6134 * pitch + oc), 0).lineTo(0, pitch / 2.0)
+        .close().sweep(helix, isFrenet=False).translate((0, 0, -0.5 * pitch))
+    )
+    shank = shank.cut(groove)
 
     collar = cq.Workplane("XY").workplane(offset=l).circle(col_d / 2.0).extrude(col_h)
     zc = l + col_h + R - 0.6 * rw
