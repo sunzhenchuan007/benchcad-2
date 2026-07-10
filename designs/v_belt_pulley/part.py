@@ -42,7 +42,10 @@ def build(outer_d, width, n_grooves, groove_pitch, groove_top_w, groove_depth,
 
     # closed half-profile: inner-bottom -> grooved outer edge -> inner-top
     pts = [(ri, 0.0)] + outer + [(ri, width)]
-    result = cq.Workplane("XZ").polyline(pts).close().revolve(360, (0, 0, 0), (0, 0, 1))
+    # revolve around the profile plane's own axis (global Z). NOTE: passing an
+    # explicit (0,0,0)-(0,0,1) here spins about the XZ-workplane LOCAL z (global
+    # -Y) instead, collapsing the sheave into a flat lamina with the hub off-axis.
+    result = cq.Workplane("XZ").polyline(pts).close().revolve(360)
 
     if hub_d:
         result = result.union(
