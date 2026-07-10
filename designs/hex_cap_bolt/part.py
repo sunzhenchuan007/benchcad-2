@@ -6,7 +6,8 @@ chamfer to a circle inscribed in the hexagon (tangent to the flats) — the stan
 hex-head washout, not a per-edge chamfer. A fillet sits under the head where it
 meets the shank, and the shank carries a modelled external metric thread — a real
 single-start helical V-groove of the ISO 261 coarse pitch running the full length,
-leaving only a short unthreaded run-out under the head.
+leaving only a short unthreaded run-out under the head; the threaded end
+has a 45-degree lead-in chamfer (ISO 4753 chamfered end).
 
     across-corners  = head_af * 2/sqrt(3)   (hexagon polygon diameter)
     top-washout circle radius = head_af/2   (inscribed in the hexagon)
@@ -43,6 +44,9 @@ def build(thread_d, head_af, head_h, length):
     head = head.intersect(cone)
 
     shank = cq.Workplane("XY").circle(d / 2.0).extrude(-length)
+    # lead-in chamfer at the threaded end (ISO 4753 chamfered end, ~45 deg down to
+    # roughly the minor diameter) so the thread starts cleanly, cut before threading
+    shank = shank.faces("<Z").chamfer(0.75 * pitch)
     result = head.union(shank)
 
     # fillet under the head, on the clean smooth junction (before threading keeps
