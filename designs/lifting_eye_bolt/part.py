@@ -28,12 +28,15 @@ def build(thread_d, eye_id, eye_od, thread_len):
     # cut into it (real single-start helix; isFrenet=False keeps the sweep stable),
     # swept a half-pitch past each end and cut flush by the shank
     shank = cq.Workplane("XY").circle(r_maj).extrude(l)
+    fb = max(0.6, 0.12 * d)                  # smooth, rounded tip stub at the bottom
+    shank = shank.faces("<Z").fillet(0.45 * fb)
     oc = 0.25 * pitch
-    helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, l + pitch, r_maj))
+    th = l - fb                              # thread above the rounded tip
+    helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, th + pitch, r_maj))
     groove = (
         cq.Workplane("XZ").center(r_maj + oc, 0)
         .moveTo(0, -pitch / 2.0).lineTo(-(0.6134 * pitch + oc), 0).lineTo(0, pitch / 2.0)
-        .close().sweep(helix, isFrenet=False).translate((0, 0, -0.5 * pitch))
+        .close().sweep(helix, isFrenet=False).translate((0, 0, fb - 0.5 * pitch))
     )
     shank = shank.cut(groove)
 
