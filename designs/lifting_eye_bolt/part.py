@@ -28,6 +28,7 @@ def build(thread_d, eye_id, eye_od, thread_len):
     # cut into it (real single-start helix; isFrenet=False keeps the sweep stable),
     # swept a half-pitch past each end and cut flush by the shank
     shank = cq.Workplane("XY").circle(r_maj).extrude(l)
+    shank = shank.faces("<Z").fillet(0.08 * d)   # rounded bottom surface (per review)
     oc = 0.25 * pitch
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, l + pitch, r_maj))
     groove = (
@@ -38,7 +39,17 @@ def build(thread_d, eye_id, eye_od, thread_len):
     shank = shank.cut(groove)
 
     collar = cq.Workplane("XY").workplane(offset=l).circle(col_d / 2.0).extrude(col_h)
-    zc = l + col_h + R - 0.6 * rw
+
+    # eye-to-collar transition: a cylindrical neck, then a loft flaring up to the
+    # eye base (the benchcad 1.0 form) so the ring joins the collar smoothly
+    z0 = l + col_h
+    neck_h, loft_h = 0.45 * d, 0.55 * d
+    neck_d, eye_neck_d = 1.3 * d, max(2.0 * rw, 0.85 * d)
+    neck = cq.Workplane("XY").workplane(offset=z0).circle(neck_d / 2.0).extrude(neck_h)
+    trans = (cq.Workplane("XY").workplane(offset=z0 + neck_h).circle(neck_d / 2.0)
+             .workplane(offset=loft_h).circle(eye_neck_d / 2.0).loft())
+    zc = z0 + neck_h + loft_h + R + rw - 0.35 * rw
     eye = cq.Solid.makeTorus(R, rw, cq.Vector(0, 0, zc), cq.Vector(0, 1, 0))
-    result = shank.union(collar).union(cq.Workplane("XY").newObject([eye]))
+    result = (shank.union(collar).union(neck).union(trans)
+              .union(cq.Workplane("XY").newObject([eye])))
     return result
