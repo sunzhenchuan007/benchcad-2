@@ -34,12 +34,14 @@ def build(thread_d, eye_id, eye_od, thread_len):
 
     # threaded shank (Z 0..l): a plain cylinder with a helical V-groove of the
     # coarse pitch cut into it (real single-start helix, isFrenet=False for a
-    # stable sweep), with a rounded tip fillet at the bottom of the bolt
+    # stable sweep). The thread does NOT run into the collar: a plain unthreaded
+    # neck (gap) sits under the collar, and a rounded stub caps the bottom tip.
     shank = cq.Workplane("XY").circle(r_maj).extrude(l)
-    fb = max(0.8, 0.15 * d)                  # rounded-tip stub height
+    fb = max(0.8, 0.15 * d)                  # rounded-tip stub (unthreaded)
     shank = shank.faces("<Z").fillet(0.5 * fb)
+    gap = max(0.18 * d, 1.5 * pitch)         # plain unthreaded shank under the collar
     oc = 0.25 * pitch
-    th = l - fb                              # thread above the rounded tip
+    th = (l - gap) - fb                      # thread runs between the tip stub and the under-collar gap
     helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, th + pitch, r_maj))
     groove = (
         cq.Workplane("XZ").center(r_maj + oc, 0)
