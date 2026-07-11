@@ -26,7 +26,7 @@ PARAM_SPEC = {
     "core_bore": dict(
         desc="central core bore ∅6.8, tapped M8 for end fastening (0 = light/solid)",
         unit="mm",
-        range={"easy": (0.0, 0.0), "medium": (6.8, 6.8), "hard": (6.8, 6.8)},
+        range={"easy": (6.8, 6.8), "medium": (6.8, 6.8), "hard": (6.8, 6.8)},
         choices={"easy": [0.0], "medium": [6.8], "hard": [6.8]},
         source="item 40x40 core bore ∅6.8",
         feature=True,
