@@ -29,8 +29,7 @@ PARAM_SPEC = {
         range={"easy": (6.8, 6.8), "medium": (6.8, 6.8), "hard": (6.8, 6.8)},
         choices={"easy": [0.0], "medium": [6.8], "hard": [6.8]},
         source="item 40x40 core bore ∅6.8",
-        feature=True,
-        coverage=[0.0, 6.8],
+                coverage=[0.0, 6.8],
     ),
     "corner_r": dict(
         # the real item Profile 8 is ALWAYS rounded R4 — the reference has no
