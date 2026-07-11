@@ -1,10 +1,11 @@
 """v_belt_pulley — the parametric part.
 
-V-belt pulley (sheave), ISO 4183: a rim with N circumferential V-grooves, a
-central bore through the hub, and a lightened web between the hub and the rim.
-The whole rim cross-section (bore -> grooved outer edge -> back) is revolved once
-about the axis, so the grooves are part of the profile (no boolean cuts). The web
-is then lightened: an annular recess on each face plus three lightening holes.
+V-belt pulley (sheave), ISO 4183: a rim with N circumferential V-grooves, a solid
+web, a central hub boss, and a keyed bore running through the pulley. The whole
+rim cross-section (bore -> grooved outer edge -> back) is revolved once about the
+axis, so the grooves are part of the profile (no boolean cuts). The reference
+(issue #5) is a solid-web sheave with a hub boss and a keyed bore — no lightening
+holes or spokes.
 
 Each groove is a trapezoid: the flanks close at the ISO belt angle `groove_angle`
 (34 deg, stepping to 38 deg on large datum diameters) and stop at a flat bottom
@@ -16,6 +17,7 @@ across the width.
 import math
 
 import cadquery as cq
+from bench2.geomlib import keyway_dims
 
 
 def build(outer_d, width, n_grooves, groove_pitch, groove_top_w, groove_depth,
@@ -48,40 +50,24 @@ def build(outer_d, width, n_grooves, groove_pitch, groove_top_w, groove_depth,
     # -Y) instead, collapsing the sheave into a flat lamina with the hub off-axis.
     result = cq.Workplane("XZ").polyline(pts).close().revolve(360)
 
+    # central hub boss
     if hub_d:
         result = result.union(
             cq.Workplane("XY").workplane(offset=width).circle(hub_d / 2.0).extrude(hub_len)
         )
 
-    # lighten the web (the solid disc between hub and rim): an annular recess on
-    # each face (the "hollow big cylinder") plus three lightening holes (the
-    # "three small cylinders"), spaced 120 deg apart
-    rim_wall = max(3.0, 0.05 * outer_d)
-    rim_ir = ro - groove_depth - rim_wall              # inner edge of the grooved rim
-    hub_boss_r = max((hub_d / 2.0) if hub_d else 0.0,
-                     ri + max(4.0, 0.05 * outer_d))     # keep a boss around the bore
-    if rim_ir - hub_boss_r > 10.0:                      # only if there is room for a web
-        web_t = max(4.0, 0.18 * width)                  # central web thickness kept
-        rec = (width - web_t) / 2.0                     # recess depth per face
-        for zoff in (0.0, width - rec):
-            result = result.cut(
-                cq.Workplane("XY").workplane(offset=zoff)
-                .circle(rim_ir).circle(hub_boss_r).extrude(rec)
-            )
-        r_bolt = (hub_boss_r + rim_ir) / 2.0
-        d_hole = min(0.55 * (rim_ir - hub_boss_r), 0.8 * r_bolt)
-        for k in range(3):
-            a = math.radians(120 * k + 30)
-            cx, cy = r_bolt * math.cos(a), r_bolt * math.sin(a)
-            result = result.cut(
-                cq.Workplane("XY").workplane(offset=-1)
-                .circle(d_hole / 2.0).extrude(width + 2).translate((cx, cy, 0))
-            )
+    # bore runs the full length (through the hub too)
+    top = width + (hub_len if hub_d else 0.0)
+    result = result.cut(
+        cq.Workplane("XY").workplane(offset=-1).circle(ri).extrude(top + 2)
+    )
 
-    # the bore runs through the hub too
-    if hub_d and hub_len:
-        result = result.cut(
-            cq.Workplane("XY").workplane(offset=-1).circle(ri).extrude(width + hub_len + 2)
-        )
+    # keyway in the bore (DIN 6885A), full length
+    kw, kd = keyway_dims(bore_d)
+    rect_h = kd + ri
+    result = result.cut(
+        cq.Workplane("XY").workplane(offset=-1)
+        .center(0, rect_h / 2.0).rect(kw, rect_h).extrude(top + 2)
+    )
 
     return result
