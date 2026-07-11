@@ -24,9 +24,13 @@ def build(slot_w, thread_d, base_w, neck_w, base_h, neck_h, length, chamfer=0.0)
         cq.Workplane("XY").workplane(offset=base_h)
         .box(neck_w, length, neck_h, centered=(True, True, False))
     )
+    # DIN 508 chamfer on the neck top corners (per the drawing section view) —
+    # a safe fixed proportion (NOT the `chamfer` param, which can be large)
+    neck_ch = min(0.18 * neck_h, 0.3 * neck_w)
+    neck = neck.edges(">Z").chamfer(neck_ch)
     result = base.union(neck)
 
-    # rounded corner on the base underside (before the bore, on clean edges)
+    # deburr fillet on the base underside (uses the chamfer param as before)
     fb = max(chamfer, 0.08 * base_h)
     result = result.edges("<Z").fillet(fb)
 
