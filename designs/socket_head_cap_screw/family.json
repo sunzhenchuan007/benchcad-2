@@ -1,0 +1,8 @@
+{
+  "family": "socket_head_cap_screw",
+  "standard": "ISO 4762 (hexagon socket head cap screw)",
+  "base_plane": "XY",
+  "description": "Hexagon socket head cap screw per ISO 4762: a cylindrical head (diameter dk, height k jointly locked to the nominal thread size) with a recessed hexagon drive socket and a chamfer on the head top edge; a fillet under the head where it meets the shank; and a shank carrying a modelled external metric thread (ISO 261 coarse pitch) rendered as a single-start helical V-groove over the tip length b = 2d + 12, leaving a plain grip under the head, with a 45-degree lead-in chamfer at the threaded end.",
+  "source": "ISO 4762 head diameter dk, head height k, socket width s table; ISO 261 coarse pitch; ISO 4753 chamfered thread end",
+  "contributor": "BenchCAD"
+}
