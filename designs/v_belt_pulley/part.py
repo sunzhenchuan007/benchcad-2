@@ -22,9 +22,8 @@ Dimension glossary (norelem symbols → code params):
     -   = bore_d       conical-bore diameter at the SMALL (front) end
     lg  = groove_top_w / groove_depth / groove_angle   the ISO V-groove section
 
-To DEBUG this in a GUI (CQ-editor): scroll to the `if __name__` block at the
-bottom — edit the PARAMS dict, press F5, rotate the model. Every dimension above
-is a single number you can nudge. See docs/DEBUGGING.md.
+To DEBUG in a 3D GUI, keep this file a clean build() and drive it from a tiny
+show_object wrapper (CQ-editor) or `tools/debug_family.py` — see docs/DEBUGGING.md.
 """
 
 import math
@@ -83,24 +82,3 @@ def build(outer_d, width, n_grooves, groove_pitch, groove_top_w, groove_depth,
     result = result.cut(taper_bore)
 
     return result
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# DEBUG / VISUALISE.  Open this file in CQ-editor (see docs/DEBUGGING.md), edit
-# PARAMS, press F5.  Or run `uv run python this_file.py` to write a STEP you can
-# open in any CAD viewer.  These example params are the SPZ D=80, N=2 Form J row
-# (norelem 22070-19802): D5=52, bore≈taper-bush 1210, B=28.
-# ─────────────────────────────────────────────────────────────────────────────
-PARAMS = dict(
-    outer_d=80.0, width=28.0, n_grooves=2,
-    groove_pitch=12.0, groove_top_w=9.7, groove_depth=9.0, groove_angle=34.0,
-    bore_d=32.0, hub_d=52.0, hub_len=14.0,
-)
-
-if __name__ == "__main__":
-    part = build(**PARAMS)
-    try:                                   # inside CQ-editor: live 3D view
-        show_object(part, name="v_belt_pulley (Form J)")   # noqa: F821
-    except NameError:                      # plain python: dump a STEP to open elsewhere
-        cq.exporters.export(part, "v_belt_pulley_formJ.step")
-        print("wrote v_belt_pulley_formJ.step  —", len(part.val().Solids()), "solid(s)")
