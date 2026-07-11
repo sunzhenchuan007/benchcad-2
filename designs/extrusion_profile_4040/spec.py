@@ -24,12 +24,12 @@ PARAM_SPEC = {
         askable=True,
     ),
     "core_bore": dict(
-        desc="central core bore ∅6.8, tapped M8 for end fastening (0 = light/solid)",
+        desc="central core bore ∅6.8, tapped M8 for end fastening (standard item feature)",
         unit="mm",
         range={"easy": (6.8, 6.8), "medium": (6.8, 6.8), "hard": (6.8, 6.8)},
-        choices={"easy": [0.0], "medium": [6.8], "hard": [6.8]},
+        choices={"easy": [6.8], "medium": [6.8], "hard": [6.8]},
         source="item 40x40 core bore ∅6.8",
-                coverage=[0.0, 6.8],
+                coverage=[6.8],
     ),
     "corner_r": dict(
         # the real item Profile 8 is ALWAYS rounded R4 — the reference has no
