@@ -6,11 +6,12 @@
 ## A. `tools/debug_family.py` (recommended — one command)
 
 ```bash
-uv run python tools/debug_family.py v_belt_pulley               # a medium sample
+uv run python tools/debug_family.py --config designs/v_belt_pulley/part.py          # open THIS part.py in CQ-editor
+uv run python tools/debug_family.py --config designs/v_belt_pulley/part.py --strip   # remove the debug block again
+uv run python tools/debug_family.py v_belt_pulley               # a medium sample (ocp-vscode / STEP)
 uv run python tools/debug_family.py v_belt_pulley --diff hard --seed 3
 uv run python tools/debug_family.py v_belt_pulley outer_d=80 n_grooves=2 hub_d=52
-uv run python tools/debug_family.py v_belt_pulley --gui         # edit part.py live in CQ-editor
-uv run python tools/debug_family.py v_belt_pulley --strip       # remove the debug block again
+uv run python tools/debug_family.py v_belt_pulley --gui         # sample a family, then open its part.py
 ```
 
 It samples a valid parameter set (honouring `spec.check`), applies any `key=value`
@@ -21,23 +22,25 @@ overrides, builds, prints `params / check / solids / bbox`, and shows the model.
 point when hunting a bug; override the derived field too, or just pick a clean
 sample with `--seed`.
 
-### Edit the geometry live — `--gui` (CQ-editor)
+### Edit the geometry live in CQ-editor
 
-`--gui` opens the family's **part.py itself** in CQ-editor so you edit `build()`
-and press **F5** to re-render:
+Point `--config` straight at a `part.py` — it opens **that file** in CQ-editor so
+you edit `build()` and press **F5** to re-render:
 
 ```bash
-uv tool install cq-editor                                    # one-time (isolated env)
-uv run python tools/debug_family.py v_belt_pulley --gui       # opens part.py in CQ-editor
+uv tool install cq-editor                                                    # one-time (isolated env)
+uv run python tools/debug_family.py --config designs/v_belt_pulley/part.py    # opens it in CQ-editor
 #   … edit build()/PARAMS, press F5, iterate …
-uv run python tools/debug_family.py v_belt_pulley --strip     # strip the block before committing
+uv run python tools/debug_family.py --config designs/v_belt_pulley/part.py --strip   # strip the block before committing
 ```
 
-It appends a small **DEBUG block** (a sampled `PARAMS` + `show_object`) to the
-bottom of `designs/<family>/part.py`, then launches CQ-editor on it — so you edit
-the real `build()`, not a wrapper. The block is guarded (`try/except NameError`)
-so a normal `import part` / `bench2` still works while it's there, but **run
-`--strip` (or delete it) before you commit** — bench2 needs a clean `build()`.
+If the file is a clean family `part.py` (no `show_object`) next to a `spec.py`, it
+first appends a small **DEBUG block** (a sampled `PARAMS` + `show_object`) so
+CQ-editor has something to draw; a scratch copy that already has a block is opened
+as-is. The block is guarded (`try/except NameError`) so a normal `import part` /
+`bench2` still works while it's there, but **run `--strip` (or delete it) before
+you commit** — bench2 needs a clean `build()`. (`<family> --gui` does the same but
+samples the family for you.)
 
 (CQ-editor brings its own cadquery 2.8, so it is **not** a repo dependency — the
 tool just shells out to the isolated install, like calling `git`. A family that
@@ -59,9 +62,9 @@ either viewer the tool writes a `*.step` you can open in FreeCAD.
 
 ```bash
 bench2 new my_family          # scaffolds designs/my_family/{part,spec,family}.py
-# write build() in part.py — keep it clean; iterate on it live with --gui (§A)
-uv run python tools/debug_family.py my_family --gui   # edit build() in CQ-editor, F5
-uv run python tools/debug_family.py my_family         # or eyeball a sample in 3D
+# write build() in part.py — keep it clean; iterate on it live in CQ-editor (§A)
+uv run python tools/debug_family.py --config designs/my_family/part.py   # edit build() in CQ-editor, F5
+uv run python tools/debug_family.py my_family                            # or eyeball a sample in 3D
 bench2 validate my_family                            # the machine gates
 ```
 
