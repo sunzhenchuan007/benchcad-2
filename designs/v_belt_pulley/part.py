@@ -1,83 +1,84 @@
 """v_belt_pulley — the parametric part (norelem 22070 / DIN 2211, **Form J**).
 
-Form J of the norelem 22070 catalogue = a **multi-groove** V-belt sheave (N = 2 or 3)
-made for a **taper clamping bush**: a grooved rim, a solid web, a **hub boss on ONE
-side** (diameter D5), and a **conical (tapered) bore** — NO keyway, NO lightening
-holes (the taper bush carries the keyway and clamps the shaft). Form A is the
-single-groove sister (N = 1, no hub boss); we only build Form J here.
+Form J = a **multi-groove** V-belt sheave (N = 2 or 3) for a **taper clamping bush**:
+a grooved rim, a narrower solid hub boss centred in it, and a **conical (tapered)
+bore** — NO keyway, NO lightening holes (the bush carries the keyway).
 
-Coordinate frame (so you can read the code against the drawing):
-    z = 0 ....... front rim face (grooves start here)
-    z = B ....... back rim face; the hub boss starts here
-    z = B+hub_len  hub-boss end face (the taper bush is inserted from THIS end)
-    the whole thing is revolved about +Z; the bore runs down the axis.
+Variable naming: every dimension carries its **norelem/DIN drawing symbol** as a
+suffix so the code reads against the drawing (see docs/DEBUGGING.md convention).
 
-Dimension glossary (norelem symbols → code params):
-    D   = outer_d      pulley outside diameter
-    B   = width        rim width  = 2*E + (N-1)*e   (ISO 4183, set in spec.refine)
-    N   = n_grooves    number of V-grooves (Form J: 2 or 3)
-    e   = groove_pitch groove spacing  (SPZ 12 / SPA 15 / SPB 19)
-    D5  = hub_d        hub-boss diameter  (~0.68*D in the catalogue)
-    -   = hub_len      how far the hub boss sticks out past the back rim face
-    -   = bore_d       conical-bore diameter at the SMALL (front) end
-    lg  = groove_top_w / groove_depth / groove_angle   the ISO V-groove section
+    D   = outer_dia_D     pulley outside diameter
+    B   = rim_width_B      rim width = N*e  (grooves at e/2 from each edge → half teeth)
+    N   = n_grooves        number of V-grooves (Form J: 2 or 3)
+    e   = groove_pitch_e   groove pitch  (SPZ 12 / SPA 15 / SPB 19)
+    lg  = groove_top_lg    groove top width  (ISO 4183 section)
+    T   = groove_depth_T   groove depth below D
+    α   = groove_angle_a   groove flank angle (34° small Ø, 38° large Ø)
+    D5  = hub_dia_D5        hub-boss diameter
+    L   = hub_width_L       hub-boss width (centred in B)
+    L1  = overhang_L1       rim overhang past the hub, total  →  **L + L1 = B**
+    D2  = the SHAFT bore the taper bush accepts (catalogue, not the pulley bore);
+          the pulley's own conical seat is bore_dia_d1 (front) tapering to the hub end.
 
-To DEBUG in a 3D GUI, keep this file a clean build() and drive it from a tiny
-show_object wrapper (CQ-editor) or `tools/debug_family.py` — see docs/DEBUGGING.md.
+Coordinate frame:  z = 0 front rim face .. z = B back rim face; revolved about +Z;
+the conical bore runs down the axis, wide at the back (hub) end.
 """
 
 import math
 
 import cadquery as cq
 
-# how much the taper-bush bore narrows from the hub end to the rim end (per side,
-# as a fraction of length) — a shallow cone, ~Taper-Lock proportions. Bigger =
-# more obviously conical. Tweak this first if the bore looks wrong.
+# taper of the bush seat (radius gained per unit length toward the hub end) —
+# a shallow ~Taper-Lock cone. Bump if the bore should look more conical.
 _BORE_TAPER = 0.06
 
 
-def build(outer_d, width, n_grooves, groove_pitch, groove_top_w, groove_depth,
-          groove_angle, bore_d, hub_d, hub_len):
-    ro = outer_d / 2.0                       # rim outer radius
-    B = width
-    span = (n_grooves - 1) * groove_pitch    # centre-to-centre of the groove set
-    z0 = B / 2.0 - span / 2.0                # first groove centre (grooves centred on B)
+def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
+          groove_depth_T, groove_angle_a, hub_dia_D5, hub_width_L, bore_dia_d1):
+    R_outer = outer_dia_D / 2.0                     # rim outer radius (to D)
+    R_hub = hub_dia_D5 / 2.0                        # hub-boss radius (to D5)
+    overhang_L1 = rim_width_B - hub_width_L         # <<< drawing relation: L + L1 = B
+    z_hub0 = overhang_L1 / 2.0                      # hub is centred: L1/2 rim each side
+    z_hub1 = z_hub0 + hub_width_L
 
-    half_top = groove_top_w / 2.0
-    half_bot = half_top - groove_depth * math.tan(math.radians(groove_angle / 2.0))
+    # grooves centred across B = N*e, so the first groove sits e/2 from each edge:
+    # the two rim edges are HALF teeth and the N-1 lands between grooves are full
+    # teeth (an N-groove rim reads as "N-1 full + 2 half teeth")
+    span_e = (n_grooves - 1) * groove_pitch_e
+    z_g0 = rim_width_B / 2.0 - span_e / 2.0
+    half_lg = groove_top_lg / 2.0
+    half_bot = half_lg - groove_depth_T * math.tan(math.radians(groove_angle_a / 2.0))
 
-    # ---- grooved rim: revolve a half-profile (bore radius -> grooved OD -> back) ----
-    # the outer edge dips into a trapezoidal V at each groove; flanks at groove_angle
-    ri = bore_d / 2.0
-    outer = [(ro, 0.0)]
+    # ---- grooved rim RING: revolve a half-profile from the hub radius (D5) out to
+    #      the grooved OD (D); the outer edge dips into a V at each groove ----
+    outer = [(R_outer, 0.0)]
     for i in range(n_grooves):
-        zc = z0 + i * groove_pitch
+        zc = z_g0 + i * groove_pitch_e
         outer += [
-            (ro, zc - half_top),
-            (ro - groove_depth, zc - half_bot),
-            (ro - groove_depth, zc + half_bot),
-            (ro, zc + half_top),
+            (R_outer, zc - half_lg),
+            (R_outer - groove_depth_T, zc - half_bot),
+            (R_outer - groove_depth_T, zc + half_bot),
+            (R_outer, zc + half_lg),
         ]
-    outer += [(ro, B)]
-    pts = [(ri, 0.0)] + outer + [(ri, B)]
-    # NOTE: bare revolve(360) spins about global Z (correct). Passing an explicit
-    # axis here would spin about the XZ-plane local z and collapse it to a lamina.
-    result = cq.Workplane("XZ").polyline(pts).close().revolve(360)
+    outer += [(R_outer, rim_width_B)]
+    pts = [(R_hub, 0.0)] + outer + [(R_hub, rim_width_B)]
+    # bare revolve(360) spins about global Z (correct); an explicit axis would
+    # collapse it to a lamina.
+    rim = cq.Workplane("XZ").polyline(pts).close().revolve(360)
 
-    # ---- hub boss (D5) protruding on ONE side (the back, z = B .. B+hub_len) ----
-    result = result.union(
-        cq.Workplane("XY").workplane(offset=B).circle(hub_d / 2.0).extrude(hub_len)
-    )
+    # ---- hub boss: a solid cylinder Ø D5, width L, centred in B (so the rim of
+    #      width B overhangs it by L1/2 each side — the recessed-hub Form J look) ----
+    hub = cq.Workplane("XY").workplane(offset=z_hub0).circle(R_hub).extrude(hub_width_L)
+    result = rim.union(hub)
 
-    # ---- conical bore for the taper clamping bush (big at the hub end, small at
-    #      the front rim face); NO keyway — the bush carries it ----
-    top = B + hub_len
-    r_small = bore_d / 2.0
-    r_big = r_small + _BORE_TAPER * top       # widen toward the hub end
+    # ---- conical taper-bush bore: Ø bore_dia_d1 at the front (z=0), widening
+    #      toward the back/hub end; NO keyway (the bush carries it) ----
+    r_front = bore_dia_d1 / 2.0
+    r_back = r_front + _BORE_TAPER * rim_width_B
     taper_bore = (
-        cq.Workplane("XY").workplane(offset=-1)         # start just below the front face
-        .circle(r_small).workplane(offset=top + 2)      # up to just past the hub end
-        .circle(r_big).loft()
+        cq.Workplane("XY").workplane(offset=-1)
+        .circle(r_front).workplane(offset=rim_width_B + 2)
+        .circle(r_back).loft()
     )
     result = result.cut(taper_bore)
 
