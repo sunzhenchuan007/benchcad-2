@@ -1,0 +1,8 @@
+{
+  "family": "hex_flange_nut",
+  "standard": "DIN 6923 (ISO 4161)",
+  "base_plane": "XY",
+  "description": "Hexagon flange nut per DIN 6923 (ISO 4161): a hexagon wrenching body (width across flats s, total height m) integral with a wide conical flange at the seating end (bearing diameter dc overhanging the hex corners, edge thickness c), tapped with a modelled metric internal V-thread (ISO 261 coarse pitch) run through the full height as a single-start helix at the minor radius cut radially outward. The rim->hex conical seat height (not tabulated) is a declared proportion, and a set of radial locking serrations on the bearing face gives the serrated DIN 6923 variant (medium/hard) versus the plain variant (easy). s, dc, m, c are row-locked to the nominal thread size d; covers M5-M20.",
+  "source": "DIN 6923 (ISO 4161) hexagon flange nut dimension table (d, s, dc, m, c) cross-checked against fasteners.eu and fullerfasteners published sheets; ISO 261 coarse thread diameters + coarse pitch series; internal thread minor diameter D1 = d - 1.0825*P per ISO 965; conical flange-seat height and serration tooth count are declared proportions",
+  "contributor": "BenchCAD"
+}
