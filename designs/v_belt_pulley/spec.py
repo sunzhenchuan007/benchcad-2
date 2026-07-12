@@ -1,13 +1,14 @@
 """v_belt_pulley — the benchmark generator spec (norelem 22070 / DIN 2211, Form J).
 
-Form J = a multi-groove (N = 2/3) taper-bush sheave: grooved rim + a narrower
-solid hub boss centred in it + a conical taper bore (no keyway). Params carry
-their norelem/DIN drawing symbol (see part.py glossary): outer_dia_D (D),
-rim_width_B (B), hub_dia_D5 (D5), hub_width_L (L), bore_dia_d1, with L + L1 = B.
+Form J = a multi-groove (N = 2/3) taper-bush sheave, built as a single solid of
+revolution: a grooved rim (outer profile) around a conical taper bore that opens
+from Ø 2*D2 at the front out to Ø 0.8*D5 then runs straight (inner profile =
+frustum + cylinder); no keyway. Params carry their norelem/DIN drawing symbol
+(see part.py glossary): outer_dia_D (D), rim_width_B (B), hub_dia_D5 (D5),
+hub_width_L (L = taper length), shaft_bore_D2 (D2).
 
 Anchor: norelem 22070 (DIN 2211) Form J rows; ISO 4183 groove sections; from the
-real table D5/D ~= 0.68 and the hub width L ~= 0.28*D (the taper-bush length),
-so L1 = B - L grows with the groove count N.
+real table D5/D ~= 0.68 and the taper length L ~= 0.28*D.
 """
 
 import math
@@ -73,21 +74,21 @@ PARAM_SPEC = {
         askable=True, refine=True,
     ),
     "hub_dia_D5": dict(
-        desc="hub-boss diameter D5 (Form J: ~0.68*D)", unit="mm",
+        desc="hub Ø D5 (Form J ~0.68*D); the bore opens to Ø 0.8*D5 at its large end", unit="mm",
         range={"easy": (34.0, 62.0), "medium": (48.0, 100.0), "hard": (70.0, 170.0)},
         source="norelem 22070 Form J D5 (D5/D ~ 0.56-0.81, mean 0.68)",
         askable=True, refine=True,
     ),
     "hub_width_L": dict(
-        desc="hub-boss width L (taper-bush length; centred in B, so L1 = B-L)", unit="mm",
+        desc="taper length L: the bore frustum runs z=0..L, then a cylinder to B", unit="mm",
         range={"easy": (16.0, 40.0), "medium": (18.0, 45.0), "hard": (20.0, 55.0)},
         source="norelem 22070 Form J L (~0.28*D, the taper-bush length)",
         askable=True, refine=True,
     ),
     "shaft_bore_D2": dict(
-        desc="taper-bush SHAFT bore D2; the pulley seat front Ø = 2*D2 (< back 0.8*D5)", unit="mm",
-        range={"easy": (14.0, 42.0), "medium": (18.0, 60.0), "hard": (24.0, 90.0)},
-        source="taper clamping bush seat (~0.6*D5); bounded by the hub wall",
+        desc="taper-bush SHAFT bore D2; the seat's small (front) end is Ø 2*D2 (< back 0.8*D5)", unit="mm",
+        range={"easy": (10.0, 22.0), "medium": (10.0, 33.0), "hard": (10.0, 52.0)},
+        source="taper clamping bush seat small end (2*D2 ~ 0.6*D5); a widening frustum",
         askable=True, refine=True,
     ),
 }
@@ -115,17 +116,18 @@ def check(p: dict) -> list[str]:
     if half_bot <= 0.5:
         bad.append("groove bottoms out to a point: no trapezoidal flat")
     root_r = p["outer_dia_D"] / 2.0 - p["groove_depth_T"]
-    # the hub boss is narrower than the rim (L < B, so L1 = B - L > 0) and fits the rim
+    r_bore_back = 0.4 * p["hub_dia_D5"]                 # bore/taper large end = Ø 0.8*D5
+    # the taper seat must OPEN outward: front Ø 2*D2 smaller than back Ø 0.8*D5 (a frustum)
+    if p["shaft_bore_D2"] >= r_bore_back - 0.5:
+        bad.append("2*D2 >= 0.8*D5: bore is not a widening frustum (cylinder / inverted cone)")
+    # keep a rim wall between the bore large end and the groove root
+    if root_r - r_bore_back < 4.0:
+        bad.append("< 4 mm wall between the bore (0.8*D5) and the groove root")
+    # taper length L must be shorter than B so a straight cylinder section remains
     if p["hub_width_L"] >= p["rim_width_B"]:
-        bad.append("hub_width_L >= rim_width_B: no rim overhang (L1 = B - L must be > 0)")
-    if p["hub_dia_D5"] > 2.0 * root_r:
-        bad.append("hub_dia_D5 larger than the groove-root rim")
-    if p["hub_dia_D5"] <= p["shaft_bore_D2"] + 6.0:
-        bad.append("hub_dia_D5 too close to the bore: no hub wall for the taper bush")
+        bad.append("hub_width_L (taper length) >= rim_width_B: no straight bore section")
     if p["shaft_bore_D2"] < 10.0:
-        bad.append("bore_dia_d1 < 10 mm: below practical taper-bush sizes")
-    if root_r - p["shaft_bore_D2"] / 2.0 < 4.0:
-        bad.append("< 4 mm rim between the groove root and the bore")
+        bad.append("shaft_bore_D2 < 10 mm: below practical bore sizes")
     return bad
 
 
