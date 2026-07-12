@@ -48,7 +48,7 @@ def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
 
     # ---- one closed (r, z) profile, revolved once ----
     # inner boundary (bore), front → back: big mouth, cone in to the shaft bore, cylinder
-    pts = [(r_mouth, 0.0), (r_bore, z_taper), (r_bore, B)]
+    pts = [(r_mouth, 0.0), (r_bore, z_taper), (hub_dia_D5/2.0, z_taper), (hub_dia_D5/2.0, B)]
     # up the back face to the rim, then the grooved OD back → front (decreasing z)
     pts.append((R_outer, B))
     for i in reversed(range(n_grooves)):
