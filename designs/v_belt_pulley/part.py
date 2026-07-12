@@ -17,8 +17,9 @@ suffix so the code reads against the drawing (see docs/DEBUGGING.md convention).
     D5  = hub_dia_D5      hub-boss diameter
     L   = hub_width_L     hub-boss width (centred in B)
     L1  = overhang_L1     rim overhang past the hub, total  →  **L + L1 = B**
-    D2  = the SHAFT bore the taper bush accepts (catalogue, not the pulley bore);
-          the pulley's own conical seat is bore_dia_d1 (front) tapering to the hub end.
+    D2  = shaft_bore_D2   the shaft bore the taper bush accepts; the pulley's own
+          conical bush seat runs from Ø 2*D2 (front, smaller end) to Ø 0.8*D at the
+          hub end (larger end).
 
 Coordinate frame:  z = 0 front rim face .. z = B back rim face; revolved about +Z;
 the conical bore runs down the axis.
@@ -28,16 +29,13 @@ import math
 
 import cadquery as cq
 
-# conical bore: how much the bush seat narrows from the front to the hub end,
-# as a fraction of the front radius (0.2 = the back Ø is 80% of the front Ø).
-_BORE_TAPER = 0.2
 # a small margin (mm) so boolean cuts run cleanly a hair past each end face,
 # instead of ending exactly on the face (which leaves coincident-face slivers).
 _CUT_MARGIN = 1.0
 
 
 def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
-          groove_depth_T, groove_angle_a, hub_dia_D5, hub_width_L, bore_dia_d1):
+          groove_depth_T, groove_angle_a, hub_dia_D5, hub_width_L, shaft_bore_D2):
     R_outer = outer_dia_D / 2.0                     # rim outer radius (to D)
     R_hub = hub_dia_D5 / 2.0                        # hub-boss radius (to D5)
     overhang_L1 = rim_width_B - hub_width_L         # drawing relation: L + L1 = B
@@ -74,12 +72,14 @@ def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
     hub = cq.Workplane("XY").workplane(offset=z_hub0).circle(R_hub).extrude(hub_width_L)
     result = rim.union(hub)
 
-    # ---- conical taper-bush bore: Ø bore_dia_d1 at the front (z=0), narrowing to
-    #      (1-_BORE_TAPER)*that toward the hub end; NO keyway (the bush carries it).
-    #      Lofted from _CUT_MARGIN before the front face to _CUT_MARGIN past the back
-    #      so it cuts clean through. ----
-    r_front = bore_dia_d1 / 2.0
-    r_back = (1.0 - _BORE_TAPER) * r_front
+    # ---- conical taper-bush seat (per review): a frustum (NOT a cylinder) — Ø 2*D2
+    #      at the front (z=0, the smaller end) opening to Ø 0.8*D5 at the hub end
+    #      (z=B, the larger end); measured off the HUB Ø D5, not the outside Ø D, so
+    #      it stays inside the hub and never breaches the rim. NO keyway (the bush
+    #      carries it). Lofted from _CUT_MARGIN before the front face to _CUT_MARGIN
+    #      past the back face so it cuts clean through. ----
+    r_front = shaft_bore_D2                    # front Ø = 2*D2   → radius = D2
+    r_back = 0.4 * hub_dia_D5                   # hub-end Ø = 0.8*D5 → radius = 0.4*D5
     taper_bore = (
         cq.Workplane("XY").workplane(offset=-_CUT_MARGIN).circle(r_front)
         .workplane(offset=rim_width_B + 2.0 * _CUT_MARGIN).circle(r_back).loft()

@@ -84,8 +84,8 @@ PARAM_SPEC = {
         source="norelem 22070 Form J L (~0.28*D, the taper-bush length)",
         askable=True, refine=True,
     ),
-    "bore_dia_d1": dict(
-        desc="conical taper-bush bore diameter (front/small end)", unit="mm",
+    "shaft_bore_D2": dict(
+        desc="taper-bush SHAFT bore D2; the pulley seat front Ø = 2*D2 (< back 0.8*D5)", unit="mm",
         range={"easy": (14.0, 42.0), "medium": (18.0, 60.0), "hard": (24.0, 90.0)},
         source="taper clamping bush seat (~0.6*D5); bounded by the hub wall",
         askable=True, refine=True,
@@ -120,11 +120,11 @@ def check(p: dict) -> list[str]:
         bad.append("hub_width_L >= rim_width_B: no rim overhang (L1 = B - L must be > 0)")
     if p["hub_dia_D5"] > 2.0 * root_r:
         bad.append("hub_dia_D5 larger than the groove-root rim")
-    if p["hub_dia_D5"] <= p["bore_dia_d1"] + 6.0:
+    if p["hub_dia_D5"] <= p["shaft_bore_D2"] + 6.0:
         bad.append("hub_dia_D5 too close to the bore: no hub wall for the taper bush")
-    if p["bore_dia_d1"] < 10.0:
+    if p["shaft_bore_D2"] < 10.0:
         bad.append("bore_dia_d1 < 10 mm: below practical taper-bush sizes")
-    if root_r - p["bore_dia_d1"] / 2.0 < 4.0:
+    if root_r - p["shaft_bore_D2"] / 2.0 < 4.0:
         bad.append("< 4 mm rim between the groove root and the bore")
     return bad
 
@@ -149,9 +149,9 @@ def refine(p: dict, difficulty: str, rng) -> None:
     p["hub_width_L"] = round(min(0.28 * p["outer_dia_D"], 0.85 * p["rim_width_B"]), 1)
 
     # conical taper-bush bore ~ 0.6*D5, leaving a hub wall and a rim to the groove root
-    bore = 0.6 * p["hub_dia_D5"] * float(rng.uniform(0.9, 1.1))
+    bore = 0.3 * p["hub_dia_D5"] * float(rng.uniform(0.9, 1.1))   # D2; 2*D2 (~0.6*D5) < back 0.8*D5 → frustum
     hi_b = min(bore, p["hub_dia_D5"] - 6.0, 2.0 * (root_r - 4.0))
     lo_b = 10.0
     if hi_b <= lo_b:
         raise Resample
-    p["bore_dia_d1"] = round(float(rng.uniform(max(lo_b, 0.85 * hi_b), hi_b)), 1)
+    p["shaft_bore_D2"] = round(float(rng.uniform(max(lo_b, 0.85 * hi_b), hi_b)), 1)
