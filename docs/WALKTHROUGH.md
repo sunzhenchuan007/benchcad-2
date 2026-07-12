@@ -110,6 +110,17 @@ Hold the extremes against the table's min/max rows yourself: does the small
 end still have sane proportions, does the big end still render every feature?
 That's exactly what your reviewer will do.
 
+**Want to rotate it, section it, and tweak parameters live?** Build the part and
+open it in a 3D viewer with one command:
+
+```bash
+uv run python tools/debug_family.py my_family              # samples a valid instance
+uv run python tools/debug_family.py my_family --diff hard  # or a specific tier
+```
+
+See **[DEBUGGING.md](DEBUGGING.md)** — the ocp-vscode viewer, the CQ-editor
+edit-and-see-live loop, and how to debug a family you're hand-writing.
+
 ## Stations 3–5 — PR, CI, review
 
 Open **one PR touching only `designs/my_family/`** with `Closes #<issue>` in
@@ -141,7 +152,8 @@ QUALIFIED → RELEASED.
   datasheet + table on an issue (*Part proposal* form), a maintainer builds it,
   both of you are credited.
 - **My preview doesn't look like the drawing.** → fix before PR; the #1 review
-  rejection cause is geometry-vs-drawing mismatch.
+  rejection cause is geometry-vs-drawing mismatch. Open the part in a 3D
+  viewer to see what's off — **[DEBUGGING.md](DEBUGGING.md)** (`tools/debug_family.py`).
 - **`validate` says a sampled value left the declared range.** → the framework
   samples from `PARAM_SPEC`, so the declared range is the contract: widen the
   range, or clamp a coupled value inside it in `refine()` (this gate caught a
