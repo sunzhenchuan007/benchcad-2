@@ -1,0 +1,8 @@
+{
+  "family": "knurled_thumb_screw_din464",
+  "standard": "DIN 464 (knurled thumb screw, high type)",
+  "base_plane": "XY",
+  "description": "Knurled thumb screw per DIN 464 (high type): a tall knurled cylindrical head (diameter dk, height h) on a raised collar (diameter ds) over a metric threaded shank (diameter d, length l). The head trio dk/ds/h and the knurl height k and thread length b are jointly locked to the nominal thread size d from the DIN 464 table. A straight knurl is modelled as n shallow axial flutes evenly around the head rim over the knurl band k; a 45-degree chamfer breaks the head's free top outer edge; the shank carries a modelled external metric thread (ISO 261 coarse pitch) rendered as a single-start helical V-groove over the tip length b, leaving a plain neck under the collar, with a lead-in chamfer at the threaded end.",
+  "source": "DIN 464 head diameter dk, collar diameter ds, head height h, knurl height k, thread length b table (fasteners.eu datasheet); ISO 261 coarse pitch",
+  "contributor": "BenchCAD"
+}
