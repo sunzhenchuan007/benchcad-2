@@ -8,37 +8,40 @@ Variable naming: every dimension carries its **norelem/DIN drawing symbol** as a
 suffix so the code reads against the drawing (see docs/DEBUGGING.md convention).
 
     D   = outer_dia_D     pulley outside diameter
-    B   = rim_width_B      rim width = N*e  (grooves at e/2 from each edge → half teeth)
-    N   = n_grooves        number of V-grooves (Form J: 2 or 3)
-    e   = groove_pitch_e   groove pitch  (SPZ 12 / SPA 15 / SPB 19)
-    lg  = groove_top_lg    groove top width  (ISO 4183 section)
-    T   = groove_depth_T   groove depth below D
-    α   = groove_angle_a   groove flank angle (34° small Ø, 38° large Ø)
-    D5  = hub_dia_D5        hub-boss diameter
-    L   = hub_width_L       hub-boss width (centred in B)
-    L1  = overhang_L1       rim overhang past the hub, total  →  **L + L1 = B**
+    B   = rim_width_B     rim width = N*e  (grooves at e/2 from each edge → half teeth)
+    N   = n_grooves       number of V-grooves (Form J: 2 or 3)
+    e   = groove_pitch_e  groove pitch  (SPZ 12 / SPA 15 / SPB 19)
+    lg  = groove_top_lg   groove top width  (ISO 4183 section)
+    T   = groove_depth_T  groove depth below D
+    α   = groove_angle_a  groove flank angle (34° small Ø, 38° large Ø)
+    D5  = hub_dia_D5      hub-boss diameter
+    L   = hub_width_L     hub-boss width (centred in B)
+    L1  = overhang_L1     rim overhang past the hub, total  →  **L + L1 = B**
     D2  = the SHAFT bore the taper bush accepts (catalogue, not the pulley bore);
           the pulley's own conical seat is bore_dia_d1 (front) tapering to the hub end.
 
 Coordinate frame:  z = 0 front rim face .. z = B back rim face; revolved about +Z;
-the conical bore runs down the axis, wide at the back (hub) end.
+the conical bore runs down the axis.
 """
 
 import math
 
 import cadquery as cq
 
-# taper of the bush seat (radius gained per unit length toward the hub end) —
-# a shallow ~Taper-Lock cone. Bump if the bore should look more conical.
-_BORE_TAPER = 0.06
+# conical bore: how much the bush seat narrows from the front to the hub end,
+# as a fraction of the front radius (0.2 = the back Ø is 80% of the front Ø).
+_BORE_TAPER = 0.2
+# a small margin (mm) so boolean cuts run cleanly a hair past each end face,
+# instead of ending exactly on the face (which leaves coincident-face slivers).
+_CUT_MARGIN = 1.0
 
 
 def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
           groove_depth_T, groove_angle_a, hub_dia_D5, hub_width_L, bore_dia_d1):
     R_outer = outer_dia_D / 2.0                     # rim outer radius (to D)
     R_hub = hub_dia_D5 / 2.0                        # hub-boss radius (to D5)
-    overhang_L1 = rim_width_B - hub_width_L         # <<< drawing relation: L + L1 = B
-    z_hub0 = overhang_L1 / 2.0                      # hub is centred: L1/2 rim each side
+    overhang_L1 = rim_width_B - hub_width_L         # drawing relation: L + L1 = B
+    z_hub0 = overhang_L1 / 2.0                      # hub centred → L1/2 of rim each side
     z_hub1 = z_hub0 + hub_width_L
 
     # grooves centred across B = N*e, so the first groove sits e/2 from each edge:
@@ -71,14 +74,15 @@ def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
     hub = cq.Workplane("XY").workplane(offset=z_hub0).circle(R_hub).extrude(hub_width_L)
     result = rim.union(hub)
 
-    # ---- conical taper-bush bore: Ø bore_dia_d1 at the front (z=0), widening
-    #      toward the back/hub end; NO keyway (the bush carries it) ----
+    # ---- conical taper-bush bore: Ø bore_dia_d1 at the front (z=0), narrowing to
+    #      (1-_BORE_TAPER)*that toward the hub end; NO keyway (the bush carries it).
+    #      Lofted from _CUT_MARGIN before the front face to _CUT_MARGIN past the back
+    #      so it cuts clean through. ----
     r_front = bore_dia_d1 / 2.0
-    r_back = r_front + _BORE_TAPER * rim_width_B
+    r_back = (1.0 - _BORE_TAPER) * r_front
     taper_bore = (
-        cq.Workplane("XY").workplane(offset=-1)
-        .circle(r_front).workplane(offset=rim_width_B + 2)
-        .circle(r_back).loft()
+        cq.Workplane("XY").workplane(offset=-_CUT_MARGIN).circle(r_front)
+        .workplane(offset=rim_width_B + 2.0 * _CUT_MARGIN).circle(r_back).loft()
     )
     result = result.cut(taper_bore)
 
