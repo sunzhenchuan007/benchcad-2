@@ -103,6 +103,15 @@ uv run bench2 preview my_family      # 输出三张 PNG
 自己先把极值图对着尺寸表的最小/最大行看一遍:小端比例还合理吗?大端每个
 特征还在吗?——评审者做的就是这件事。
 
+**想转着看、剖开看、边改参数边看?** 一条命令构建 + 在 3D viewer 里打开:
+
+```bash
+uv run python tools/debug_family.py my_family              # 抽一个合法实例
+uv run python tools/debug_family.py my_family --diff hard  # 或指定难度
+```
+
+见 **[DEBUGGING.md](DEBUGGING.md)** —— ocp-vscode viewer、CQ-editor 边改边看的循环,以及手写 family 时怎么调试。
+
 ## 第 3–5 站——PR、CI、评审
 
 开**一个只动 `designs/my_family/` 的 PR**,描述里写 `Closes #<issue编号>`
@@ -130,7 +139,8 @@ QUALIFIED → RELEASED 一路翻牌。
 - **`uv sync` 装不上 / 没有 Python?** → 走零代码路径:把 datasheet + 尺寸表
   发到 issue(*Part proposal* 表单),维护者来写代码,两个人都记贡献。
 - **preview 和工程图长得不像。** → PR 前先修好;评审打回的第一大原因就是
-  几何与图纸不符。
+  几何与图纸不符。用 3D viewer
+  打开零件看哪里不对——**[DEBUGGING.md](DEBUGGING.md)**(`tools/debug_family.py`)。
 - **validate 报"抽样值超出声明范围"。** → 抽样由框架从 `PARAM_SPEC` 完成,
   声明的范围就是契约:把范围放宽,或者若该值是耦合参数,就在 `refine()` 里
   把它夹进范围内(这道门禁在我们自己的参考链轮上就抓过一个真 bug)。
