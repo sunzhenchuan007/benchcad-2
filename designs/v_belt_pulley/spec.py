@@ -1,9 +1,10 @@
 """v_belt_pulley — the benchmark generator spec (norelem 22070 / DIN 2211, Form J).
 
 Form J = a multi-groove (N = 2/3) taper-bush sheave, built as a single solid of
-revolution: a grooved rim (outer profile) around a conical taper bore that opens
-from Ø 2*D2 at the front out to Ø 0.8*D5 then runs straight (inner profile =
-frustum + cylinder); no keyway. Params carry their norelem/DIN drawing symbol
+revolution: a grooved rim (outer profile) around a conical taper bore whose big
+mouth Ø 0.8*D5 is at the front and narrows inward to the shaft bore Ø 2*D2, which
+then runs straight (inner profile = frustum + cylinder); no keyway. Params carry
+their norelem/DIN drawing symbol
 (see part.py glossary): outer_dia_D (D), rim_width_B (B), hub_dia_D5 (D5),
 hub_width_L (L = taper length), shaft_bore_D2 (D2).
 
@@ -74,7 +75,7 @@ PARAM_SPEC = {
         askable=True, refine=True,
     ),
     "hub_dia_D5": dict(
-        desc="hub Ø D5 (Form J ~0.68*D); the bore opens to Ø 0.8*D5 at its large end", unit="mm",
+        desc="hub Ø D5 (Form J ~0.68*D); the bore mouth at the front is Ø 0.8*D5 (big end)", unit="mm",
         range={"easy": (34.0, 62.0), "medium": (48.0, 100.0), "hard": (70.0, 170.0)},
         source="norelem 22070 Form J D5 (D5/D ~ 0.56-0.81, mean 0.68)",
         askable=True, refine=True,
@@ -86,9 +87,9 @@ PARAM_SPEC = {
         askable=True, refine=True,
     ),
     "shaft_bore_D2": dict(
-        desc="taper-bush SHAFT bore D2; the seat's small (front) end is Ø 2*D2 (< back 0.8*D5)", unit="mm",
+        desc="taper-bush SHAFT bore D2; the seat narrows to Ø 2*D2 (< mouth 0.8*D5)", unit="mm",
         range={"easy": (10.0, 22.0), "medium": (10.0, 33.0), "hard": (10.0, 52.0)},
-        source="taper clamping bush seat small end (2*D2 ~ 0.6*D5); a widening frustum",
+        source="taper clamping bush seat small end (2*D2 ~ 0.6*D5); mouth 0.8*D5 narrows to it",
         askable=True, refine=True,
     ),
 }
@@ -116,13 +117,13 @@ def check(p: dict) -> list[str]:
     if half_bot <= 0.5:
         bad.append("groove bottoms out to a point: no trapezoidal flat")
     root_r = p["outer_dia_D"] / 2.0 - p["groove_depth_T"]
-    r_bore_back = 0.4 * p["hub_dia_D5"]                 # bore/taper large end = Ø 0.8*D5
-    # the taper seat must OPEN outward: front Ø 2*D2 smaller than back Ø 0.8*D5 (a frustum)
-    if p["shaft_bore_D2"] >= r_bore_back - 0.5:
-        bad.append("2*D2 >= 0.8*D5: bore is not a widening frustum (cylinder / inverted cone)")
-    # keep a rim wall between the bore large end and the groove root
-    if root_r - r_bore_back < 4.0:
-        bad.append("< 4 mm wall between the bore (0.8*D5) and the groove root")
+    r_mouth = 0.4 * p["hub_dia_D5"]                     # taper mouth (big front end) = Ø 0.8*D5
+    # the taper seat must narrow inward: mouth Ø 0.8*D5 wider than the shaft bore Ø 2*D2
+    if p["shaft_bore_D2"] >= r_mouth - 0.5:
+        bad.append("2*D2 >= 0.8*D5: mouth not wider than the bore (no tapered seat)")
+    # keep a rim wall between the mouth (widest bore Ø) and the groove root
+    if root_r - r_mouth < 4.0:
+        bad.append("< 4 mm wall between the bore mouth (0.8*D5) and the groove root")
     # taper length L must be shorter than B so a straight cylinder section remains
     if p["hub_width_L"] >= p["rim_width_B"]:
         bad.append("hub_width_L (taper length) >= rim_width_B: no straight bore section")
