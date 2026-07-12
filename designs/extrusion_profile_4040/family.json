@@ -1,0 +1,8 @@
+{
+  "family": "extrusion_profile_4040",
+  "standard": null,
+  "base_plane": "XY",
+  "description": "40x40 aluminium T-slot extrusion (item Profile 8, art. 0.0.026.03): a square bar of a cut length with the item slot-8 T-groove (8 mm surface opening widening to an inner chamber, 4.5 mm lip) on each of the four faces, an optional central core bore and optional rounded outer corners. The cross-section is the one real 40x40 profile (slot dims fixed); length, the core bore and the corner radius are the variable axes.",
+  "source": "item Profile 8 40x40 (art. 0.0.026.03); the slot opening (8), lip (4.5), core bore (6.8) and corner radius (4) are catalog values, the chamber width/depth are catalog-approximate (proportion). item publishes the cross-section but no full ortho dim table.",
+  "contributor": "BenchCAD"
+}
