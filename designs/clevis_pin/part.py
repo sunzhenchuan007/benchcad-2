@@ -4,8 +4,8 @@ ISO 2341 clevis pin with head, form B (with a transverse split-pin / cotter
 hole near the free end): a plain cylindrical shank of diameter d and length L
 carrying a flat cylindrical HEAD (Ø dk ~ 1.5 d, height k ~ 0.4 d) at the top
 end, and a transverse COTTER HOLE (Ø hd) drilled straight through the shank
-near the free end so a split pin can retain it. The head underside and the
-shank free end are lightly chamfered. Modelled as ONE connected solid on the
+near the free end so a split pin can retain it. The shank free end is lightly
+chamfered (for insertion); the head is plain. Modelled as ONE connected solid on the
 XY plane, extruded up +Z; bench2 derives each instance's stand-alone program.
 
     dk = head_d  ~ round(1.5 * d)              flat head diameter
@@ -25,9 +25,8 @@ def build(shank_d, length, head_d, head_h, hole_d):
     head = cq.Workplane("XY").workplane(offset=L).circle(dk / 2.0).extrude(k)
     result = shank.union(head)
 
-    # lightly chamfer the head top edge and the shank free end only — the head
-    # underside (where it seats on the shank) is left sharp
-    result = result.faces(">Z").chamfer(0.12 * d)
+    # lightly chamfer the shank free end only (for insertion); the head is left
+    # plain — flat top and a sharp underside where it seats on the shank
     result = result.faces("<Z").chamfer(0.12 * d)
 
     # transverse cotter hole through the shank, near the free end (z ~ 0.15 L).
