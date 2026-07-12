@@ -33,7 +33,8 @@ jobs:
             const fam = (files.map(f => f.filename.match(/^designs\/([^/]+)\//))
                               .find(Boolean) || [])[1];
             if (!fam) { core.info('no designs/ change'); return; }
-            const raw = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/designs/${fam}`;
+            // blob?raw=true renders for authenticated viewers on a private repo
+            const raw = `https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/designs/${fam}`;
             const sha = context.payload.pull_request.merge_commit_sha.slice(0, 7);
             const comment = [
               `## ✅ Merged — acceptance evidence (dossier close-out)`,
@@ -42,9 +43,9 @@ jobs:
               ``,
               `| Benchmark 4-views | Extremes (min & max draw) |`,
               `|---|---|`,
-              `| ![views](${raw}/preview_views.png) | ![extremes](${raw}/preview_extremes.png) |`,
+              `| ![views](${raw}/preview_views.png?raw=true) | ![extremes](${raw}/preview_extremes.png?raw=true) |`,
               ``,
-              `Overview grid: [preview.png](${raw}/preview.png) · gates: \`bench2 validate ${fam}\` PASS (checked in CI on the PR).`,
+              `Overview grid: [preview.png](${raw}/preview.png?raw=true) · gates: \`bench2 validate ${fam}\` PASS (checked in CI on the PR).`,
               ``,
               `Next stations: factory batch → release — track on [STATUS.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/STATUS.md).`,
             ].join('\n');

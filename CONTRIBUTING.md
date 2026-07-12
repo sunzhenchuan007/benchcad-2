@@ -85,8 +85,10 @@ Getting the reference images: norelem product pages expose CDN originals
 dimensioned drawing — extract with `[...document.querySelectorAll('img')].map(i=>i.src)`);
 datasheet PDFs live at stable URLs (`norelem.com/xs_db/DOKUMENT_DB/...`).
 Store images in `docs/assets/refs/<family>_{photo,drawing}.png` — never
-drag-and-drop into the issue — and embed via raw.githubusercontent URLs.
-Always name the source with a link.
+drag-and-drop into the issue — and embed via SHA-pinned blob URLs with
+`?raw=true` (`https://github.com/BenchCAD-org/benchcad-2/blob/<commit>/docs/assets/refs/<file>.png?raw=true`);
+these render for repo members while the repo is private, where anonymous
+raw.githubusercontent URLs 404. Always name the source with a link.
 
 ## Issue taxonomy — the title prefix says what it is
 

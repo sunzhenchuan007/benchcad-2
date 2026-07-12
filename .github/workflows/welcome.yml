@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      contents: read
     steps:
       - uses: actions/github-script@v7
         with:
@@ -24,8 +25,10 @@ jobs:
             // duplicate check against the registry
             let dupBlock = '';
             try {
-              const res = await fetch(`https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/registry.json`);
-              const reg = await res.json();
+              // authenticated contents API (anonymous raw URLs 404 on a private repo)
+              const res = await github.rest.repos.getContent({
+                owner: context.repo.owner, repo: context.repo.repo, path: 'registry.json' });
+              const reg = JSON.parse(Buffer.from(res.data.content, 'base64').toString('utf8'));
               if (name) {
                 const norm = s => s.replace(/_\d+$/, '').replace(/_/g, '');
                 const lev = (a, b) => { // small edit-distance
