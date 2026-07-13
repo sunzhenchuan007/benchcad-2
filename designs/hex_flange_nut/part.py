@@ -4,7 +4,7 @@ DIN 6923 (ISO 4161) hexagon flange nut: a hexagon wrenching body (width across
 flats hex_s, total height total_h_m) integral with a wide conical FLANGE at the
 seating end (bearing diameter flange_dia_dc, edge thickness flange_thk_c), bored
 and cut with a metric INTERNAL V-thread (ISO 261 coarse pitch) running the full
-height. The thread is a single-start helix at the MINOR radius whose 60-degree V
+height. The thread is a stack of revolved 60-degree V-rings whose
 is cut radially OUTWARD (apex just past the major radius), so the helical crest
 stays at the minor radius — a real tapped hole, not a plain bore. The serrated
 DIN 6923 variant adds radial locking teeth on the flange bearing face.
@@ -55,21 +55,19 @@ def build(thread_dia_d, hex_s, flange_dia_dc, total_h_m, flange_thk_c,
         cq.Workplane("XY").workplane(offset=-1.0).circle(r_min).extrude(m + 2.0)
     )
 
-    # internal metric thread: single-start helix at the minor radius; a 60-degree
-    # V groove swept and cut radially OUTWARD (apex just past the major radius) so
-    # the helical crest is left at the minor radius. isFrenet=False for stability;
-    # the helix over-runs half a pitch past each end so the thread cuts clean.
-    oc = 0.25 * pitch
-    helix = cq.Workplane("XY").add(cq.Wire.makeHelix(pitch, m + pitch, r_min))
-    groove = (
-        cq.Workplane("XZ").center(r_min - oc, 0)
-        .moveTo(0, -pitch / 2.0).lineTo(0.6134 * pitch + oc, 0).lineTo(0, pitch / 2.0)
-        .close().sweep(helix, isFrenet=False).translate((0, 0, -0.5 * pitch))
-    )
-    # fuzzy tolerance: the swept V sits nearly tangent to the bore wall, which
-    # makes the exact boolean fail on some pitches (e.g. M8); a 1e-4 mm fuzz
-    # resolves the coincidence without moving any nominal dimension.
-    result = result.cut(groove, tol=1.0e-4)
+    # internal metric thread as revolved 60-degree V-rings reaching the major
+    # radius — deterministic: the swept helix silently no-opped on 7 of the 8
+    # sizes here (only the fuzz-patched M8 actually cut), and rings with crest
+    # flats at the minor radius are the correct internal form. The stack
+    # over-runs both faces so the thread mouths cut flush.
+    ri = r_min - 0.2
+    zcs = [(k + 0.5) * pitch for k in range(-1, int(m / pitch) + 2)
+           if -0.6 * pitch <= (k + 0.5) * pitch <= m + 0.6 * pitch]
+    pts = [(ri, zcs[-1] + pitch / 2.0)]
+    for zc in reversed(zcs):
+        pts += [(r_maj, zc), (ri, zc - pitch / 2.0)]
+    rings = cq.Workplane("XZ").polyline(pts).close().revolve(360.0, (0, 0), (0, 1))
+    result = result.cut(rings)
 
     # serrated DIN 6923 variant: radial locking teeth on the flange bearing face —
     # shallow radial grooves cut into the bearing plane (tooth tips left flush at
