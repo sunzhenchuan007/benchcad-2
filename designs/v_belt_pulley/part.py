@@ -13,7 +13,7 @@ Variable naming: every dimension carries its **norelem/DIN drawing symbol** suff
 so the code reads against the drawing (see docs/DEBUGGING.md convention).
 
     D   = outer_dia_D     pulley outside diameter
-    B   = rim_width_B     rim width = N*e  (grooves at e/2 from each edge → half teeth)
+    B   = rim_width_B     rim width = 2E + (N−1)e  (outer grooves at E from each face)
     N   = n_grooves       number of V-grooves (Form J: 2 or 3)
     e   = groove_pitch_e  groove pitch  (SPZ 12 / SPA 15 / SPB 19)
     lg  = groove_top_lg   groove top width  (ISO 4183 section)
@@ -39,8 +39,8 @@ def build(outer_dia_D, rim_width_B, n_grooves, groove_pitch_e, groove_top_lg,
     r_bore = shaft_bore_D2                       # shaft bore (small): Ø 2*D2, z=L..B
     z_taper = min(hub_width_L, B)               # cone narrows z=0..L (mouth→bore), cylinder L..B
 
-    # grooves centred across B = N*e → first groove e/2 from each edge, so the two
-    # rim edges are HALF teeth and the N-1 lands between grooves are full teeth
+    # grooves centred across B: with B = 2E + (N-1)e the outer groove centres land
+    # exactly at the ISO 4183 edge distance E from each rim face, e apart between
     span = (n_grooves - 1) * groove_pitch_e
     z_g0 = B / 2.0 - span / 2.0
     half_lg = groove_top_lg / 2.0
