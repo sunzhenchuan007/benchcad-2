@@ -3,7 +3,8 @@
 The head trio + shank data (dk, ds, h, k, b) are the jointly-sampled DIN 464
 row for the nominal thread size d; refine() draws a row and sets them from the
 catalog table, plus a knurl depth scaled to the head. The shank length l is a
-free stock dimension and the knurl count is a proportion. check() audits that
+stock dimension drawn inside the size's DIN 464 availability band and the
+knurl count is a proportion. check() audits that
 the sampled data is a real DIN 464 row and that the geometry is consistent.
 
 Anchor: DIN 464 knurled thumb screw, high type — head Ø dk, collar Ø ds, head
@@ -12,22 +13,30 @@ is ISO 261. Source: fasteners.eu DIN 464 datasheet table.
 """
 
 # DIN 464 rows: nominal thread d -> (d, head Ø dk, collar Ø ds, head height h,
-# knurl height k, thread length b), mm — high type.
+# knurl height k, thread length b, collar fillet r), mm — high type.
 _ROWS = {
     "easy": [
-        (1.0, 5.5, 2.8, 3.5, 1.5, 3.0),
-        (2.0, 9.0, 4.5, 5.3, 2.0, 6.0),
-        (3.0, 12.0, 6.0, 7.5, 2.5, 9.0),
+        (1.0, 5.5, 2.8, 3.5, 1.5, 3.0, 0.5),
+        (2.0, 9.0, 4.5, 5.3, 2.0, 6.0, 0.5),
+        (3.0, 12.0, 6.0, 7.5, 2.5, 9.0, 0.5),
     ],
     "medium": [
-        (4.0, 16.0, 8.0, 9.5, 3.5, 12.0),
-        (5.0, 20.0, 10.0, 11.5, 4.0, 15.0),
-        (6.0, 24.0, 12.0, 15.0, 5.0, 18.0),
+        (4.0, 16.0, 8.0, 9.5, 3.5, 12.0, 0.5),
+        (5.0, 20.0, 10.0, 11.5, 4.0, 15.0, 1.0),
+        (6.0, 24.0, 12.0, 15.0, 5.0, 18.0, 1.0),
     ],
     "hard": [
-        (8.0, 30.0, 16.0, 18.0, 6.0, 24.0),
-        (10.0, 36.0, 20.0, 23.0, 8.0, 30.0),
+        (8.0, 30.0, 16.0, 18.0, 6.0, 24.0, 2.0),
+        (10.0, 36.0, 20.0, 23.0, 8.0, 30.0, 2.0),
     ],
+}
+
+# DIN 464 shank-length availability per size, read off the source page's l/mass
+# matrix (l runs 2..40 nominal overall; each size ships a sub-band). Lower ends
+# are lifted to b + 2 pitches so the plain neck under the collar survives.
+_L_BANDS = {
+    1: (3.6, 5.0), 2: (7.0, 10.0), 3: (10.2, 12.0), 4: (13.5, 16.0),
+    5: (16.7, 20.0), 6: (20.1, 25.0), 8: (26.6, 40.0), 10: (33.1, 40.0),
 }
 _ALL_ROWS = [r for rows in _ROWS.values() for r in rows]
 
@@ -86,12 +95,21 @@ PARAM_SPEC = {
         askable=True,
         refine=True,
     ),
+    "collar_fillet_r": dict(
+        desc="fillet r where the collar meets the head-disk underside (drawing dim r)",
+        unit="mm",
+        range={"easy": (0.5, 0.5), "medium": (0.5, 1.0), "hard": (2.0, 2.0)},
+        source="DIN 464 r column (row-locked to d)",
+        askable=True,
+        refine=True,
+    ),
     "shank_len_l": dict(
         desc="shank length l under the collar (free stock length)",
         unit="mm",
-        range={"easy": (14.0, 26.0), "medium": (24.0, 44.0), "hard": (36.0, 60.0)},
-        source="stock length (proportion)",
+        range={"easy": (3.6, 12.0), "medium": (13.5, 25.0), "hard": (26.6, 40.0)},
+        source="DIN 464 length availability matrix (per-size band, l = 2..40 overall)",
         askable=True,
+        refine=True,
     ),
     "n_knurls": dict(
         desc="number of straight-knurl flutes around the head rim",
@@ -116,9 +134,9 @@ PARAM_SPEC = {
 def check(p: dict) -> list[str]:
     bad = []
     row = (p["thread_dia_d"], p["head_dia_dk"], p["collar_dia_ds"],
-           p["head_h"], p["knurl_band_k"], p["thread_len_b"])
+           p["head_h"], p["knurl_band_k"], p["thread_len_b"], p["collar_fillet_r"])
     if row not in _ALL_ROWS:
-        bad.append("(d, dk, ds, h, k, b) is not a DIN 464 row")
+        bad.append("(d, dk, ds, h, k, b, r) is not a DIN 464 row")
     d, dk, ds = p["thread_dia_d"], p["head_dia_dk"], p["collar_dia_ds"]
     h, k, b, l = p["head_h"], p["knurl_band_k"], p["thread_len_b"], p["shank_len_l"]
     n, kd = int(round(p["n_knurls"])), p["knurl_depth"]
@@ -135,6 +153,9 @@ def check(p: dict) -> list[str]:
         bad.append("thread_len_b must span more than ~3 pitches")
     if l <= b + 2.0 * pitch:
         bad.append("shank_len_l must exceed thread_len_b plus a plain relief")
+    band = _L_BANDS.get(int(round(d)))
+    if band and not (band[0] - 0.11 <= l <= band[1] + 0.11):
+        bad.append("shank_len_l outside the DIN 464 per-size length availability")
     if not (16 <= n <= 44):
         bad.append("n_knurls outside a sane straight-knurl band (16..44)")
     return bad
@@ -142,12 +163,15 @@ def check(p: dict) -> list[str]:
 
 # -- refine — draw the DIN 464 row + scale the knurl depth ---------------------
 def refine(p: dict, difficulty: str, rng) -> None:
-    d, dk, ds, h, k, b = _ROWS[difficulty][int(rng.integers(len(_ROWS[difficulty])))]
+    d, dk, ds, h, k, b, r = _ROWS[difficulty][int(rng.integers(len(_ROWS[difficulty])))]
     p["thread_dia_d"] = d
     p["head_dia_dk"] = dk
     p["collar_dia_ds"] = ds
     p["head_h"] = h
     p["knurl_band_k"] = k
     p["thread_len_b"] = b
+    p["collar_fillet_r"] = r
+    lo, hi = _L_BANDS[int(round(d))]
+    p["shank_len_l"] = round(float(rng.uniform(lo, hi)), 1)
     # knurl flutes scale with the head; small jitter keeps instances distinct
     p["knurl_depth"] = round(dk * float(rng.uniform(0.03, 0.045)), 2)
