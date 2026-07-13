@@ -1,0 +1,8 @@
+{
+  "family": "banjo_bolt",
+  "standard": "DIN 7643 (banjo bolt / hollow screw)",
+  "base_plane": "XY",
+  "description": "DIN 7643 banjo bolt (hollow screw): a hex head on a shank (Ø d3 = the thread nominal) carrying an external fine metric thread (single-start helical V-groove), an axial hollow bore (d4) drilled up from the free end, and one or two transverse cross-holes (d2) through the shank into that bore in the banjo-seat region below the head, so fluid from the banjo ring fitting crosses into the axial bore. The thread size row-locks hex s, bore d4, cross-hole d2, shank length l1, bore depth t1, head height m and cross-hole location c1; the number of cross-drills (1 = 2 ports, 2 = 4 ports) varies. One connected solid.",
+  "source": "DIN 7643 hollow-screw table (fasteners.eu): thread size, hex s, shank d3, bore d4, cross-hole d2, l1, t1, head height m, c1 (row-locked, M10x1..M26x1.5). ISO 261 fine pitch (1.0/1.5). Cross-drill count is a real single/double banjo variant. Reference: issue #100.",
+  "contributor": "BenchCAD"
+}
