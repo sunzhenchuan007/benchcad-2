@@ -1,0 +1,8 @@
+{
+  "family": "v_belt_pulley",
+  "standard": "ISO 4183",
+  "base_plane": "XY",
+  "description": "V-belt pulley (sheave) per ISO 4183: a rim with N circumferential V-grooves (SPZ/SPA/SPB section sets the groove top width, depth, pitch e and edge distance E), a center bore and an optional hub. Each groove is a trapezoid with the ISO belt angle (34 deg, 38 deg on large datum diameters) and a flat bottom; the rim width is the ISO relation B = 2E + (N-1)e. The section is matched to the pulley diameter (minimum datum diameter 63/80/112); groove count and hub grow with difficulty.",
+  "source": "ISO 4183 (narrow V-belt pulleys SPZ/SPA/SPB): groove datum widths/depths, pitch e, edge distance E, groove angle 34/38 deg by datum diameter, rim width B = 2E + (N-1)e, and minimum datum diameter per section (63/80/112 mm). The datum-line offset and ball-check ba offsets are simplified (proportion).",
+  "contributor": "BenchCAD"
+}
