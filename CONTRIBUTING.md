@@ -100,6 +100,7 @@ raw.githubusercontent URLs 404. Always name the source with a link.
 | `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
 | `[proposal] <part name>` | zero-code part proposal — we write the code | **anyone** (form) | `family`, `proposal` |
 | `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
+| `[fix] <the correction> (<family>)` | a defect in a **merged** family + its correction — prefix first, family in trailing parens; the fix PR carries the same title | **anyone** | `bug` |
 | `[feat] <short description>` | framework improvement | **anyone** (form) | `enhancement` |
 
 Hierarchy (GitHub sub-issues, visible as a tree on each issue):
@@ -112,6 +113,9 @@ invitation).
 
 - **Bug** → *Bug report* form (command + output; for a design bug, an
   engineering reason). Fix PRs link the issue with `Closes #N`.
+- **Defect in a merged family** → `[fix] <the correction> (<family>)` issue —
+  the wrong relation vs the catalog/standard one, with before/after renders;
+  the fix PR reuses the same title and links it with `Closes #N` (e.g. #158/#159).
 - **Framework feature** → *Feature request* form; big ideas belong to an
   existing `[workstream]` issue on the
   [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21).

@@ -24,6 +24,7 @@ jobs:
               family:     ['family'],
               proposal:   ['family', 'proposal'],
               bug:        ['bug'],
+              fix:        ['bug'],
               feat:       ['enhancement'],
               roadmap:    ['roadmap'],
               workstream: ['workstream'],
