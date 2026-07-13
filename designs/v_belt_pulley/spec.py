@@ -105,9 +105,11 @@ def check(p: dict) -> list[str]:
     if p["n_grooves"] < 2:
         bad.append("Form J is multi-groove: n_grooves must be >= 2")
     if sec is not None:
-        exp_B = round(p["n_grooves"] * p["groove_pitch_e"], 1)
+        # ISO 4183 (exact, issue #5 implementer note): B = 2E + (N-1)e — the outer
+        # groove centres sit at the tabulated edge distance E from each rim face
+        exp_B = round(2.0 * sec[3] + (p["n_grooves"] - 1) * p["groove_pitch_e"], 1)
         if abs(p["rim_width_B"] - exp_B) > 0.11:
-            bad.append("rim_width_B != N*e: edges are not half-teeth")
+            bad.append("rim_width_B != 2E + (N-1)e: not the ISO 4183 rim width")
         exp_a = 34.0 if p["outer_dia_D"] < sec[4] else 38.0
         if abs(p["groove_angle_a"] - exp_a) > 1e-6:
             bad.append("groove_angle_a does not follow the ISO 34/38 datum-diameter step")
@@ -140,9 +142,10 @@ def refine(p: dict, difficulty: str, rng) -> None:
     p["groove_angle_a"] = 34.0 if p["outer_dia_D"] < ang_step else 38.0
 
     n = p["n_grooves"]
-    # rim width B = N*e → the first groove sits at e/2 from each edge, so the two
-    # rim edges are HALF teeth and the N-1 lands between grooves are full teeth
-    p["rim_width_B"] = round(n * pitch, 1)
+    # rim width B = 2E + (N-1)e (ISO 4183, exact): the outer groove centres sit at
+    # the tabulated edge distance E from each rim face, pitch e apart in between
+    # (SPB: E=12.5, e=19 -> N=2 gives 44, N=3 gives 63 — the catalog rows)
+    p["rim_width_B"] = round(2.0 * edge + (n - 1) * pitch, 1)
 
     root_r = p["outer_dia_D"] / 2.0 - depth
     # hub boss D5 ~ 0.68*D, clamped below the groove-root rim
