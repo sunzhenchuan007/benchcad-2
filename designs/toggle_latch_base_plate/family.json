@@ -1,0 +1,8 @@
+{
+  "family": "toggle_latch_base_plate",
+  "standard": "Ganter GN 832",
+  "base_plane": "XY",
+  "description": "Stamped mounting base of a Ganter GN 832 toggle latch: flat base plate with two mounting holes and rounded corners, an upstanding U-clevis (two ears + base fold fillet) carrying the toggle pivot pin, and an optional keeper-nose tab with a spring-cotter-pin bore. The swinging lever, U-bolt hook and catch bracket are mating parts (out of scope). Table-driven: the eight size dimensions are one jointly-sampled GN 832 catalog row (sizes 55/150/200).",
+  "source": "Ganter GN 832 toggle-latch size table (sizes 55/150/200) — columns l2,b1,d2,d1,h1,b2,b3,d3 row-locked; sheet thickness / corner round / ear thickness / fold radius are proportions (see NOTES.md).",
+  "contributor": "BenchCAD"
+}
