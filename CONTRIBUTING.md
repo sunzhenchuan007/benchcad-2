@@ -86,7 +86,7 @@ dimensioned drawing — extract with `[...document.querySelectorAll('img')].map(
 datasheet PDFs live at stable URLs (`norelem.com/xs_db/DOKUMENT_DB/...`).
 Store images in `docs/assets/refs/<family>_{photo,drawing}.png` — never
 drag-and-drop into the issue — and embed via SHA-pinned blob URLs with
-`?raw=true` (`https://github.com/BenchCAD-org/benchcad-2/blob/<commit>/docs/assets/refs/<file>.png?raw=true`);
+`?raw=true` (`https://github.com/BenchCAD-org/benchcad-2-heldout/blob/<commit>/docs/assets/refs/<file>.png?raw=true`);
 these render for repo members while the repo is private, where anonymous
 raw.githubusercontent URLs 404. Always name the source with a link.
 
@@ -98,6 +98,7 @@ raw.githubusercontent URLs 404. Always name the source with a link.
 | `[workstream] <name>` | one roadmap line: goals, task list, all its discussion | maintainers | `workstream` |
 | `[category] <name>` | a part-family category: live checklist of its families | maintainers | `category`, `cat:*` |
 | `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
+| `[family-assembly] <snake_case_name>` | a part-family whose real product is a multi-part **assembly** (bearing, coupling set, clamp set, interlocked link…): the model is a `cq.Compound` with **every real component as its own solid**, zero pairwise interference, and the PR adds a **per-part render** (`preview_parts.png` — each component in isolation next to the assembly, linked in the body) on top of the standard preview set | **anyone** (form) | `family`, `family-assembly`, `cat:*` |
 | `[proposal] <part name>` | zero-code part proposal — we write the code | **anyone** (form) | `family`, `proposal` |
 | `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
 | `[fix] <the correction> (<family>)` | a defect in a **merged** family + its correction — prefix first, family in trailing parens; the fix PR carries the same title | **anyone** | `bug` |
@@ -118,7 +119,7 @@ invitation).
   the fix PR reuses the same title and links it with `Closes #N` (e.g. #158/#159).
 - **Framework feature** → *Feature request* form; big ideas belong to an
   existing `[workstream]` issue on the
-  [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21).
+  [roadmap](https://github.com/BenchCAD-org/benchcad-2-heldout/issues/21).
 - **Review** → verify a family PR per [REVIEWING.md](REVIEWING.md); the
   approving reviewer is credited as that family's verifier.
 - **Errata against released 1.0 data** → issue with the record id + the
