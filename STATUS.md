@@ -20,4 +20,4 @@
 | `v_belt_pulley` | BenchCAD | ISO 4183 | — | — | MERGED |
 | `weld_neck_flange` | BenchCAD | ASME B16.5 | — | — | MERGED |
 
-Want a family on this board? → [open family issues](https://github.com/BenchCAD-org/benchcad-2/issues?q=is%3Aissue+is%3Aopen+label%3Afamily)
+Want a family on this board? → [open family issues](https://github.com/BenchCAD-org/benchcad-2-heldout/issues?q=is%3Aissue+is%3Aopen+label%3Afamily)

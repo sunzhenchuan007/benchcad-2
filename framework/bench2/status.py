@@ -73,7 +73,7 @@ def generate(root: Path) -> str:
         owner = m.get("contributor", "—")
         owner = f"@{owner}" if owner and owner not in ("—", "BenchCAD") and not owner.startswith("@") else owner
         lines.append(f"| `{n}` | {owner} | {m.get('standard') or '—'} | {inst} | {iou} | {stage(n)} |")
-    lines += ["", "Want a family on this board? → [open family issues](https://github.com/BenchCAD-org/benchcad-2/issues?q=is%3Aissue+is%3Aopen+label%3Afamily)"]
+    lines += ["", "Want a family on this board? → [open family issues](https://github.com/BenchCAD-org/benchcad-2-heldout/issues?q=is%3Aissue+is%3Aopen+label%3Afamily)"]
     return "\n".join(lines) + "\n"
 
 

@@ -8,7 +8,7 @@ body:
       value: |
         For a **new part family** use the *Family request* form instead.
         Big items usually belong to a roadmap workstream — check the pinned
-        [roadmap](https://github.com/BenchCAD-org/benchcad-2/issues/21) first;
+        [roadmap](https://github.com/BenchCAD-org/benchcad-2-heldout/issues/21) first;
         if your idea fits an existing `[workstream]` issue, comment there instead.
   - type: dropdown
     id: area
