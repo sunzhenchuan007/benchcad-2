@@ -98,7 +98,7 @@ raw.githubusercontent URLs 404. Always name the source with a link.
 | `[workstream] <name>` | one roadmap line: goals, task list, all its discussion | maintainers | `workstream` |
 | `[category] <name>` | a part-family category: live checklist of its families | maintainers | `category`, `cat:*` |
 | `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
-| `[family-assembly] <snake_case_name>` | a part-family whose real product is a multi-part **assembly** (bearing, coupling set, clamp set, interlocked link…): the model is a `cq.Compound` with **every real component as its own solid**, zero pairwise interference, and the PR adds a **per-part render** (`preview_parts.png` — each component in isolation next to the assembly, linked in the body) on top of the standard preview set | **anyone** (form) | `family`, `family-assembly`, `cat:*` |
+| `[family-assembly] <name>_asm` | a family whose real product is a multi-part **assembly**. Family name carries the **`_asm` suffix** in `designs/`. Model = `cq.Compound`, every real component its own solid, zero interference; PR adds `preview_parts.png` (each part isolated beside the assembly) | **anyone** (form) | `family`, `family-assembly`, `cat:*` |
 | `[proposal] <part name>` | zero-code part proposal — we write the code | **anyone** (form) | `family`, `proposal` |
 | `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
 | `[fix] <the correction> (<family>)` | a defect in a **merged** family + its correction — prefix first, family in trailing parens; the fix PR carries the same title | **anyone** | `bug` |
