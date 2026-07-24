@@ -50,6 +50,12 @@ uv run bench2 preview <family>    # render the grid — a human must look at it
 5. **Don't touch anything outside `designs/<your-family>/`** in a family PR.
    One PR = one family.
 6. Commits are DCO-signed (`git commit -s`) by the human contributor.
+7. **PR/issue body conventions (CI-enforced):** link the family issue with a
+   closing keyword (`Closes #N` — "Implements #N" fails the check), and embed
+   images ONLY as SHA-pinned blob links
+   (`https://github.com/BenchCAD-org/benchcad-2-heldout/blob/<sha>/<path>?raw=true`).
+   This repo is private: `raw.githubusercontent.com` links 404 for every
+   viewer, and the pinned `<sha>` must actually contain the file.
 
 ## What review will do with your output
 
