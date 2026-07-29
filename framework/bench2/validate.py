@@ -66,6 +66,42 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
     else:
         ok("family.json: keys + base_plane valid")
 
+    # -- 1b. assembly metadata: "solids" and the optional component BOM -------
+    # An `_asm` family declares how many bodies it ships and what they are; the
+    # geometry gates below then hold that declaration to the exported STEP,
+    # instead of it being prose nobody can check.
+    want_solids = meta.get("solids")
+    components = meta.get("components") or []
+    component_names: list[str] = []
+    if want_solids is not None and (not isinstance(want_solids, int) or want_solids < 1):
+        bad(f"family.json: solids must be a positive integer (got {want_solids!r})")
+        want_solids = None
+    if components:
+        if not isinstance(components, list) or not all(isinstance(c, dict) for c in components):
+            bad("family.json: components must be a list of {name, quantity, role} objects")
+            components = []
+        else:
+            for c in components:
+                qty = c.get("quantity", 1)
+                name = c.get("name")
+                if not name or not isinstance(name, str):
+                    bad(f"family.json: every component needs a name (got {c!r})")
+                elif not isinstance(qty, int) or qty < 1:
+                    bad(f"family.json: component {name!r} needs a positive integer quantity")
+                else:
+                    component_names.extend([name] * qty)
+            total = len(component_names)
+            if want_solids is None:
+                bad("family.json: components listed but no solids count declared")
+            elif total != want_solids:
+                bad(f"family.json: components sum to {total} bodies "
+                    f"but solids={want_solids} — one row per real component, "
+                    f"quantity for repeats")
+            else:
+                ok(f"family.json: components BOM sums to solids={want_solids}")
+    body_counts: set[int] = set()
+    body_gate_clean = [True]  # cleared by any per-body failure below
+
     # -- 2. the pieces: part.build + spec.PARAM_SPEC/check -------------------
     try:
         part, spec = load_family(fam_dir)
@@ -152,6 +188,27 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
 
                         execute_cq_to_step(prog, step)
                         hashes.append(_geom_hash(step))  # raises if degenerate
+                        # per-body gates, on the EXPORTED solid — what the
+                        # benchmark actually scores. A body can build fine
+                        # in-process and still export inside-out or self-
+                        # intersecting, and neither shows up in a render.
+                        from .assembly import describe_pair, step_body_report
+
+                        n_bodies, vols, pairs, invalid = step_body_report(step)
+                        body_counts.add(n_bodies)
+                        if invalid or pairs:
+                            body_gate_clean[0] = False
+                        for idx, vol, brep_ok in invalid:
+                            why = "volume is not positive (solid is inside-out)" if vol <= 0 \
+                                else "BRepCheck reports an invalid solid"
+                            bad(f"{diff}/seed{seed}: body {idx} of {n_bodies}: {why} "
+                                f"(volume {vol:.4g} mm³)")
+                        for i, j, shared, thresh in pairs:
+                            bad(f"{diff}/seed{seed}: components overlap — "
+                                + describe_pair(i, j, shared, thresh, component_names))
+                        if want_solids is not None and n_bodies != want_solids:
+                            bad(f"{diff}/seed{seed}: produced {n_bodies} solid(s) but "
+                                f"family.json declares solids={want_solids}")
                     n_ok += 1
                 except Exception as e:  # noqa: BLE001
                     bad(f"{diff}/seed{seed}: {type(e).__name__}: {str(e)[:120]}")
@@ -201,6 +258,13 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
             bad("difficulty separation: easy/medium/hard produced identical programs")
         else:
             ok("difficulty separation: difficulties produce distinct programs")
+    if body_counts and body_gate_clean[0]:
+        counts = sorted(body_counts)
+        detail = str(counts[0]) if len(counts) == 1 else f"{counts[0]}-{counts[-1]}"
+        note = f" (declares solids={want_solids})" if want_solids is not None else ""
+        multi = counts[-1] > 1
+        ok(f"bodies: {detail} solid(s) per instance, all valid"
+           + (", no component overlap" if multi else "") + note)
     if hashes:
         dup = 1.0 - len(set(hashes)) / len(hashes)
         (ok if dup <= 0.5 else bad)(

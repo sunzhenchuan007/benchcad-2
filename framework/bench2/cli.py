@@ -133,7 +133,59 @@ def cmd_preview(family: str, per_diff: int) -> int:
     print(f"preview → {out}")
     print(f"benchmark views (what the model sees) → {out2}")
     print(f"extremes (smallest & largest draw) → {out3}")
+
+    # multi-body family: one panel per component (highlighted in place) plus the
+    # assembled and exploded views. `CONTRIBUTING.md` requires this sheet for an
+    # `_asm` family; producing it here means it is reproducible and refreshes
+    # with the geometry, instead of being hand-made once per PR.
+    out4 = _render_parts_sheet(fam_dir, family, part, spec)
+    if out4:
+        print(f"components (each part in place, + exploded) → {out4}")
     return 0
+
+
+def _render_parts_sheet(fam_dir, family, part, spec):
+    """`preview_parts.png` for a multi-body family; None for a single solid."""
+    import json
+
+    import numpy as np
+
+    from . import render
+    from .derive import derive_program
+    from .execute import execute_cq_to_step
+    from .sampling import sample as sample_params
+
+    p = sample_params(spec, "medium", np.random.default_rng(0))
+    with tempfile.TemporaryDirectory() as td:
+        step = Path(td) / "parts.step"
+        execute_cq_to_step(derive_program(part, p), step)
+        bodies = render.step_to_body_meshes(step)
+    if len(bodies) < 2:
+        return None
+
+    meta = {}
+    fj = fam_dir / "family.json"
+    if fj.exists():
+        try:
+            meta = json.loads(fj.read_text())
+        except ValueError:
+            meta = {}
+    names = []
+    for c in meta.get("components") or []:
+        names.extend([c.get("name", "component")] * int(c.get("quantity", 1) or 1))
+
+    rows, labels = [], []
+    rows.append([render.render_bodies(bodies, front=f) for f in render.BENCH_FRONTS])
+    labels.append(f"assembled — {len(bodies)} bodies\n{_param_caption(spec, p)}")
+    rows.append([render.render_bodies(bodies, front=f, explode=0.55)
+                 for f in render.BENCH_FRONTS])
+    labels.append("exploded (presentation only —\nnot the exported geometry)")
+    for i in range(len(bodies)):
+        rows.append([render.render_bodies(bodies, front=f, highlight=i)
+                     for f in render.BENCH_FRONTS])
+        who = names[i] if i < len(names) else f"body {i}"
+        labels.append(f"{who}\n(body {i} of {len(bodies)}, in place)")
+    return render.compose_grid(rows, labels, fam_dir / "preview_parts.png", label_w=340)
 
 
 def cmd_status() -> int:
