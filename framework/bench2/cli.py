@@ -170,9 +170,11 @@ def _render_parts_sheet(fam_dir, family, part, spec):
             meta = json.loads(fj.read_text())
         except ValueError:
             meta = {}
-    names = []
-    for c in meta.get("components") or []:
-        names.extend([c.get("name", "component")] * int(c.get("quantity", 1) or 1))
+    from .validate import _component_names
+
+    # same BOM flattening validate uses, so a parametric quantity (n balls,
+    # n bolts) labels the panels of THIS instance
+    names = _component_names(meta.get("components") or [], p)
 
     rows, labels = [], []
     rows.append([render.render_bodies(bodies, front=f) for f in render.BENCH_FRONTS])
@@ -180,11 +182,19 @@ def _render_parts_sheet(fam_dir, family, part, spec):
     rows.append([render.render_bodies(bodies, front=f, explode=0.55)
                  for f in render.BENCH_FRONTS])
     labels.append("exploded (presentation only —\nnot the exported geometry)")
+    # one row per DISTINCT component: a bearing with 11 balls needs one ball
+    # panel, not eleven. The first body of each name is the one highlighted.
+    seen: dict[str, int] = {}
     for i in range(len(bodies)):
+        who = names[i] if i < len(names) else f"body {i}"
+        seen.setdefault(who, i)
+    for who, i in seen.items():
         rows.append([render.render_bodies(bodies, front=f, highlight=i)
                      for f in render.BENCH_FRONTS])
-        who = names[i] if i < len(names) else f"body {i}"
-        labels.append(f"{who}\n(body {i} of {len(bodies)}, in place)")
+        n_same = sum(1 for k in range(len(bodies))
+                     if (names[k] if k < len(names) else f"body {k}") == who)
+        count = f" x{n_same} (first shown)" if n_same > 1 else ""
+        labels.append(f"{who}{count}\n(body {i} of {len(bodies)}, in place)")
     return render.compose_grid(rows, labels, fam_dir / "preview_parts.png", label_w=340)
 
 

@@ -30,6 +30,22 @@ BASE_PLANES = {"XY", "XZ", "YZ"}
 SPEC_REQUIRED = ("desc", "unit", "range", "source")
 
 
+def _component_names(components, params) -> list[str]:
+    """The BOM flattened to one name per body, for THIS instance.
+
+    `quantity` is an int for a fixed component, or the name of the parameter
+    that sets it (a ball or bolt count), so the expected body count follows the
+    instance instead of being a constant the family cannot honour.
+    """
+    names: list[str] = []
+    for c in components:
+        qty = c.get("quantity", 1)
+        if isinstance(qty, str):
+            qty = int(params.get(qty, 0))
+        names.extend([c.get("name", "component")] * max(0, int(qty)))
+    return names
+
+
 def _geom_hash(step_path: Path) -> str:
     from . import render
 
@@ -66,39 +82,6 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
     else:
         ok("family.json: keys + base_plane valid")
 
-    # -- 1b. assembly metadata: "solids" and the optional component BOM -------
-    # An `_asm` family declares how many bodies it ships and what they are; the
-    # geometry gates below then hold that declaration to the exported STEP,
-    # instead of it being prose nobody can check.
-    want_solids = meta.get("solids")
-    components = meta.get("components") or []
-    component_names: list[str] = []
-    if want_solids is not None and (not isinstance(want_solids, int) or want_solids < 1):
-        bad(f"family.json: solids must be a positive integer (got {want_solids!r})")
-        want_solids = None
-    if components:
-        if not isinstance(components, list) or not all(isinstance(c, dict) for c in components):
-            bad("family.json: components must be a list of {name, quantity, role} objects")
-            components = []
-        else:
-            for c in components:
-                qty = c.get("quantity", 1)
-                name = c.get("name")
-                if not name or not isinstance(name, str):
-                    bad(f"family.json: every component needs a name (got {c!r})")
-                elif not isinstance(qty, int) or qty < 1:
-                    bad(f"family.json: component {name!r} needs a positive integer quantity")
-                else:
-                    component_names.extend([name] * qty)
-            total = len(component_names)
-            if want_solids is None:
-                bad("family.json: components listed but no solids count declared")
-            elif total != want_solids:
-                bad(f"family.json: components sum to {total} bodies "
-                    f"but solids={want_solids} — one row per real component, "
-                    f"quantity for repeats")
-            else:
-                ok(f"family.json: components BOM sums to solids={want_solids}")
     body_counts: set[int] = set()
     body_gate_clean = [True]  # cleared by any per-body failure below
 
@@ -125,6 +108,50 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
         bad(f"part.build has parameter(s) not declared in PARAM_SPEC: {extra}")
         return False, log
     ok(f"pieces: build({len(argnames)} params) + PARAM_SPEC + check present")
+
+    spec_param_names = set(spec.PARAM_SPEC)
+
+    # -- 2b. assembly metadata: "solids" and the optional component BOM -------
+    # An `_asm` family declares how many bodies it ships and what they are; the
+    # geometry gates below then hold that declaration to the exported STEP,
+    # instead of it being prose nobody can check.
+    want_solids = meta.get("solids")
+    components = meta.get("components") or []
+    if want_solids is not None and (not isinstance(want_solids, int) or want_solids < 1):
+        bad(f"family.json: solids must be a positive integer (got {want_solids!r})")
+        want_solids = None
+    if components and (not isinstance(components, list)
+                       or not all(isinstance(c, dict) for c in components)):
+        bad("family.json: components must be a list of {name, quantity, role} objects")
+        components = []
+    for c in components:
+        qty, name = c.get("quantity", 1), c.get("name")
+        if not name or not isinstance(name, str):
+            bad(f"family.json: every component needs a name (got {c!r})")
+        elif isinstance(qty, str):
+            # a variable-count component (n balls, n bolts) names the parameter
+            # that sets it, and is resolved per instance below
+            if qty not in spec_param_names:
+                bad(f"family.json: component {name!r} quantity {qty!r} is not a "
+                    f"PARAM_SPEC parameter")
+        elif not isinstance(qty, int) or qty < 1:
+            bad(f"family.json: component {name!r} needs a positive integer "
+                f"quantity, or the name of the parameter that sets it")
+    if components and want_solids is not None:
+        fixed = [c for c in components if not isinstance(c.get("quantity", 1), str)]
+        if len(fixed) == len(components):
+            total = sum(int(c.get("quantity", 1)) for c in components)
+            if total != want_solids:
+                bad(f"family.json: components sum to {total} bodies but "
+                    f"solids={want_solids} — one row per real component, "
+                    f"quantity for repeats")
+            else:
+                ok(f"family.json: components BOM sums to solids={want_solids}")
+        else:
+            bad("family.json: solids is a fixed count, but a component has a "
+                "parametric quantity — drop solids and let the BOM set it")
+    elif components:
+        ok(f"family.json: components BOM declared ({len(components)} component types)")
 
     spec_bad = [
         f"{name}.{key}"
@@ -203,12 +230,19 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
                                 else "BRepCheck reports an invalid solid"
                             bad(f"{diff}/seed{seed}: body {idx} of {n_bodies}: {why} "
                                 f"(volume {vol:.4g} mm³)")
+                        names = _component_names(components, p)
                         for i, j, shared, thresh in pairs:
                             bad(f"{diff}/seed{seed}: components overlap — "
-                                + describe_pair(i, j, shared, thresh, component_names))
-                        if want_solids is not None and n_bodies != want_solids:
-                            bad(f"{diff}/seed{seed}: produced {n_bodies} solid(s) but "
-                                f"family.json declares solids={want_solids}")
+                                + describe_pair(i, j, shared, thresh, names))
+                        # expected body count: the declared `solids`, or the BOM
+                        # resolved against THIS instance (a ball/bolt count is a
+                        # parameter, so the total is per-instance)
+                        expect = len(names) if names else want_solids
+                        if expect is not None and n_bodies != expect:
+                            body_gate_clean[0] = False
+                            how = (f"family.json declares solids={want_solids}" if not names
+                                   else f"the components BOM resolves to {expect} for this instance")
+                            bad(f"{diff}/seed{seed}: produced {n_bodies} solid(s) but {how}")
                     n_ok += 1
                 except Exception as e:  # noqa: BLE001
                     bad(f"{diff}/seed{seed}: {type(e).__name__}: {str(e)[:120]}")
