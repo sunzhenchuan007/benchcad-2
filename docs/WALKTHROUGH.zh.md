@@ -138,6 +138,10 @@ QUALIFIED → RELEASED 一路翻牌。
 
 - **`uv sync` 装不上 / 没有 Python?** → 走零代码路径:把 datasheet + 尺寸表
   发到 issue(*Part proposal* 表单),维护者来写代码,两个人都记贡献。
+- **装配零件 validate 报实体数不符 / 实体重叠。** → `family.json` 的
+  `"solids"` 要等于真实零件数(`"components"` 各 `quantity` 之和),而且
+  `makeCompound` 不会自动合并——两个零件共享体积在渲染里看不出来,门禁会
+  拦下。贴合面重合没问题,共享**体积**不行。
 - **preview 和工程图长得不像。** → PR 前先修好;评审打回的第一大原因就是
   几何与图纸不符。用 3D viewer
   打开零件看哪里不对——**[DEBUGGING.md](DEBUGGING.md)**(`tools/debug_family.py`)。

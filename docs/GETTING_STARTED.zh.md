@@ -58,6 +58,14 @@
    照抄 `designs/simplex_sprocket/` 的样子——它是教学模板,
    从真实的 norelem datasheet 做出来的。再填 `family.json`(标签),
    把资料来源记进 `NOTES.md`。
+   `build()` 必须给 `result` 赋值,只能用 `cq`/`math`/自己写的 `_helper`
+   (不 import 其它任何东西),返回一个实体。**装配零件**(真实产品由多个
+   零件组成)返回一个 `cq.Compound`,**每个真实零件一个 solid**——不跨零件
+   union、彼此不重叠——并在 `family.json` 里声明 `"solids": N` 和
+   `"components"` BOM;`bench2 validate` 会按这两项核对实体数、逐个实体的
+   有效性、以及两两不共享体积。完整规则见
+   [`DESIGN_SPEC.md`](DESIGN_SPEC.md)。裸跑 CadQuery 脚本报 `HashCode` 错,
+   见 [`DEBUGGING.md`](DEBUGGING.md) → Gotchas。
 9. 自查,两条命令,本机秒出结果:
    ```bash
    uv run bench2 validate my_family   # PASS = 你的代码没问题,这就是标准
@@ -65,8 +73,14 @@
    ```
    `preview_views.png` 是**模型将看到的 4 个视角**——拿它和 issue 里的
    datasheet 工程图并排对照。改到 PASS、渲染像真零件为止。
+   装配零件还会多出一张 `preview_parts.png`(装配体 + 爆炸图 + 每个零件
+   单独高亮),逐个零件对图检查。
 
 ### 提交
+
+family 目录里**只放交付包**——`part.py`、`spec.py`、`family.json`、可选的
+`NOTES.md`,以及 `preview_*.png` 渲染图。**datasheet、工程图、照片留在 issue
+里,不要放进 `designs/`**——把它们下载到别的地方,免得被 `git add` 顺手带进来。
 
 10. ```bash
     git add designs/my_family
