@@ -39,7 +39,7 @@ uv run bench2 new corner_bracket        # scaffold designs/corner_bracket/
 # ... fill part.py (build) + spec.py (PARAM_SPEC, check, optional refine) ...
 uv run bench2 validate corner_bracket   # every machine gate, locally
 uv run bench2 preview corner_bracket    # render a 3×3 grid (difficulty × seed)
-uv run python tools/debug_family.py --config designs/corner_bracket/part.py   # edit part.py live in a 3D GUI (docs/DEBUGGING.md)
+uv run bench2 edit corner_bracket       # edit part.py live in CQ-editor, F5 (docs/DEBUGGING.md)
 # open a PR — CI runs the same two commands and posts the preview
 ```
 

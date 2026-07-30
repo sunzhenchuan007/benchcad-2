@@ -17,6 +17,7 @@ path included). Want a worked example first? → illustrated tutorial
 uv sync                              # once
 uv run bench2 new <family>           # scaffold designs/<family>/
 # fill part.py + spec.py (docs/DESIGN_SPEC.md; copy designs/simplex_sprocket/)
+uv run bench2 edit <family>          # optional: live 3D editing (CQ-editor, F5)
 uv run bench2 validate <family>      # every machine gate, locally
 uv run bench2 preview <family>       # LOOK at the three images yourself
 # open a PR with `Closes #<issue>` — CI re-runs the same gates
