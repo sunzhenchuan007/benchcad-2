@@ -135,13 +135,13 @@ def cmd_preview(family: str, per_diff: int) -> int:
     print(f"benchmark views (what the model sees) → {out2}")
     print(f"extremes (smallest & largest draw) → {out3}")
 
-    # multi-body family: one panel per component (highlighted in place) plus the
-    # assembled and exploded views. `CONTRIBUTING.md` requires this sheet for an
-    # `_asm` family; producing it here means it is reproducible and refreshes
-    # with the geometry, instead of being hand-made once per PR.
+    # multi-body family: the assembly, then one panel per component highlighted
+    # in place. `CONTRIBUTING.md` requires this sheet for an `_asm` family;
+    # producing it here means it is reproducible and refreshes with the geometry,
+    # instead of being hand-made once per PR.
     out4 = _render_parts_sheet(fam_dir, family, part, spec)
     if out4:
-        print(f"components (each part in place, + exploded) → {out4}")
+        print(f"components (each part in place) → {out4}")
     return 0
 
 
@@ -180,9 +180,8 @@ def _render_parts_sheet(fam_dir, family, part, spec):
     rows, labels = [], []
     rows.append([render.render_bodies(bodies, front=f) for f in render.BENCH_FRONTS])
     labels.append(f"assembled — {len(bodies)} bodies\n{_param_caption(spec, p)}")
-    rows.append([render.render_bodies(bodies, front=f, explode=0.55)
-                 for f in render.BENCH_FRONTS])
-    labels.append("exploded (presentation only —\nnot the exported geometry)")
+    # no exploded row: it is a presentation pose, not the exported geometry, and
+    # a reviewer checking a component against its drawing wants it IN PLACE
     # one row per DISTINCT component: a bearing with 11 balls needs one ball
     # panel, not eleven. The first body of each name is the one highlighted.
     seen: dict[str, int] = {}

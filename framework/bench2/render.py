@@ -226,14 +226,14 @@ GHOST = (0.78, 0.78, 0.80)
 
 
 def render_bodies(bodies, img_size: int = 320, front=ISO_FRONT,
-                  highlight: int | None = None, explode: float = 0.0):
+                  highlight: int | None = None):
     """Render several bodies in one scene -> PIL Image.
 
     `highlight=i` paints body *i* in its component colour and ghosts the rest,
     which is what makes a component's place in the assembly readable; with
-    `highlight=None` every body gets its own colour. `explode` moves each body
-    radially away from the assembly centre by that fraction of the model size —
-    a presentation transform only, never part of the exported geometry.
+    `highlight=None` every body gets its own colour. Bodies are always drawn
+    where the geometry puts them — there is no exploded pose, because a reviewer
+    checking a component against its drawing needs it in place.
     """
     import vtk
     from vtk.util.numpy_support import numpy_to_vtk
@@ -245,16 +245,11 @@ def render_bodies(bodies, img_size: int = 320, front=ISO_FRONT,
     right /= (np.linalg.norm(right) or 1.0)
     true_up = np.cross(front_arr, right)
 
-    centre = np.mean([v.mean(axis=0) for v, _ in bodies], axis=0)
     ren = vtk.vtkRenderer()
     ren.SetBackground(1, 1, 1)
     all_pts = []
     for i, (verts, tris) in enumerate(bodies):
         v = verts
-        if explode:
-            d = v.mean(axis=0) - centre
-            n = np.linalg.norm(d)
-            v = v + (d / n * explode if n > 1e-9 else np.array([0.0, 0.0, explode]))
         all_pts.append(v)
         points = vtk.vtkPoints()
         points.SetData(numpy_to_vtk(np.ascontiguousarray(v), deep=True))

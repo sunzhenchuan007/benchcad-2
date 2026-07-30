@@ -188,7 +188,8 @@ inside-out):
   fine (a bolt head bearing on a flange); shared *volume* is not.
 
 `bench2 preview` adds `preview_parts.png` for any multi-body family: the
-assembly, an exploded view, and one panel per component highlighted in place.
+assembly and one panel per distinct component, highlighted in place with the
+rest ghosted.
 Mating dimensions belong in `check()` like any other constraint — a clearance
 that only exists inside `part.py` is invisible to review.
 
