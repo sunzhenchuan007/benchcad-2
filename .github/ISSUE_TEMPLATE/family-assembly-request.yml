@@ -1,0 +1,139 @@
+name: "Family request — assembly (_asm)"
+description: "Propose a multi-part assembly family (needs per-component tables + how the parts mate)"
+title: "[family-assembly] <part_name>_asm"
+labels: ["family", "family-assembly"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when the real product is **several parts** (halves + fasteners,
+        rings + rolling elements, housing + moving member). Everything in the
+        single-part form still applies, plus the four sections that decide whether
+        an assembly can be built at all.
+
+        **Why the extra sections:** across the 13 assembly families built so far,
+        the ones whose issue carried a table *per component* plus an assembled-state
+        dimension shipped in **one commit with zero `"proportion"` parameters**; the
+        ones with only an outer-envelope table took **4–11 commits**, and the churn
+        landed exactly on the components the issue never dimensioned. Filling
+        sections 2–4 is extraction work, not design work — it is the cheapest
+        quality lever we have.
+  - type: input
+    id: name
+    attributes:
+      label: Family name (snake_case, `_asm` suffix)
+      placeholder: "kenter_shackle_asm"
+    validations:
+      required: true
+  - type: input
+    id: anchor
+    attributes:
+      label: Standard / datasheet link
+      description: "Assembly-grade sources publish per-form tables and a section: norelem, Meusburger, HASCO, JW Winco / Elesa+Ganter (look for the SECOND table, usually 'common dimensions coupled by d1')."
+      placeholder: "https://…"
+    validations:
+      required: true
+  - type: textarea
+    id: pictures
+    attributes:
+      label: "1. Pictures — photo, dimensioned drawing, and a SECTION"
+      description: |
+        REQUIRED: photo + dimensioned drawing. **Add a cross-section / cutaway if one exists** — without it the whole interior becomes `"proportion"`, and a section is often the only thing that says which half is male and which is female. If no section is published anywhere, write "no section published" so nobody hunts for one and reviewers know the interior is derived.
+      placeholder: "Drag & drop drawing / section / photo. Caption each: what document, what page."
+    validations:
+      required: true
+  - type: textarea
+    id: bom
+    attributes:
+      label: "2. Bill of materials — the bodies to model"
+      description: |
+        One row per real component. `solids` = Σ quantity of the MODELLED bodies; say which parts are deliberately omitted (springs, seals, hidden actuators) and why. Without a count, an implementer has to invent one (a bearing's ball complement is the classic case).
+      value: |
+        | # | Component | Qty | Distinct geometry? | Modelled / omitted | Notes |
+        |---|---|---:|---|---|---|
+        | 1 |  | 2 | identical (B = A rotated 180°) | modelled |  |
+        | 2 |  | 1 |  | modelled |  |
+        | 3 |  | 1 | — | **omitted** (hidden, undimensioned) |  |
+
+        **Declared `solids` = <N>**
+    validations:
+      required: true
+  - type: textarea
+    id: per_part_tables
+    attributes:
+      label: "3. Dimension table — ONE PER COMPONENT"
+      description: |
+        The single most load-bearing input. Do not stop at the first table: enumerate the components first, then find a table for each one (manufacturers put them on different pages — a chuck's jaw table and its chucking-range table are ten pages apart from the body table). If a component genuinely has no published table, name it and say so, e.g. "ball Ø and count are not in the boundary table — derive and declare `proportion`".
+      value: |
+        ### 3a. <component 1> (source table, page)
+        | designation | d1 | … |
+        |---|---|---|
+
+        ### 3b. <component 2> (source table, page)
+        | designation | … |
+        |---|---|
+
+        min / max rows marked in each table.
+    validations:
+      required: true
+  - type: textarea
+    id: assembled_state
+    attributes:
+      label: "4. Assembled-state dimensions — and which dimension spans WHAT"
+      description: |
+        For EVERY symbol say whether it dimensions **one part** or **the assembled set**. This is what lets the mating gap be derived instead of guessed (e.g. `L1 = 2·L3 + 1` on every row ⇒ the parting gap is 1 mm, not a choice). Getting the labelling wrong is a silent 16 % oversize — it has happened here.
+      value: |
+        | symbol | value / column | spans | note |
+        |---|---|---|---|
+        | L1 | catalog column | **the assembled set** |  |
+        | L3 | catalog column | one half |  |
+        | — | derived | mating gap | `L1 − 2·L3` |
+    validations:
+      required: true
+  - type: textarea
+    id: mates
+    attributes:
+      label: "5. Mates, clearances and fits"
+      description: |
+        Per interface: what touches what, and the published clearance or ISO fit (H7/g6, `0/−0.03`) if there is one. Where nothing is published, say `"proportion"` — do NOT invent a fit code. A single published clearance ("0.03·D") becomes one named constant used at every interface; where it is missing, every implementer picks a different number.
+      value: |
+        | Interface | Type | Published value | If unpublished |
+        |---|---|---|---|
+        | A ↔ B | sliding |  | `"proportion"`, state the value used |
+        | bolt ↔ hole | clearance |  |  |
+
+        Which interfaces actually **touch** in the modelled pose:
+    validations:
+      required: true
+  - type: textarea
+    id: kinematics
+    attributes:
+      label: "6. Kinematics — states and range (if it moves)"
+      description: |
+        Degrees of freedom, the published range (jaw travel, swivel angle, tilt), and whether the model should ship a fixed catalog pose or a sampled state parameter. If no range is published, say so — a state parameter with no published range must be marked `"proportion"`, and silence is the failure mode, not absence.
+      placeholder: |
+        DOF: one rotation about the sphere centre
+        Published range: ±3° (pair section, datasheet p. 2)
+        Modelled: sampled `tilt_deg`, bounded in check()
+  - type: textarea
+    id: constraints
+    attributes:
+      label: "7. Engineering constraints you already know (optional)"
+      description: "One per line with the reason. Cross-part ones are the valuable ones (a hex corner must clear the hub boss; the cage must sit inside the raceway gap)."
+      placeholder: "hex corner vs hub boss: dbc/2 − e_hex/2 < d2/2 + 0.5 — nut must not foul the boss"
+  - type: textarea
+    id: gaps
+    attributes:
+      label: "8. Known gaps — verify at claim (optional)"
+      description: "Blank cells, non-monotonic columns, sources that disagree. Flagging these is what makes a later `\"proportion\"` defensible instead of lazy."
+      placeholder: "l4 column is non-monotonic between sizes 3 and 4 — confirmed against the PDF, not a transcription error"
+  - type: markdown
+    attributes:
+      value: |
+        **Claiming this issue?** Self-assign, and complete sections 1–5 *before*
+        writing code — they are the review evidence. What `bench2 validate` will
+        enforce on your PR: body count == `family.json` `"solids"`, every body a
+        positive-volume `BRepCheck`-valid solid, **no two bodies sharing volume**,
+        and the `"components"` BOM summing to `solids`
+        ([DESIGN_SPEC](../blob/main/docs/DESIGN_SPEC.md#assembly-families-name_asm)).
+        `bench2 preview` emits `preview_parts.png` for you.
