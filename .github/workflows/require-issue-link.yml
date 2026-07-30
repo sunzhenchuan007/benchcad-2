@@ -27,11 +27,31 @@ jobs:
         with:
           script: |
             const body = context.payload.pull_request.body || '';
+            const title = context.payload.pull_request.title || '';
+
+            // This gate is scoped to family PRs by `paths: designs/**`, but an
+            // infrastructure PR reaches it too as soon as it touches anything
+            // under designs/ — a regenerated render, a fixture a framework gate
+            // is tested against. Those have no family issue to close, so asking
+            // for `Closes #N` fails them for doing nothing wrong (#317).
+            // Fix PRs are NOT exempt: `[fix]` / `[family-fix]` /
+            // `[family-assembly-fix]` all close their own issue.
+            const infra = /^\s*\[(framework|docs|process|assets|status|chore|ci)\]/i;
+            if (infra.test(title)) {
+              core.info(
+                `"${title}" is an infrastructure PR — no family issue to close, ` +
+                'so the link is not required. It only reached this gate because ' +
+                'the PR touches designs/**.');
+              return;
+            }
+
             const m = body.match(/\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/i);
             if (!m) {
               core.setFailed(
                 'PR description must link its family issue, e.g. `Closes #12` ' +
                 '(CONTRIBUTING.md station 3). Edit the PR description — no new push needed. ' +
+                'If this is not a family PR, prefix the title with its taxonomy tag ' +
+                '([framework] / [docs] / [process] / [assets]) and this gate stands down. ' +
                 '/ PR 描述里需要写 `Closes #<issue编号>` 关联 family issue,' +
                 '直接编辑 PR 描述即可,不用重新 push。');
               return;
