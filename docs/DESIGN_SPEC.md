@@ -55,7 +55,8 @@ Rules:
 - bind `result`; use only `cq` / `math` / geomlib helpers / your own module-level
   `_helpers` and constants (no I/O, no randomness, no other imports)
 - deterministic: same arguments ⇒ same geometry, one non-degenerate solid, in
-  the pinned environment (`cadquery==2.3.0`)
+  the pinned environment (`cadquery==2.3.0`) — an assembly family returns
+  several (see below)
 - a heterogeneous family branches on a `feature` param (`if form_b: …`) in
   ordinary `if`/`else` — the derived program keeps the branch, evaluated against
   that instance's values
@@ -147,6 +148,51 @@ Families with no coupling (like `example_tee_bracket`) omit `refine()` entirely.
 `XY|XZ|YZ` is the natural sketch plane. A family that calls geomlib helpers adds
 `"geomlib": ["sprocket_profile", "keyway_dims"]`.
 
+## Assembly families (`<name>_asm`)
+
+A family whose real product is several parts returns them as **one
+`cq.Compound`, one solid per real component** — nothing is unioned across
+components, and nothing overlaps:
+
+```python
+result = cq.Compound.makeCompound([half_a.val(), half_b.val(), stud.val(), pin.val()])
+```
+
+Build the list in a **fixed order** (a literal list or a `for i in range(n)`
+loop, never a set/dict iteration) — the derived program must stay
+byte-identical per seed. `family.json` then declares what shipped:
+
+```json
+  "solids": 4,
+  "components": [
+    {"name": "half_link",   "quantity": 2, "role": "interlocking half link"},
+    {"name": "centre_stud", "quantity": 1, "role": "keys both halves"},
+    {"name": "taper_pin",   "quantity": 1, "role": "locks the joint"}
+  ]
+```
+
+`solids` is the body count `validate` holds every instance to; `components` is
+the BOM — one row per *distinct* component, `quantity` for repeats, summing to
+`solids`. Both are machine-checked, and the component names label the panels of
+`preview_parts.png`.
+
+What `bench2 validate` enforces on every sampled instance, from the exported
+STEP (not from the in-process shape — a body can build fine and still export
+inside-out):
+
+- **body count** equals `"solids"` — catches a component that a boolean ate, and
+  two components that silently fused;
+- **every body is a sane solid** — positive volume and `BRepCheck`-valid;
+- **no two bodies share volume** — `makeCompound` never merges, so interpenetrating
+  parts look perfectly normal in a render and in the STEP. Coincident faces are
+  fine (a bolt head bearing on a flange); shared *volume* is not.
+
+`bench2 preview` adds `preview_parts.png` for any multi-body family: the
+assembly and one panel per distinct component, highlighted in place with the
+rest ghosted.
+Mating dimensions belong in `check()` like any other constraint — a clearance
+that only exists inside `part.py` is invisible to review.
+
 ## Shared standards: `bench2.geomlib` (don't copy-paste tooth math)
 
 Reusable curve generators and standard tables (sprocket tooth profile, gear
@@ -198,7 +244,9 @@ and `family.json`.
    is declared in `PARAM_SPEC`
 3. per difficulty × N seeds: the sampler draws params that pass `check`, the
    sampled value stays inside its declared `range` (the contract), and the
-   derived program executes to a non-degenerate solid
+   derived program executes to a non-degenerate solid — plus, on the exported
+   STEP: every body has positive volume and passes `BRepCheck`, the body count
+   matches `family.json` `"solids"`, and no two bodies overlap (assemblies)
 4. determinism: same seed ⇒ byte-identical derived program
 5. difficulty separation: the three difficulties don't produce identical programs
 6. geometry-hash report: duplicate rate within the sample batch

@@ -134,7 +134,68 @@ def cmd_preview(family: str, per_diff: int) -> int:
     print(f"preview → {out}")
     print(f"benchmark views (what the model sees) → {out2}")
     print(f"extremes (smallest & largest draw) → {out3}")
+
+    # multi-body family: the assembly, then one panel per component highlighted
+    # in place. `CONTRIBUTING.md` requires this sheet for an `_asm` family;
+    # producing it here means it is reproducible and refreshes with the geometry,
+    # instead of being hand-made once per PR.
+    out4 = _render_parts_sheet(fam_dir, family, part, spec)
+    if out4:
+        print(f"components (each part in place) → {out4}")
     return 0
+
+
+def _render_parts_sheet(fam_dir, family, part, spec):
+    """`preview_parts.png` for a multi-body family; None for a single solid."""
+    import json
+
+    import numpy as np
+
+    from . import render
+    from .derive import derive_program
+    from .execute import execute_cq_to_step
+    from .sampling import sample as sample_params
+
+    p = sample_params(spec, "medium", np.random.default_rng(0))
+    with tempfile.TemporaryDirectory() as td:
+        step = Path(td) / "parts.step"
+        execute_cq_to_step(derive_program(part, p), step)
+        bodies = render.step_to_body_meshes(step)
+    if len(bodies) < 2:
+        return None
+
+    meta = {}
+    fj = fam_dir / "family.json"
+    if fj.exists():
+        try:
+            meta = json.loads(fj.read_text())
+        except ValueError:
+            meta = {}
+    from .validate import _component_names
+
+    # same BOM flattening validate uses, so a parametric quantity (n balls,
+    # n bolts) labels the panels of THIS instance
+    names = _component_names(meta.get("components") or [], p)
+
+    rows, labels = [], []
+    rows.append([render.render_bodies(bodies, front=f) for f in render.BENCH_FRONTS])
+    labels.append(f"assembled — {len(bodies)} bodies\n{_param_caption(spec, p)}")
+    # no exploded row: it is a presentation pose, not the exported geometry, and
+    # a reviewer checking a component against its drawing wants it IN PLACE
+    # one row per DISTINCT component: a bearing with 11 balls needs one ball
+    # panel, not eleven. The first body of each name is the one highlighted.
+    seen: dict[str, int] = {}
+    for i in range(len(bodies)):
+        who = names[i] if i < len(names) else f"body {i}"
+        seen.setdefault(who, i)
+    for who, i in seen.items():
+        rows.append([render.render_bodies(bodies, front=f, highlight=i)
+                     for f in render.BENCH_FRONTS])
+        n_same = sum(1 for k in range(len(bodies))
+                     if (names[k] if k < len(names) else f"body {k}") == who)
+        count = f" x{n_same} (first shown)" if n_same > 1 else ""
+        labels.append(f"{who}{count}\n(body {i} of {len(bodies)}, in place)")
+    return render.compose_grid(rows, labels, fam_dir / "preview_parts.png", label_w=340)
 
 
 def cmd_status() -> int:
