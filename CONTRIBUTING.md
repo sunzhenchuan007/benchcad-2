@@ -91,6 +91,16 @@ drag-and-drop into the issue — and embed via SHA-pinned blob URLs with
 these render for repo members while the repo is private, where anonymous
 raw.githubusercontent URLs 404. Always name the source with a link.
 
+The same pinning rule governs **every image in a PR body**, the generated
+previews included, and `require-issue-link.yml` enforces it: each url must
+resolve, and anything under `designs/` must be pinned to a **commit sha** — a
+branch name is not a pin. Pin to the sha that actually *contains* the file: if
+your last commit renamed the family dir (the `_asm` form), the previews exist at
+the new path only from that commit onward, so bump every image url to the new
+head sha. The gate reads `<img src="…">` as well as `![alt](…)`, so the
+width-setting form is covered too. #308 and #316 each shipped a 404ing preview
+pair exactly this way — new path, pre-rename sha.
+
 ## Issue taxonomy — the title prefix says what it is
 
 | Title pattern | What it is | Who opens it | Labels |

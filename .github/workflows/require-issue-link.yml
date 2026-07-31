@@ -8,6 +8,14 @@ name: require-issue-link
 # SHA-pinned blob form (`https://github.com/<owner>/<repo>/blob/<sha>/<path>?raw=true`,
 # CONTRIBUTING.md "Getting the reference images"), and the pinned sha must
 # actually contain the path (batch-7 PRs once pinned refs to a pre-refs commit).
+#
+# The image gate covers BOTH ways an image reaches a body — markdown
+# `![alt](url)` and raw `<img src="url">` — and rejects a pin to a moving ref
+# (branch name) for anything under designs/. Those two holes are how #308 and
+# #316 both shipped a broken preview pair: the `_asm` rename landed in the last
+# commit, the body's URLs got the new `designs/<fam>_asm/` path but kept the
+# pre-rename sha, and the gate — which only looked at markdown-syntax images —
+# saw zero URLs and passed green.
 
 on:
   pull_request:
@@ -55,9 +63,19 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const body = context.payload.pull_request.body || '';
-            const urls = [...body.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)].map(m => m[1]);
 
-            const rawRe = new RegExp(`^https://raw\\.githubusercontent\\.com/${owner}/${repo}/`);
+            // An image reaches the body two ways and BOTH must be gated: markdown
+            // `![alt](url)` and raw `<img src="url">` (what you must use to set a
+            // width). Only reading the markdown form is why this gate was green on
+            // the broken previews in #308/#316 — it found zero URLs.
+            const urls = [...new Set([
+              ...[...body.matchAll(/!\[[^\]]*\]\(\s*([^)\s]+)/g)].map(m => m[1]),
+              ...[...body.matchAll(/<img\b[^>]*?\bsrc\s*=\s*["']([^"']+)["']/gi)].map(m => m[1]),
+            ])];
+
+            const strip = u => u.replace(/[?#].*$/, '');
+
+            const rawRe = new RegExp(`^https://raw\\.githubusercontent\\.com/${owner}/${repo}/`, 'i');
             const bad = urls.filter(u => rawRe.test(u));
             if (bad.length) {
               core.setFailed(
@@ -70,28 +88,69 @@ jobs:
               return;
             }
 
-            const blobRe = new RegExp(`^https://github\\.com/${owner}/${repo}/blob/([^/]+)/(.+?)(?:\\?raw=true)?$`);
-            const broken = [];
+            // Any GitHub-hosted blob, including a contributor fork — a fork-hosted
+            // image is exactly the kind that rots, so it gets verified too.
+            const parse = (u) => {
+              const s = strip(u);
+              let m = s.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/(?:blob|raw)\/([^/]+)\/(.+)$/);
+              if (m) return { o: m[1], r: m[2], ref: m[3], path: m[4] };
+              m = s.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
+              if (m) return { o: m[1], r: m[2], ref: m[3], path: m[4] };
+              return null;   // user-attachments upload / camo-proxied — GitHub-hosted, durable
+            };
+
+            const isSha = r => /^[0-9a-f]{7,40}$/i.test(r);
+            const broken = [], moving = [], movingRefs = [];
+            let checked = 0;
+
             for (const u of urls) {
-              const b = u.match(blobRe);
-              if (!b) continue;   // external image (camo-proxied) — not ours to verify
-              const [, ref, path] = b;
+              const p = parse(u);
+              if (!p) continue;
+              checked++;
+              // A branch name is not a pin. Under designs/ it is a guaranteed future
+              // 404 (every `_asm` rename moves the path), so it fails; a docs/assets/refs
+              // image only rots if the asset is renamed, so it warns.
+              if (!isSha(p.ref)) {
+                (p.path.startsWith('designs/') ? moving : movingRefs).push(`${p.path} @ ${p.ref}`);
+              }
               try {
-                await github.rest.repos.getContent({ owner, repo, path: decodeURIComponent(path), ref });
+                await github.rest.repos.getContent({
+                  owner: p.o, repo: p.r, path: decodeURIComponent(p.path), ref: p.ref });
               } catch (e) {
-                if (e.status === 403) {   // no read permission -> cannot verify
-                  core.info(`skipped ${path}: ${e.message}`);
+                if (e.status === 403) {   // >1 MB blob, or a repo we cannot read — cannot verify
+                  core.info(`skipped ${p.o}/${p.r} ${p.path}: ${e.message}`);
                   continue;
                 }
-                broken.push(`${path} @ ${ref.slice(0, 9)}`);
+                broken.push(`${p.o}/${p.r} ${p.path} @ ${p.ref.slice(0, 9)}`);
               }
             }
+
+            for (const m of movingRefs) {
+              core.warning(
+                `image pinned to a moving ref: ${m} — re-pin to the commit sha. A branch ref ` +
+                'silently breaks the image the moment the asset is renamed or the branch is deleted. ' +
+                '/ 图片钉在分支名上,请改钉 commit sha,否则文件一改名/分支一删图就碎。');
+            }
+
+            const errs = [];
             if (broken.length) {
-              core.setFailed(
+              errs.push(
                 `image path(s) missing at the pinned commit: ${broken.join('; ')} — ` +
-                're-pin to the commit that actually contains the file (e.g. the refs commit on main). ' +
-                'Edit the PR description — no new push needed. ' +
-                '/ 图片路径在所钉的 commit 下不存在,请改钉到真正包含该文件的 commit,直接编辑 PR 描述即可。');
+                're-pin to the commit that actually contains the file. If the family dir was just renamed ' +
+                '(e.g. to the `_asm` form), the previews now live at the NEW path only from the rename ' +
+                'commit onward — bump every image url to the new head sha. ' +
+                '/ 图片路径在所钉的 commit 下不存在:若刚把目录改名(如 _asm),预览图只在改名那个 commit 之后才有新路径,' +
+                '请把所有图片 url 的 sha 一并更新到最新 head。');
+            }
+            if (moving.length) {
+              errs.push(
+                `designs/ image(s) pinned to a moving ref instead of a sha: ${moving.join('; ')} — ` +
+                'a branch ref breaks as soon as the family dir is renamed or the branch is deleted. ' +
+                'Use blob/<sha>/<path>?raw=true. ' +
+                '/ designs/ 下的图片钉在分支名上,家族目录一改名或分支一删就碎,请改用 blob/<sha>/<path>?raw=true。');
+            }
+            if (errs.length) {
+              core.setFailed(errs.join(' || ') + ' Edit the PR description — no new push needed.');
             } else {
-              core.info(`all ${urls.length} image link(s) OK`);
+              core.info(`all ${checked} repo-hosted image link(s) OK (${urls.length} image url(s) in body)`);
             }
