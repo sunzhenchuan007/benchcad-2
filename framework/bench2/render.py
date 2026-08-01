@@ -103,7 +103,6 @@ def render_iso(verts, tris, img_size: int = 320, front=ISO_FRONT):
     from vtk.util.numpy_support import numpy_to_vtk
 
     front_arr = np.array(front, dtype=np.float64)
-    eye = LOOKAT + front_arr * CAMERA_DISTANCE
     up = np.array([0.0, 0.0, 1.0])
     right = np.cross(up, front_arr)
     right /= (np.linalg.norm(right) or 1.0)
@@ -154,8 +153,16 @@ def render_iso(verts, tris, img_size: int = 320, front=ISO_FRONT):
     ren.AddActor(ea)
     ren.SetBackground(1, 1, 1)
     cam = ren.GetActiveCamera()
-    cam.SetPosition(*eye)
-    cam.SetFocalPoint(*LOOKAT)
+    # frame on the BODIES PASSED IN, not on the global look-at point. When this
+    # is called with one component of a large assembly (a bolt among eighteen
+    # bodies), a fixed focal point pushes it to the edge of the frame and the
+    # scale — measured from that same point — zooms out to the whole bolt circle,
+    # so the part renders as a speck or not at all. Passing every body gives the
+    # assembly's own centre, so the in-place rows are unchanged.
+    pts = np.concatenate(all_pts, axis=0)
+    focus = (pts.min(axis=0) + pts.max(axis=0)) / 2.0
+    cam.SetPosition(*(focus + front_arr * CAMERA_DISTANCE))
+    cam.SetFocalPoint(*focus)
     cam.SetViewUp(*true_up)
     cam.ParallelProjectionOn()
     # fit the whole part in frame: parallel scale = half the projected bounding
@@ -239,7 +246,6 @@ def render_bodies(bodies, img_size: int = 320, front=ISO_FRONT,
     from vtk.util.numpy_support import numpy_to_vtk
 
     front_arr = np.array(front, dtype=np.float64)
-    eye = LOOKAT + front_arr * CAMERA_DISTANCE
     up = np.array([0.0, 0.0, 1.0])
     right = np.cross(up, front_arr)
     right /= (np.linalg.norm(right) or 1.0)
@@ -297,14 +303,22 @@ def render_bodies(bodies, img_size: int = 320, front=ISO_FRONT,
             ren.AddActor(ea)
 
     cam = ren.GetActiveCamera()
-    cam.SetPosition(*eye)
-    cam.SetFocalPoint(*LOOKAT)
+    # frame on the BODIES PASSED IN, not on the global look-at point. When this
+    # is called with one component of a large assembly (a bolt among eighteen
+    # bodies), a fixed focal point pushes it to the edge of the frame and the
+    # scale — measured from that same point — zooms out to the whole bolt circle,
+    # so the part renders as a speck or not at all. Passing every body gives the
+    # assembly's own centre, so the in-place rows are unchanged.
+    pts = np.concatenate(all_pts, axis=0)
+    focus = (pts.min(axis=0) + pts.max(axis=0)) / 2.0
+    cam.SetPosition(*(focus + front_arr * CAMERA_DISTANCE))
+    cam.SetFocalPoint(*focus)
     cam.SetViewUp(*true_up)
     cam.ParallelProjectionOn()
     # frame the WHOLE assembly identically in every panel, so a component's
     # size and position can be compared across panels by eye
     up_u = true_up / (np.linalg.norm(true_up) or 1.0)
-    rel = np.concatenate(all_pts, axis=0) - LOOKAT
+    rel = pts - focus
     half_extent = max(float(np.ptp(rel @ right)), float(np.ptp(rel @ up_u))) / 2.0
     cam.SetParallelScale(half_extent * 1.12)
 
