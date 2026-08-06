@@ -205,6 +205,13 @@ Such a family **omits `solids`** (the body count is instance-dependent); the
 referenced parameter must exist in `PARAM_SPEC` with `integer: true`, and every
 sampled instance is checked against the resolved quantity sum.
 
+A param-valued quantity may resolve to **zero**, because the parameter that
+sets it is often a feature axis rather than a count: an open deep-groove
+bearing draws `n_closures = 0` and ships no closure disc at all. The component
+is then simply absent from that instance — it builds no body and gets no panel
+in `preview_parts.png`. A *literal* `"quantity": 0` is still rejected:
+declaring a component that no instance can ever build is a mistake.
+
 What `bench2 validate` enforces on every sampled instance, from the exported
 STEP (not from the in-process shape — a body can build fine and still export
 inside-out):

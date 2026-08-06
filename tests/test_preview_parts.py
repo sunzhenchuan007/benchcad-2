@@ -462,10 +462,23 @@ class ParamQuantityTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "not among the instance"):
             resolve_contract([("pin", "pin_count")], {})
-        with self.assertRaisesRegex(ValueError, "positive integer"):
+        with self.assertRaisesRegex(ValueError, "non-negative integer"):
             resolve_contract([("pin", "pin_count")], {"pin_count": 2.5})
+        with self.assertRaisesRegex(ValueError, "non-negative integer"):
+            resolve_contract([("pin", "pin_count")], {"pin_count": -1})
+
+    def test_resolution_allows_a_feature_toggled_component_to_be_absent(self):
+        """A param-valued quantity of 0 is a component this instance does not
+        build (an open bearing has no closure disc), not a broken contract.
+        A literal `"quantity": 0` stays invalid — see component_contract."""
+        from bench2.preview_parts import component_contract, resolve_contract
+
+        self.assertEqual(
+            resolve_contract([("ring", 1), ("disc", "n_closures")], {"n_closures": 0}),
+            [("ring", 1), ("disc", 0)],
+        )
         with self.assertRaisesRegex(ValueError, "positive integer"):
-            resolve_contract([("pin", "pin_count")], {"pin_count": 0})
+            component_contract({"components": [{"name": "disc", "quantity": 0}]})
 
     def test_pipeline_resolves_and_renders_variable_family(self):
         from PIL import Image

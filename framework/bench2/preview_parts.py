@@ -98,7 +98,17 @@ def component_contract(meta: dict) -> list[tuple[str, int | str]]:
 def resolve_contract(contract: list[tuple[str, int | str]],
                      params: dict) -> list[tuple[str, int]]:
     """Instance view of the contract: param-valued quantities looked up in the
-    instance's parameters, validated as positive integers."""
+    instance's parameters, validated as non-negative integers.
+
+    A param-valued quantity may resolve to ZERO, because the parameter that
+    sets it is often a feature axis rather than a count: an open deep-groove
+    bearing (`n_closures = 0`) ships no closure disc at all, and its easy tier
+    draws nothing else. A component the family declares but this instance does
+    not build is absent, not an error — the body-count gate still holds the
+    instance to the resolved sum. A *literal* `"quantity": 0` stays invalid
+    (`component_contract` rejects it): declaring a component no instance can
+    ever build is a mistake, not a feature.
+    """
     resolved: list[tuple[str, int]] = []
     for name, quantity in contract:
         if isinstance(quantity, int):
@@ -110,10 +120,10 @@ def resolve_contract(contract: list[tuple[str, int | str]],
                 "which is not among the instance parameters"
             )
         value = params[quantity]
-        if isinstance(value, bool) or float(value) != int(value) or int(value) < 1:
+        if isinstance(value, bool) or float(value) != int(value) or int(value) < 0:
             raise ValueError(
                 f"components: quantity parameter {quantity}={value!r} for {name!r} "
-                "must resolve to a positive integer"
+                "must resolve to a non-negative integer"
             )
         resolved.append((name, int(value)))
     return resolved
@@ -224,6 +234,10 @@ def build_preview_parts(fam_dir: Path, per_instance: bool = False,
         }
         leaves = manifest["leaves"]
         groups = group_instances(leaves, contract)
+        # a param-valued quantity may be 0 for this instance (an open bearing
+        # builds no closure disc). Such a component has no body to panel, so it
+        # drops out of the sheet rather than indexing an empty group.
+        contract = [(name, q) for name, q in contract if q > 0]
         for leaf in leaves:
             verts, tris = render.step_to_mesh(Path(td) / leaf["step"])
             m = np.array(leaf["world_transform"], dtype=np.float64)
