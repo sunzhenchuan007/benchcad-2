@@ -14,7 +14,12 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # A framework change re-validates every family, so this scales with the
+    # board (13 families ate most of 30 min; the target is 300). Raised for
+    # headroom now that the preview render is capped; if it is ever hit again
+    # the answer is to shard the family list across a matrix, not to keep
+    # nudging this number.
+    timeout-minutes: 45
     permissions:
       contents: read
     steps:
@@ -97,9 +102,25 @@ jobs:
           # `always()` runs this even when a step BEFORE family scoping failed,
           # so the list may not exist — then there is nothing to render
           [ -f /tmp/fams.txt ] || { echo "no family list — skipping"; exit 0; }
+          # Previews are a non-gating smoke check — every family is `|| true` and
+          # the output is uploaded for a reviewer to look at, while `validate`
+          # above is the thing that actually gates. A family PR lists one family
+          # and renders it in full. A framework change lists EVERY family, and
+          # rendering four sheets each through software OSMesa overruns the job
+          # timeout long before it finishes: 13 families already did (SIGTERM
+          # mid-render), and the board targets 300. So cap it — and SAY what was
+          # skipped, because a silent truncation reads as "everything rendered".
+          TOTAL=$(grep -c . /tmp/fams.txt || echo 0)
+          CAP=4
+          if [ "$TOTAL" -gt "$CAP" ]; then
+            echo "::notice::Repo-wide change: rendering previews for the first ${CAP} of ${TOTAL} families. All ${TOTAL} were VALIDATED above — only the preview smoke render is capped, to stay inside the job timeout."
+            head -n "$CAP" /tmp/fams.txt > /tmp/fams_preview.txt
+          else
+            cp /tmp/fams.txt /tmp/fams_preview.txt
+          fi
           while read -r fam; do
             [ -d "designs/$fam" ] && (uv run bench2 preview "$fam" --per-diff 3 || true)
-          done < /tmp/fams.txt
+          done < /tmp/fams_preview.txt
       - uses: actions/upload-artifact@v4
         if: always() && steps.scope.outputs.run == 'true' && github.event_name == 'pull_request'
         with:
