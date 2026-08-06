@@ -18,28 +18,24 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (40.0, 80.0), "medium": (40.0, 120.0), "hard": (30.0, 160.0)},
         source="proportion (typical machine-bracket envelope)",
-        askable=True,
     ),
     "flange_w": dict(
         desc="flange (base plate) width (Y)",
         unit="mm",
         range={"easy": (24.0, 40.0), "medium": (20.0, 50.0), "hard": (16.0, 60.0)},
         source="proportion",
-        askable=True,
     ),
     "flange_t": dict(
         desc="flange thickness (Z)",
         unit="mm",
         range={"easy": (4.0, 8.0), "medium": (3.0, 10.0), "hard": (3.0, 12.0)},
         source="proportion (plate stock gauges)",
-        askable=True,
     ),
     "web_h": dict(
         desc="web (upright plate) height above the flange",
         unit="mm",
         range={"easy": (20.0, 40.0), "medium": (16.0, 60.0), "hard": (12.0, 80.0)},
         source="proportion",
-        askable=True,
     ),
     "web_t": dict(
         desc="web thickness (Y)",
@@ -53,7 +49,6 @@ PARAM_SPEC = {
         range={"easy": (0, 0), "medium": (0, 2), "hard": (2, 4)},
         choices={"easy": [0], "medium": [0, 2], "hard": [2, 4]},
         source="mounting convention (pairs, symmetric)",
-        askable=True,
         feature=True,  # toggles a feature -> drives add/remove edit derivation
     ),
     "hole_d": dict(
@@ -61,7 +56,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (4.0, 6.0), "medium": (4.0, 9.0), "hard": (4.0, 11.0)},
         source="M4–M10 clearance holes",
-        askable=True,
     ),
     "chamfer_c": dict(
         desc="chamfer on the web top edges (0 = none; hard only)",

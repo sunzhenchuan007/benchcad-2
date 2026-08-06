@@ -2,14 +2,14 @@
 
 Everything you need is on this one page. A contribution is **two files of
 engineering knowledge**: a parametric design whose ranges and constraints are
-true. Merged family ⇒ your row on the [provenance board](CONTRIBUTORS.md),
+true. Merged family ⇒ your row on the [provenance board](docs/CONTRIBUTORS.md),
 named credit in the dataset card, co-authorship on the BenchCAD 2.0 paper.
 
 Questions / want to say hi → [Discord](https://discord.gg/be9AtvrDyK).
 Not a GitHub person? → step-by-step guide
-[EN](docs/GETTING_STARTED.md)/[中文](docs/GETTING_STARTED.zh.md) (zero-code
+[EN](docs/GETTING_STARTED.md)/[Chinese](docs/GETTING_STARTED.zh.md) (zero-code
 path included). Want a worked example first? → illustrated tutorial
-[EN](docs/WALKTHROUGH.md)/[中文](docs/WALKTHROUGH.zh.md).
+[EN](docs/WALKTHROUGH.md)/[Chinese](docs/WALKTHROUGH.zh.md).
 
 ## The 60-second loop
 
@@ -19,7 +19,7 @@ uv run bench2 new <family>           # scaffold designs/<family>/
 # fill part.py + spec.py (docs/DESIGN_SPEC.md; copy designs/simplex_sprocket/)
 uv run bench2 edit <family>          # optional: live 3D editing (CQ-editor, F5)
 uv run bench2 validate <family>      # every machine gate, locally
-uv run bench2 preview <family>       # LOOK at the three images yourself
+uv run bench2 preview <family>       # LOOK at the four images yourself
 # open a PR with `Closes #<issue>` — CI re-runs the same gates
 ```
 
@@ -29,10 +29,10 @@ uv run bench2 preview <family>       # LOOK at the three images yourself
    with `Closes #<issue>` in the description (CI enforces the link).
 2. **`bench2 validate` PASS = your code works.** CI just re-runs it publicly.
 3. **Review = one person who is not the author**, following
-   [REVIEWING.md](REVIEWING.md). One pass, verdict within days.
+   [REVIEWING.md](docs/REVIEWING.md). One pass, verdict within days.
 4. **Merged ≠ released.** Release qualification (saturation sampling,
    difficulty screen) runs in the private factory per release batch; outcomes
-   are public on [STATUS.md](STATUS.md), including HELD reasons.
+   are public on [STATUS.md](docs/STATUS.md), including NEEDS_WORK reasons.
 5. **Pick work from the [family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily)**
    (easiest: [`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)).
    No issue for your part? Open a *Family request* first.
@@ -42,7 +42,7 @@ uv run bench2 preview <family>       # LOOK at the three images yourself
 7. **Work lives in issues and PRs.** [Discord](https://discord.gg/be9AtvrDyK)
    is for questions and chatter — decisions land back in the issue. No
    meetings;
-   [STATUS.md](STATUS.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md) regenerate
+   [STATUS.md](docs/STATUS.md) and [CONTRIBUTORS.md](docs/CONTRIBUTORS.md) regenerate
    themselves.
 8. **Rule changes are PRs** to this file. Merge = in effect.
 9. **Credit is automatic** — the provenance board is generated from the
@@ -59,10 +59,10 @@ uv run bench2 preview <family>       # LOOK at the three images yourself
 | 2 | **Build** | implementer | The 60-second loop, plus `NOTES.md` symbol mapping for any equation-driven family. Compare the previews against the drawing and the table's min/max rows yourself first |
 | 3 | **PR** | implementer | `Closes #N`; CI enforces the link. 📒 PR author = *implementer* |
 | 4 | **CI** | robot | Same gates, public. Red = fix and push again |
-| 5 | **Review** | one non-author | [REVIEWING.md](REVIEWING.md): renders vs drawing → extremes vs min/max → coverage → equations (3 layers) → constraints. 📒 approver = *verifier* |
+| 5 | **Review** | one non-author | [REVIEWING.md](docs/REVIEWING.md): renders vs drawing → extremes vs min/max → coverage → equations (3 layers) → constraints. 📒 approver = *verifier* |
 | 6 | **Merge** | maintainer | Issue auto-closes; tracking list ticks itself |
-| 7 | **Dossier** | robot | Acceptance renders + validate summary posted back to the issue; [CONTRIBUTORS.md](CONTRIBUTORS.md) refreshes. The issue now reads end-to-end |
-| 8 | **Factory & release** | maintainers | Batch generation + difficulty screen; [STATUS.md](STATUS.md) flips stages; on release the dataset tag is commented on the issue |
+| 7 | **Dossier** | robot | Acceptance renders + validate summary posted back to the issue; [CONTRIBUTORS.md](docs/CONTRIBUTORS.md) refreshes. The issue now reads end-to-end |
+| 8 | **Factory & release** | maintainers | Batch generation + difficulty screen; [STATUS.md](docs/STATUS.md) flips stages; on release the dataset tag is commented on the issue |
 
 ## Claiming an issue = you verify it (5 minutes, before writing code)
 
@@ -109,7 +109,7 @@ pair exactly this way — new path, pre-rename sha.
 | `[workstream] <name>` | one roadmap line: goals, task list, all its discussion | maintainers | `workstream` |
 | `[category] <name>` | a part-family category: live checklist of its families | maintainers | `category`, `cat:*` |
 | `[family] <snake_case_name>` | one part-family proposal (the evidence package) | **anyone** (form) | `family`, `cat:*` |
-| `[family-assembly] <name>_asm` | a family whose real product is a multi-part **assembly**. Family name carries the **`_asm` suffix** in `designs/`. Model = `cq.Compound`, every real component its own solid, zero interference — `family.json` declares `"solids"` + the `"components"` BOM and `bench2 validate` now enforces count, per-body validity and non-overlap ([DESIGN_SPEC](docs/DESIGN_SPEC.md#assembly-families-name_asm)); `bench2 preview` emits `preview_parts.png` (the assembly, then each part highlighted in place with the rest ghosted) | **anyone** (form) | `family`, `family-assembly`, `cat:*` |
+| `[family-assembly] <name>_asm` | a family whose real product is a multi-part **assembly**. Family name carries the **`_asm` suffix** in `designs/`. Model = a **named `cq.Assembly`** (one node per component, named `<component>` or `<component>_<NN>`), every real component its own solid, zero interference — `family.json` declares `"solids"` + the `"components"` BOM and `bench2 validate` enforces count, per-body validity and non-overlap ([DESIGN_SPEC](docs/DESIGN_SPEC.md#assembly-families-name_asm)); `bench2 preview-parts` emits `preview_parts.png` (each component alone in four views + cutaway, the assembly, then each part highlighted in place) | **anyone** (form) | `family`, `family-assembly`, `cat:*` |
 | `[proposal] <part name>` | zero-code part proposal — we write the code | **anyone** (form) | `family`, `proposal` |
 | `[bug] <short description>` | something broken (design / framework / CI / docs) | **anyone** (form) | `bug` |
 | `[fix] <the correction> (<family>)` | a defect in a **merged** family + its correction — prefix first, family in trailing parens; the fix PR carries the same title | **anyone** | `bug` |
@@ -131,7 +131,7 @@ invitation).
 - **Framework feature** → *Feature request* form; big ideas belong to an
   existing `[workstream]` issue on the
   [roadmap](https://github.com/BenchCAD-org/benchcad-2-heldout/issues/21).
-- **Review** → verify a family PR per [REVIEWING.md](REVIEWING.md); the
+- **Review** → verify a family PR per [REVIEWING.md](docs/REVIEWING.md); the
   approving reviewer is credited as that family's verifier.
 - **Errata against released 1.0 data** → issue with the record id + the
   engineering reason; fixes land in the next dataset version (released data is

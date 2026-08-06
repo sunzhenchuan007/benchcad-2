@@ -48,7 +48,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (6.0, 8.0), "medium": (10.0, 14.0), "hard": (16.0, 24.0)},
         source="ISO 4014 / ISO 261 coarse thread series",
-        askable=True,
         refine=True,
         coverage=[6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0, 24.0],
     ),
@@ -57,7 +56,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (10.0, 13.0), "medium": (16.0, 21.0), "hard": (24.0, 36.0)},
         source="ISO 4014 (row-locked to thread_d)",
-        askable=True,
         refine=True,
     ),
     "head_h": dict(
@@ -65,7 +63,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (4.0, 5.3), "medium": (6.4, 8.8), "hard": (10.0, 15.0)},
         source="ISO 4014 (row-locked to thread_d)",
-        askable=True,
         refine=True,
     ),
     "length": dict(
@@ -73,7 +70,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (12.0, 120.0), "medium": (20.0, 120.0), "hard": (32.0, 120.0)},
         source="ISO 888 nominal length series",
-        askable=True,
         refine=True,
     ),
 }

@@ -19,7 +19,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (6, 20), "medium": (10, 40), "hard": (16, 60)},
         source="catalog bore series (shaft sizes)",
-        askable=True,
         integer=True,
     ),
     "wall_t": dict(
@@ -27,7 +26,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (1.5, 12.0), "medium": (1.5, 12.0), "hard": (1.5, 12.0)},
         source="proportion (s ~ 0.10-0.18 d, wrapped-bushing convention)",
-        askable=True,
         refine=True,
     ),
     "length": dict(
@@ -35,7 +33,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (3.5, 100.0), "medium": (3.5, 100.0), "hard": (3.5, 100.0)},
         source="proportion (L/d = 0.6-1.6, plain-bearing convention)",
-        askable=True,
         refine=True,
     ),
     "collar_t": dict(
@@ -43,7 +40,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (2.0, 24.0), "medium": (2.0, 24.0), "hard": (2.0, 24.0)},
         source="proportion (~ 1-2 x wall)",
-        askable=True,
         refine=True,
     ),
     "collar_over": dict(
@@ -51,7 +47,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (1.5, 22.0), "medium": (1.5, 22.0), "hard": (1.5, 22.0)},
         source="proportion (~ 0.9-1.8 x wall)",
-        askable=True,
         refine=True,
     ),
     "lead_chamfer": dict(

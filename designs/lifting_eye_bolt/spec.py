@@ -24,23 +24,23 @@ PARAM_SPEC = {
     "thread_dia_d1": dict(
         desc="nominal metric thread diameter d1 (DIN 580 size; drives eye + length)",
         unit="mm", range={"easy": (8.0, 10.0), "medium": (12.0, 16.0), "hard": (20.0, 24.0)},
-        source="DIN 580 nominal thread size", askable=True, refine=True,
+        source="DIN 580 nominal thread size", refine=True,
         coverage=[8.0, 10.0, 12.0, 16.0, 20.0, 24.0],
     ),
     "eye_inner_d2": dict(
         desc="eye inner diameter d2 (same DIN 580 row; ~2-2.5 d1; = collar Ø)", unit="mm",
         range={"easy": (20.0, 90.0), "medium": (20.0, 90.0), "hard": (20.0, 90.0)},
-        source="DIN 580 d2 (row-locked to thread_dia_d1)", askable=True, refine=True,
+        source="DIN 580 d2 (row-locked to thread_dia_d1)", refine=True,
     ),
     "eye_outer_d3": dict(
         desc="eye outer diameter d3 (same DIN 580 row)", unit="mm",
         range={"easy": (36.0, 90.0), "medium": (36.0, 90.0), "hard": (36.0, 90.0)},
-        source="DIN 580 d3 (row-locked to thread_dia_d1)", askable=True, refine=True,
+        source="DIN 580 d3 (row-locked to thread_dia_d1)", refine=True,
     ),
     "thread_len_l": dict(
         desc="thread / shank length l (same DIN 580 row)", unit="mm",
         range={"easy": (13.0, 36.0), "medium": (13.0, 36.0), "hard": (13.0, 36.0)},
-        source="DIN 580 l (row-locked to thread_dia_d1)", askable=True, refine=True,
+        source="DIN 580 l (row-locked to thread_dia_d1)", refine=True,
     ),
 }
 

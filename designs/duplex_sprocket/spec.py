@@ -38,7 +38,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (8.0, 25.4), "medium": (8.0, 25.4), "hard": (8.0, 25.4)},
         source="ISO 606 Table 1 / DIN 8187 (discrete rows 05B-2 – 16B-2)",
-        askable=True,
         refine=True,
         coverage=[8.000, 9.525, 12.700, 15.875, 19.050, 25.400],
     ),
@@ -47,7 +46,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (5.0, 15.88), "medium": (5.0, 15.88), "hard": (5.0, 15.88)},
         source="ISO 606 Table 1 (row-locked to pitch)",
-        askable=True,
         refine=True,
     ),
     "tooth_width": dict(
@@ -55,7 +53,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (4.4, 14.4), "medium": (4.4, 14.4), "hard": (4.4, 14.4)},
         source="ISO 606 Table 1 (row-locked to pitch)",
-        askable=True,
         refine=True,
     ),
     "trans_pitch": dict(
@@ -65,7 +62,6 @@ PARAM_SPEC = {
         range={"easy": (5.64, 31.88), "medium": (5.64, 31.88), "hard": (5.64, 31.88)},
         source="ISO 606 / DIN 8187 duplex 'Transverse Pitch' column (Renold "
                "tables; 10B-2 = 16,59 confirmed by norelem 22253 B2 = 25,5)",
-        askable=True,
         refine=True,
     ),
     "n_teeth": dict(
@@ -73,7 +69,6 @@ PARAM_SPEC = {
         unit="",
         range={"easy": (9, 18), "medium": (18, 36), "hard": (32, 60)},
         source="roller-chain practice: z >= 9 to limit chordal action; catalog range",
-        askable=True,
         integer=True,
     ),
     "bore_d": dict(
@@ -81,7 +76,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (5.0, 30.0), "medium": (5.0, 45.0), "hard": (8.0, 60.0)},
         source="catalog D3 (H7); bounded by root circle and groove wall (refine + check)",
-        askable=True,
         refine=True,
     ),
     "hub_d": dict(
@@ -97,7 +91,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (0.0, 0.0), "medium": (4.0, 36.0), "hard": (4.0, 36.0)},
         source="catalog L - B2 (= 1.6-3.7x tooth width across the 22253 rows)",
-        askable=True,
         refine=True,
     ),
     "has_keyway": dict(

@@ -26,7 +26,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (8.0, 12.0), "medium": (10.0, 18.0), "hard": (18.0, 28.0)},
         source="DIN 508 slot-width series",
-        askable=True,
         refine=True,
         coverage=[8.0, 10.0, 12.0, 14.0, 18.0, 22.0, 28.0],
     ),
@@ -35,7 +34,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (6.0, 24.0), "medium": (6.0, 24.0), "hard": (6.0, 24.0)},
         source="DIN 508 slot-to-thread pairing (catalog row)",
-        askable=True,
         refine=True,
     ),
     "base_w": dict(
@@ -43,7 +41,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (12.0, 50.0), "medium": (12.0, 50.0), "hard": (12.0, 50.0)},
         source="proportion (~ 1.55-1.75 a)",
-        askable=True,
         refine=True,
     ),
     "neck_w": dict(
@@ -51,7 +48,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (7.0, 28.0), "medium": (7.0, 28.0), "hard": (7.0, 28.0)},
         source="DIN 508 B1 = a − 0.4 (exact, row-locked to the slot)",
-        askable=True,
         refine=True,
     ),
     "base_h": dict(
@@ -59,7 +55,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (3.5, 17.0), "medium": (3.5, 17.0), "hard": (3.5, 17.0)},
         source="proportion (~ 0.45-0.6 a)",
-        askable=True,
         refine=True,
     ),
     "neck_h": dict(
@@ -67,7 +62,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (2.3, 13.0), "medium": (2.3, 13.0), "hard": (2.3, 13.0)},
         source="proportion (~ 0.3-0.45 a)",
-        askable=True,
         refine=True,
     ),
     "length": dict(
@@ -75,7 +69,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (12.0, 73.0), "medium": (12.0, 73.0), "hard": (12.0, 73.0)},
         source="proportion (~ 1.6-2.6 a)",
-        askable=True,
         refine=True,
     ),
     "chamfer": dict(

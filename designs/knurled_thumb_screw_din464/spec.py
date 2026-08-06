@@ -51,7 +51,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (1.0, 3.0), "medium": (4.0, 6.0), "hard": (8.0, 10.0)},
         source="DIN 464 nominal thread size d",
-        askable=True,
         refine=True,
         coverage=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0],
     ),
@@ -60,7 +59,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (5.0, 13.0), "medium": (15.0, 25.0), "hard": (29.0, 37.0)},
         source="DIN 464 head diameter dk (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "collar_dia_ds": dict(
@@ -68,7 +66,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (2.5, 6.5), "medium": (7.5, 12.5), "hard": (15.0, 21.0)},
         source="DIN 464 collar diameter ds (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "head_h": dict(
@@ -76,7 +73,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (3.0, 8.0), "medium": (9.0, 15.5), "hard": (17.0, 24.0)},
         source="DIN 464 head height h (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "knurl_band_k": dict(
@@ -84,7 +80,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (1.0, 3.0), "medium": (3.0, 5.5), "hard": (5.5, 8.5)},
         source="DIN 464 knurl height k (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "thread_len_b": dict(
@@ -92,7 +87,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (2.5, 9.5), "medium": (11.0, 18.5), "hard": (23.0, 30.5)},
         source="DIN 464 thread length b (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "collar_fillet_r": dict(
@@ -100,7 +94,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (0.5, 0.5), "medium": (0.5, 1.0), "hard": (2.0, 2.0)},
         source="DIN 464 r column (row-locked to d)",
-        askable=True,
         refine=True,
     ),
     "shank_len_l": dict(
@@ -108,7 +101,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (3.6, 12.0), "medium": (13.5, 25.0), "hard": (26.6, 40.0)},
         source="DIN 464 length availability matrix (per-size band, l = 2..40 overall)",
-        askable=True,
         refine=True,
     ),
     "n_knurls": dict(
@@ -116,7 +108,6 @@ PARAM_SPEC = {
         unit="count",
         range={"easy": (20, 28), "medium": (26, 36), "hard": (30, 40)},
         source="proportion (straight-knurl flute pitch)",
-        askable=False,
         integer=True,
     ),
     "knurl_depth": dict(
@@ -124,7 +115,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (0.1, 0.7), "medium": (0.3, 1.3), "hard": (0.6, 1.95)},
         source="proportion (~3-4.5% of dk)",
-        askable=False,
         refine=True,
     ),
 }

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "Roadmap & workstreams (置顶路线图)"
+  - name: "Roadmap & workstreams (pinned)"
     url: "https://github.com/BenchCAD-org/benchcad-2-heldout/issues/21"
     about: "Quarterly roadmap. Discussion about a roadmap line goes in its [workstream] issue, not a new one."
-  - name: "New here? / 新人指南"
+  - name: "New here? / Getting started"
     url: "https://github.com/BenchCAD-org/benchcad-2-heldout/blob/main/docs/GETTING_STARTED.md"
-    about: "Step-by-step contributor guide (English & 中文), including the zero-code path."
+    about: "Step-by-step contributor guide (English & Chinese), including the zero-code path."

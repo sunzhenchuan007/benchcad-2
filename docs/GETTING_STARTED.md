@@ -1,6 +1,6 @@
 # Getting started — for engineers who don't use GitHub
 
-You do **not** need to know GitHub. Follow the steps literally. 中文版:
+You do **not** need to know GitHub. Follow the steps literally. Chinese:
 [GETTING_STARTED.zh.md](GETTING_STARTED.zh.md)
 
 **Jargon, translated once:** *repository (repo)* = the project folder online ·
@@ -99,7 +99,7 @@ the code.
 14. Merged = done. Credit is automatic (CONTRIBUTORS.md, dataset card, paper
     co-authorship). What happens next (instance generation, difficulty
     screening, release) is automated — watch your family on
-    [STATUS.md](../STATUS.md). You never need to do anything after merge.
+    [STATUS.md](STATUS.md). You never need to do anything after merge.
 
 ## When something goes wrong
 

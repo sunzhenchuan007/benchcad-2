@@ -27,43 +27,43 @@ PARAM_SPEC = {
     "thread_dia_d": dict(
         desc="thread nominal Ø d (= shank Ø d3), fine pitch", unit="mm",
         range={"easy": (10, 12), "medium": (14, 18), "hard": (22, 26)},
-        source="DIN 7643 thread size", askable=True, integer=True,
+        source="DIN 7643 thread size", integer=True,
         refine=True, coverage=[10, 12, 14, 16, 18, 22, 26],
     ),
     "hex_s": dict(
         desc="hex head width across flats s", unit="mm",
         range={"easy": (12.0, 32.0), "medium": (12.0, 32.0), "hard": (12.0, 32.0)},
-        source="DIN 7643 hex width table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 hex width table (row-locked to d)", refine=True,
     ),
     "bore_dia_d4": dict(
         desc="axial hollow bore Ø d4 (drilled from the free end)", unit="mm",
         range={"easy": (5.0, 20.0), "medium": (5.0, 20.0), "hard": (5.0, 20.0)},
-        source="DIN 7643 bore table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 bore table (row-locked to d)", refine=True,
     ),
     "cross_hole_d2": dict(
         desc="transverse cross-hole Ø d2 feeding the axial bore", unit="mm",
         range={"easy": (2.5, 11.0), "medium": (2.5, 11.0), "hard": (2.5, 11.0)},
-        source="DIN 7643 cross-hole table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 cross-hole table (row-locked to d)", refine=True,
     ),
     "shank_len_l1": dict(
         desc="shank length l1 (head underside to tip)", unit="mm",
         range={"easy": (17.0, 45.0), "medium": (17.0, 45.0), "hard": (17.0, 45.0)},
-        source="DIN 7643 length table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 length table (row-locked to d)", refine=True,
     ),
     "bore_depth_t1": dict(
         desc="axial-bore depth t1 from the tip", unit="mm",
         range={"easy": (15.0, 41.0), "medium": (15.0, 41.0), "hard": (15.0, 41.0)},
-        source="DIN 7643 bore-depth table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 bore-depth table (row-locked to d)", refine=True,
     ),
     "head_h_m": dict(
         desc="hex head height m", unit="mm",
         range={"easy": (5.0, 7.0), "medium": (5.0, 7.0), "hard": (5.0, 7.0)},
-        source="DIN 7643 head-height table (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 head-height table (row-locked to d)", refine=True,
     ),
     "cross_pos_c1": dict(
         desc="cross-hole centre distance c1 below the head underside", unit="mm",
         range={"easy": (8.0, 13.0), "medium": (8.0, 13.0), "hard": (8.0, 13.0)},
-        source="DIN 7643 cross-hole location (row-locked to d)", askable=True, refine=True,
+        source="DIN 7643 cross-hole location (row-locked to d)", refine=True,
     ),
     "n_cross_holes": dict(
         desc="number of cross-drills feeding the bore (1 = 2 ports, 2 = 4 ports)", unit="",
