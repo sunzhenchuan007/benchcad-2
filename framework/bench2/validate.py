@@ -11,8 +11,7 @@ Gates (see docs/DESIGN_SPEC.md):
   5. difficulty separation: the three difficulties aren't all identical
   6. geometry-hash duplicate report within the sampled batch
   7. assembly (multi-body) families: every body is a valid solid of positive
-     volume, no two bodies interpenetrate, and the body count matches the
-     `solids` / `components` BOM declared in family.json
+     volume, and no two bodies interpenetrate (assembly.py)
 """
 
 from __future__ import annotations
@@ -31,22 +30,6 @@ DIFFS = ("easy", "medium", "hard")
 FAMILY_KEYS = ("family", "standard", "base_plane", "description", "contributor")
 BASE_PLANES = {"XY", "XZ", "YZ"}
 SPEC_REQUIRED = ("desc", "unit", "range", "source")
-
-
-def _component_names(components, params) -> list[str]:
-    """The BOM flattened to one name per body, for THIS instance.
-
-    `quantity` is an int for a fixed component, or the name of the parameter
-    that sets it (a ball or bolt count), so the expected body count follows the
-    instance instead of being a constant the family cannot honour.
-    """
-    names: list[str] = []
-    for c in components:
-        qty = c.get("quantity", 1)
-        if isinstance(qty, str):
-            qty = int(params.get(qty, 0))
-        names.extend([c.get("name", "component")] * max(0, int(qty)))
-    return names
 
 
 def _geom_hash(step_path: Path) -> str:
@@ -84,9 +67,27 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
         bad(f"family.json: base_plane must be one of {sorted(BASE_PLANES)}")
     else:
         ok("family.json: keys + base_plane valid")
+    # an assembly family additionally declares `components`; keep it consistent
+    # with `solids` here so the metadata can't drift from the body-count gate
+    # (name-level truth against the built Assembly is checked by preview-parts,
+    # which renders the committed preview_parts.png evidence).
+    components_contract = None
+    if "components" in meta:
+        from .preview_parts import component_contract
 
-    body_counts: set[int] = set()
-    body_gate_clean = [True]  # cleared by any per-body failure below
+        try:
+            components_contract = component_contract(meta)
+        except ValueError as e:
+            bad(str(e))
+        else:
+            param_qs = [q for _, q in components_contract if isinstance(q, str)]
+            if param_qs:
+                ok(f"family.json components: {len(components_contract)} component "
+                   f"type(s), param-valued quantities ({', '.join(param_qs)}) "
+                   "resolve per instance")
+            else:
+                ok(f"family.json components: {len(components_contract)} component "
+                   f"type(s), quantities sum to solids={meta['solids']}")
 
     # -- 1b. part.py must be clean source, not an editor scratch file --------
     # `bench2 edit` appends a PARAMS + show_object() block and removes it when
@@ -124,50 +125,6 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
         return False, log
     ok(f"pieces: build({len(argnames)} params) + PARAM_SPEC + check present")
 
-    spec_param_names = set(spec.PARAM_SPEC)
-
-    # -- 2b. assembly metadata: "solids" and the optional component BOM -------
-    # An `_asm` family declares how many bodies it ships and what they are; the
-    # geometry gates below then hold that declaration to the exported STEP,
-    # instead of it being prose nobody can check.
-    want_solids = meta.get("solids")
-    components = meta.get("components") or []
-    if want_solids is not None and (not isinstance(want_solids, int) or want_solids < 1):
-        bad(f"family.json: solids must be a positive integer (got {want_solids!r})")
-        want_solids = None
-    if components and (not isinstance(components, list)
-                       or not all(isinstance(c, dict) for c in components)):
-        bad("family.json: components must be a list of {name, quantity, role} objects")
-        components = []
-    for c in components:
-        qty, name = c.get("quantity", 1), c.get("name")
-        if not name or not isinstance(name, str):
-            bad(f"family.json: every component needs a name (got {c!r})")
-        elif isinstance(qty, str):
-            # a variable-count component (n balls, n bolts) names the parameter
-            # that sets it, and is resolved per instance below
-            if qty not in spec_param_names:
-                bad(f"family.json: component {name!r} quantity {qty!r} is not a "
-                    f"PARAM_SPEC parameter")
-        elif not isinstance(qty, int) or qty < 1:
-            bad(f"family.json: component {name!r} needs a positive integer "
-                f"quantity, or the name of the parameter that sets it")
-    if components and want_solids is not None:
-        fixed = [c for c in components if not isinstance(c.get("quantity", 1), str)]
-        if len(fixed) == len(components):
-            total = sum(int(c.get("quantity", 1)) for c in components)
-            if total != want_solids:
-                bad(f"family.json: components sum to {total} bodies but "
-                    f"solids={want_solids} — one row per real component, "
-                    f"quantity for repeats")
-            else:
-                ok(f"family.json: components BOM sums to solids={want_solids}")
-        else:
-            bad("family.json: solids is a fixed count, but a component has a "
-                "parametric quantity — drop solids and let the BOM set it")
-    elif components:
-        ok(f"family.json: components BOM declared ({len(components)} component types)")
-
     spec_bad = [
         f"{name}.{key}"
         for name, entry in spec.PARAM_SPEC.items()
@@ -185,9 +142,27 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
     else:
         ok(f"PARAM_SPEC: {len(spec.PARAM_SPEC)} params, all entries complete")
 
+    # param-valued component quantities must reference declared integer params
+    if components_contract is not None:
+        for cname, q in components_contract:
+            if not isinstance(q, str):
+                continue
+            entry = spec.PARAM_SPEC.get(q)
+            if entry is None:
+                bad(f"components: {cname!r} quantity references {q!r}, "
+                    "which is not a PARAM_SPEC parameter")
+            elif not entry.get("integer"):
+                bad(f"components: quantity parameter {q!r} for {cname!r} "
+                    "must declare integer=True in PARAM_SPEC")
+
     # -- 3-6. sampling, determinism, execution, hashes -----------------------
     programs: dict[str, list[str]] = {diff: [] for diff in DIFFS}
     hashes: list[str] = []
+    # optional: a family may declare its solid count (a multi-body assembly
+    # declares e.g. 3); if present, every sampled instance must match it.
+    want_solids = meta.get("solids")
+    solid_counts: set[int] = set()
+    body_gate_clean = True  # cleared by any per-body validity / interference failure
     with tempfile.TemporaryDirectory() as td:
         for diff in DIFFS:
             n_ok = 0
@@ -227,37 +202,58 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
                     if geometry:
                         step = Path(td) / f"{diff}_{seed}.step"
                         from .execute import execute_cq_to_step
+                        from .render import step_solid_report
 
                         execute_cq_to_step(prog, step)
+                        # every solid the instance produces must be a real body
+                        # (>0 volume): catches a member silently vanishing while
+                        # the overall shape still meshes.
+                        n_solids, min_vol, _ = step_solid_report(step)
+                        if n_solids == 0 or min_vol <= 1e-6:
+                            bad(f"{diff}/seed{seed}: degenerate/empty solid "
+                                f"(solids={n_solids}, min_volume={min_vol:.3g})")
+                            continue
+                        expected_solids = want_solids
+                        if components_contract is not None:
+                            from .preview_parts import resolve_contract
+                            try:
+                                expected_solids = sum(
+                                    q for _, q in
+                                    resolve_contract(components_contract, p))
+                            except ValueError as e:
+                                bad(f"{diff}/seed{seed}: {e}")
+                                continue
+                        if expected_solids is not None and n_solids != expected_solids:
+                            bad(f"{diff}/seed{seed}: produced {n_solids} solid(s) but "
+                                f"the family declares {expected_solids} "
+                                "(a body vanished or unexpectedly merged?)")
+                            continue
+                        solid_counts.add(n_solids)
                         hashes.append(_geom_hash(step))  # raises if degenerate
-                        # per-body gates, on the EXPORTED solid — what the
+                        # per-body gates on the EXPORTED solid — what the
                         # benchmark actually scores. A body can build fine
                         # in-process and still export inside-out or self-
-                        # intersecting, and neither shows up in a render.
-                        from .assembly import describe_pair, step_body_report
+                        # intersecting, and two components occupying the same
+                        # space look perfectly normal in a render and in the
+                        # STEP. Neither is visible in the solid count above.
+                        from .assembly import (describe_pair, interferences,
+                                               invalid_bodies, load_bodies)
 
-                        n_bodies, vols, pairs, invalid = step_body_report(step)
-                        body_counts.add(n_bodies)
-                        if invalid or pairs:
-                            body_gate_clean[0] = False
-                        for idx, vol, brep_ok in invalid:
-                            why = "volume is not positive (solid is inside-out)" if vol <= 0 \
-                                else "BRepCheck reports an invalid solid"
-                            bad(f"{diff}/seed{seed}: body {idx} of {n_bodies}: {why} "
-                                f"(volume {vol:.4g} mm³)")
-                        names = _component_names(components, p)
-                        for i, j, shared, thresh in pairs:
+                        bodies = load_bodies(step)
+                        for idx, vol, _brep_ok in invalid_bodies(bodies):
+                            why = ("volume is not positive (solid is inside-out)"
+                                   if vol <= 0 else "BRepCheck reports an invalid solid")
+                            bad(f"{diff}/seed{seed}: body {idx} of {n_solids}: {why} "
+                                f"(volume {vol:.4g} mm3)")
+                            body_gate_clean = False
+                        # body indices here are STEP file order, which need not
+                        # match family.json's component order — preview_parts.png
+                        # is what maps a body to its component name.
+                        for i, j, shared, thresh in (
+                                interferences(bodies) if len(bodies) > 1 else []):
                             bad(f"{diff}/seed{seed}: components overlap — "
-                                + describe_pair(i, j, shared, thresh, names))
-                        # expected body count: the declared `solids`, or the BOM
-                        # resolved against THIS instance (a ball/bolt count is a
-                        # parameter, so the total is per-instance)
-                        expect = len(names) if names else want_solids
-                        if expect is not None and n_bodies != expect:
-                            body_gate_clean[0] = False
-                            how = (f"family.json declares solids={want_solids}" if not names
-                                   else f"the components BOM resolves to {expect} for this instance")
-                            bad(f"{diff}/seed{seed}: produced {n_bodies} solid(s) but {how}")
+                                + describe_pair(i, j, shared, thresh))
+                            body_gate_clean = False
                     n_ok += 1
                 except Exception as e:  # noqa: BLE001
                     bad(f"{diff}/seed{seed}: {type(e).__name__}: {str(e)[:120]}")
@@ -307,18 +303,26 @@ def validate_family(fam_dir: Path, seeds: int = 4, geometry: bool = True):
             bad("difficulty separation: easy/medium/hard produced identical programs")
         else:
             ok("difficulty separation: difficulties produce distinct programs")
-    if body_counts and body_gate_clean[0]:
-        counts = sorted(body_counts)
-        detail = str(counts[0]) if len(counts) == 1 else f"{counts[0]}-{counts[-1]}"
-        note = f" (declares solids={want_solids})" if want_solids is not None else ""
-        multi = counts[-1] > 1
-        ok(f"bodies: {detail} solid(s) per instance, all valid"
-           + (", no component overlap" if multi else "") + note)
     if hashes:
         dup = 1.0 - len(set(hashes)) / len(hashes)
         (ok if dup <= 0.5 else bad)(
             f"geometry novelty: {len(set(hashes))}/{len(hashes)} unique shapes "
             f"({dup:.0%} duplicate{' — too clone-heavy' if dup > 0.5 else ''})"
         )
+    if solid_counts:
+        cnt = sorted(solid_counts)
+        detail = str(cnt[0]) if len(cnt) == 1 else str(cnt)
+        if components_contract is not None and any(
+                isinstance(q, str) for _, q in components_contract):
+            note = " (components quantities resolved per instance)"
+        elif want_solids is not None:
+            note = f" (declares solids={want_solids})"
+        else:
+            note = ""
+        ok(f"solids: every instance non-degenerate, {detail} solid(s) each{note}")
+        if body_gate_clean:
+            multi = max(solid_counts) > 1
+            ok("bodies: every body a valid solid (positive volume, BRepCheck)"
+               + (", no component overlap" if multi else ""))
 
     return all(passed for passed, _ in log), log

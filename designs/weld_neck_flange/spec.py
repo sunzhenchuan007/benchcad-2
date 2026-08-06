@@ -57,7 +57,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (26.7, 77.9), "medium": (102.3, 254.5), "hard": (304.8, 590.5)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
         coverage=[26.7, 52.5, 77.9, 102.3, 154.1, 202.7, 254.5, 304.8, 387.4, 488.9, 590.5],
     ),
@@ -66,7 +65,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (108.0, 190.0), "medium": (229.0, 406.4), "hard": (482.6, 812.8)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "flange_t": dict(
@@ -74,7 +72,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (14.3, 23.9), "medium": (23.9, 30.2), "hard": (31.8, 47.8)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "bolt_circle_d": dict(
@@ -82,7 +79,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (79.4, 152.4), "medium": (190.5, 362.0), "hard": (431.8, 749.3)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "n_bolts": dict(
@@ -90,7 +86,6 @@ PARAM_SPEC = {
         unit="",
         range={"easy": (4, 4), "medium": (8, 12), "hard": (12, 20)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "bolt_hole_d": dict(
@@ -98,7 +93,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (15.9, 19.1), "medium": (19.1, 25.4), "hard": (25.4, 35.1)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "hub_od": dict(
@@ -106,7 +100,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (49.3, 108.0), "medium": (134.6, 305.0), "hard": (365.0, 663.0)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     "pipe_od": dict(
@@ -114,7 +107,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (33.4, 88.9), "medium": (114.3, 273.0), "hard": (323.9, 610.0)},
         source="nominal pipe outside diameter for the NPS (weld-end of the hub)",
-        askable=True,
         refine=True,
     ),
     "hub_len": dict(
@@ -122,7 +114,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (41.3, 46.0), "medium": (52.3, 73.0), "hard": (81.2, 103.2)},
         source=_TABLE_SRC,
-        askable=True,
         refine=True,
     ),
     # --- proportions coupled to the row (declared "proportion", not a table) ---
@@ -131,7 +122,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (50.0, 135.0), "medium": (150.0, 340.0), "hard": (390.0, 715.0)},
         source="proportion (RF seat inboard of the bolt holes, larger than the bore)",
-        askable=True,
         refine=True,
     ),
     "rf_t": dict(

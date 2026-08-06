@@ -14,7 +14,7 @@ import re
 import urllib.request
 from pathlib import Path
 
-REPO = os.environ.get("GITHUB_REPOSITORY", "BenchCAD-org/benchcad-2")
+REPO = os.environ.get("GITHUB_REPOSITORY", "BenchCAD-org/benchcad-2-heldout")
 API = f"https://api.github.com/repos/{REPO}"
 HDR = {
     "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
@@ -95,7 +95,7 @@ verified the issue's evidence at claim time, per CONTRIBUTING.md) · Verified =
 approving [reviewer](REVIEWING.md).
 "bootstrap (pre-SOP)" marks the reference designs that predate this workflow.*
 """
-    (root / "CONTRIBUTORS.md").write_text(out)
+    (root / "docs" / "CONTRIBUTORS.md").write_text(out)
     print(f"CONTRIBUTORS.md: {len(rows)} families")
 
 

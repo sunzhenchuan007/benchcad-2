@@ -22,8 +22,7 @@ PARAM_SPEC = {
         desc="TODO: what this parameter physically is",
         unit="mm",
         range={"easy": (40.0, 80.0), "medium": (40.0, 120.0), "hard": (30.0, 160.0)},
-        source="TODO: e.g. 'ISO 4014 table' or 'proportion'",
-        askable=True,  # numeric QA may target this parameter
+        source="TODO: e.g. 'manufacturer table section 2' or 'proportion'",
     ),
     # TODO: add the rest.
 }
@@ -47,6 +46,6 @@ def check(p: dict) -> list[str]:
 # from bench2 import Resample
 #
 # def refine(p: dict, difficulty: str, rng) -> None:
-#     df = _root_circle(p["pitch"], p["n_teeth"])
+#     usable_d = 0.55 * p["outer_d"]
 #     lo, hi = PARAM_SPEC["bore_d"]["range"][difficulty]
-#     p["bore_d"] = round(float(rng.uniform(max(lo, 0.2 * df), min(hi, 0.45 * df))), 1)
+#     p["bore_d"] = round(float(rng.uniform(lo, min(hi, usable_d))), 1)

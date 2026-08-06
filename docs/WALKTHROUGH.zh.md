@@ -116,7 +116,7 @@ uv run python tools/debug_family.py my_family --diff hard  # 或指定难度
 
 开**一个只动 `designs/my_family/` 的 PR**,描述里写 `Closes #<issue编号>`
 ——CI 会*强制*检查这个链接,然后公开重跑同样的 validate 门禁。一位非作者按
-[REVIEWING.md](../REVIEWING.md) 评审,用三行结论 approve:
+[REVIEWING.md](REVIEWING.md) 评审,用三行结论 approve:
 
 ```
 views ✓ (对照 22253 工程图)
@@ -129,9 +129,9 @@ constraints ✓ (孔径/槽壁规则成立)
 PR 合并的那一刻:issue 自动关闭、分类清单自动打勾、存证机器人把验收渲染图
 **贴回你的 issue**——整个 issue 从头读到尾就是完整档案:顶部是提案证据,底部
 是最终几何([活例子看 #22](../../../issues/22))。贡献者台账
-[CONTRIBUTORS.md](../CONTRIBUTORS.md) 自动重生成,你的名字进 *Implemented*
+[CONTRIBUTORS.md](CONTRIBUTORS.md) 自动重生成,你的名字进 *Implemented*
 列——这一行就是论文署名的依据。发布资格由私有工厂按批次判定;
-[STATUS.md](../STATUS.md) 上能看到你的 family 从 MERGED → GENERATED →
+[STATUS.md](STATUS.md) 上能看到你的 family 从 MERGED → GENERATED →
 QUALIFIED → RELEASED 一路翻牌。
 
 ## 常见问题

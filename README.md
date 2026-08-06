@@ -18,16 +18,16 @@ written and reviewed by people who know the domain.
 
 - **[`CONTRIBUTING.md`](CONTRIBUTING.md)** — rules, the full lifecycle, how to
   claim & verify an issue, bugs/features. *(Contributors start here; merged
-  family ⇒ co-authorship — see the [provenance board](CONTRIBUTORS.md).)*
-- **[`REVIEWING.md`](REVIEWING.md)** — how to verify a family PR (renders vs
+  family ⇒ co-authorship — see the [provenance board](docs/CONTRIBUTORS.md).)*
+- **[`REVIEWING.md`](docs/REVIEWING.md)** — how to verify a family PR (renders vs
   drawing, extremes vs table, three-layer equation check).
 - **[`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md)** — the part + spec interface;
   copy [`designs/simplex_sprocket/`](designs/simplex_sprocket/) (table-driven reference).
 
-Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · **illustrated tutorial** [EN](docs/WALKTHROUGH.md)/[中文](docs/WALKTHROUGH.zh.md) · deep dive: [decision record](DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
+Roadmap → [#21](../../issues/21) · progress → [`STATUS.md`](docs/STATUS.md) · claim a family → [open family issues](../../issues?q=is%3Aissue+is%3Aopen+label%3Afamily) ([`good first issue`](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) = easiest) · **illustrated tutorial** [EN](docs/WALKTHROUGH.md)/[Chinese](docs/WALKTHROUGH.zh.md) · deep dive: [decision record](docs/DESIGN.md) · scoring engine → [BenchCAD-main](https://github.com/BenchCAD/BenchCAD-main)
 
 > **🧑‍🔧 New here / not a GitHub person?** Step-by-step guide for engineers:
-> **[English](docs/GETTING_STARTED.md) · [中文](docs/GETTING_STARTED.zh.md)** —
+> **[English](docs/GETTING_STARTED.md) · [Chinese](docs/GETTING_STARTED.zh.md)** —
 > including a zero-code path: bring a datasheet, we write the code, you get credit.
 
 ## The 60-second contributor loop

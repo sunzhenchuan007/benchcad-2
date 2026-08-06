@@ -1,6 +1,6 @@
 # Tutorial: your first family, end to end (with pictures)
 
-*中文版: [WALKTHROUGH.zh.md](WALKTHROUGH.zh.md)*
+*Chinese: [WALKTHROUGH.zh.md](WALKTHROUGH.zh.md)*
 
 Everything below is real: the issues, the images, the code and the CI runs all
 exist in this repo. Follow along with your own part — same stations, same
@@ -125,7 +125,7 @@ edit-and-see-live loop, and how to debug a family you're hand-writing.
 
 Open **one PR touching only `designs/my_family/`** with `Closes #<issue>` in
 the description — CI *enforces* the link, then re-runs the same validate gates
-publicly. One non-author reviews per [REVIEWING.md](../REVIEWING.md) and
+publicly. One non-author reviews per [REVIEWING.md](REVIEWING.md) and
 approves with a three-line verdict:
 
 ```
@@ -140,10 +140,10 @@ The instant your PR merges: the issue closes, the category checklist ticks,
 and the dossier bot posts the acceptance renders **back onto your issue**, so
 it reads end-to-end — proposal evidence at the top, final geometry at the
 bottom ([see it live on #22](../../../issues/22)). The provenance board
-[CONTRIBUTORS.md](../CONTRIBUTORS.md) regenerates with your name in the
+[CONTRIBUTORS.md](CONTRIBUTORS.md) regenerates with your name in the
 *Implemented* column — that row is the paper-authorship record. Release
 qualification happens per batch in the private factory;
-[STATUS.md](../STATUS.md) shows your family move MERGED → GENERATED →
+[STATUS.md](STATUS.md) shows your family move MERGED → GENERATED →
 QUALIFIED → RELEASED.
 
 ## FAQ

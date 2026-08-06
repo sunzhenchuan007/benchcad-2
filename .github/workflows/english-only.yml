@@ -1,0 +1,29 @@
+name: english-only
+# Repo rule: no Chinese (CJK) text in any tracked file except *.zh.md
+# translations. Binary assets are excluded. Keeps English the single source
+# of truth; translations live only in their .zh.md twins.
+#
+# `.github/workflows/**` is exempt, unlike the sibling public repo. The gates
+# here speak to contributors directly — require-issue-link explains a rejected
+# PR body, welcome greets a new issue — and those messages are deliberately
+# bilingual, because the reader who needs them most is the one who cannot read
+# the English half. A bot comment has no .zh.md twin to live in, so the rule as
+# written would delete the translation rather than relocate it. Prose and docs
+# get no such pass.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  no-cjk-outside-zh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: grep for CJK outside *.zh.md
+        run: |
+          HITS=$(git grep -nIP '[\x{4e00}-\x{9fff}]' -- ':!*.zh.md' ':!.github/workflows/**' || true)
+          if [ -n "$HITS" ]; then
+            echo "$HITS"
+            echo "::error::Chinese text found outside *.zh.md files (rule: English only; translations live in the .zh.md twin). Fix the lines above."
+            exit 1
+          fi
+          echo "OK — no CJK outside *.zh.md."

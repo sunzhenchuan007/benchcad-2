@@ -21,7 +21,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (40.0, 120.0), "medium": (120.0, 300.0), "hard": (300.0, 500.0)},
         source="cut-to-length stock (proportion)",
-        askable=True,
     ),
     "core_bore": dict(
         desc="central core bore ∅6.8, tapped M8 for end fastening (standard item feature)",

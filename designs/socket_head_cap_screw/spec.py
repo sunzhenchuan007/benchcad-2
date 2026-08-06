@@ -26,7 +26,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (6.0, 8.0), "medium": (10.0, 14.0), "hard": (16.0, 20.0)},
         source="ISO 4762 nominal thread size",
-        askable=True,
         refine=True,
         coverage=[6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0],
     ),
@@ -35,7 +34,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (10.0, 30.0), "medium": (10.0, 30.0), "hard": (10.0, 30.0)},
         source="ISO 4762 head diameter dk (row-locked to thread_d)",
-        askable=True,
         refine=True,
     ),
     "head_h": dict(
@@ -43,7 +41,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (6.0, 20.0), "medium": (6.0, 20.0), "hard": (6.0, 20.0)},
         source="ISO 4762 head height k (row-locked to thread_d)",
-        askable=True,
         refine=True,
     ),
     "socket_s": dict(
@@ -51,7 +48,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (5.0, 17.0), "medium": (5.0, 17.0), "hard": (5.0, 17.0)},
         source="ISO 4762 socket size s (row-locked to thread_d)",
-        askable=True,
         refine=True,
     ),
     "length": dict(
@@ -59,7 +55,6 @@ PARAM_SPEC = {
         unit="mm",
         range={"easy": (12.0, 40.0), "medium": (20.0, 80.0), "hard": (40.0, 160.0)},
         source="stock length (proportion)",
-        askable=True,
     ),
 }
 

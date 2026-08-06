@@ -1,8 +1,12 @@
 name: validate-designs
 
+# `validate` is a REQUIRED status check (repo ruleset). A required check must
+# report a status on EVERY PR, so this workflow triggers on all PRs (no `paths`
+# filter) and no-op-passes when nothing it cares about changed — otherwise a
+# docs/CI-only PR would leave `validate` "Expected — waiting" forever and could
+# never merge. The push trigger keeps its paths filter (no such requirement).
 on:
   pull_request:
-    paths: ["designs/**", "framework/**", "pyproject.toml"]
   push:
     branches: [main]
     paths: ["designs/**", "framework/**", "pyproject.toml"]
@@ -10,23 +14,20 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # A framework change re-validates every family, so this scales with the
+    # board (13 families ate most of 30 min; the target is 300). Raised for
+    # headroom now that the preview render is capped; if it is ever hit again
+    # the answer is to shard the family list across a matrix, not to keep
+    # nudging this number.
+    timeout-minutes: 45
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # need history to diff against the base for changed-family detection
-      - uses: astral-sh/setup-uv@v5
-        with:
-          python-version: "3.11"
-      - run: uv sync
-      # Only validate the families this change actually touches — a framework or
-      # pyproject change re-validates every family (it can affect any of them),
-      # but a family PR validates just that family. Keeps CI fast + scoped as the
-      # dataset grows to hundreds of families.
-      - name: pick families to validate
+      - name: detect whether this change needs validation
+        id: scope
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch -q origin "${{ github.base_ref }}"
@@ -36,14 +37,48 @@ jobs:
           else
             DIFF=""
           fi
+          echo "$DIFF" > /tmp/diff.txt
+          if [ -z "$DIFF" ] || echo "$DIFF" | grep -qE '^(designs/|framework/|pyproject\.toml)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No designs/framework/pyproject changes — 'validate' passes as a no-op (required check still reports)."
+          fi
+      - uses: astral-sh/setup-uv@v5
+        if: steps.scope.outputs.run == 'true'
+        with:
+          python-version: "3.11"
+      - run: uv sync
+        if: steps.scope.outputs.run == 'true'
+      # the hosted runner has no display, EGL, or OSMesa, so VTK segfaults on
+      # any offscreen render (which is also why the preview step below never
+      # actually rendered before). The vtk wheel dlopens the system OSMesa at
+      # runtime — install it and VTK gets a software offscreen backend.
+      - name: install OSMesa (headless VTK rendering)
+        if: steps.scope.outputs.run == 'true'
+        run: sudo apt-get update -q && sudo apt-get install -y -q libosmesa6
+      # framework unit tests (tests/): fast, hermetic fixture families — they
+      # gate the shared tooling the same way `bench2 validate` gates a design
+      - name: framework unit tests
+        if: steps.scope.outputs.run == 'true'
+        run: uv run python -m unittest discover -s tests -v
+      # Only validate the families this change actually touches — a framework or
+      # pyproject change re-validates every family (it can affect any of them),
+      # but a family PR validates just that family. Keeps CI fast + scoped as the
+      # dataset grows to hundreds of families.
+      - name: pick families to validate
+        if: steps.scope.outputs.run == 'true'
+        run: |
+          DIFF=$(cat /tmp/diff.txt)
           if [ -z "$DIFF" ] || echo "$DIFF" | grep -qE '^(framework/|pyproject\.toml)'; then
-            ls -d designs/*/ | xargs -n1 basename > /tmp/fams.txt   # framework/unknown change -> validate all
+            find designs -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort > /tmp/fams.txt
             echo "framework/tooling change (or no diff) -> validating all families"
           else
             echo "$DIFF" | grep -oE '^designs/[^/]+/' | cut -d/ -f2 | sort -u > /tmp/fams.txt
           fi
           echo "families to validate:"; cat /tmp/fams.txt
       - name: validate the changed families (same gates as `bench2 validate`)
+        if: steps.scope.outputs.run == 'true'
         id: validate
         run: |
           set -o pipefail
@@ -62,41 +97,52 @@ jobs:
             exit $fail
           } | tee report.md
       - name: render previews
-        if: always() && github.event_name == 'pull_request'
+        if: always() && steps.scope.outputs.run == 'true' && github.event_name == 'pull_request'
         run: |
+          # `always()` runs this even when a step BEFORE family scoping failed,
+          # so the list may not exist — then there is nothing to render
+          [ -f /tmp/fams.txt ] || { echo "no family list — skipping"; exit 0; }
+          # Previews are a non-gating smoke check — every family is `|| true` and
+          # the output is uploaded for a reviewer to look at, while `validate`
+          # above is the thing that actually gates. A family PR lists one family
+          # and renders it in full. A framework change lists EVERY family, and
+          # rendering four sheets each through software OSMesa overruns the job
+          # timeout long before it finishes: 13 families already did (SIGTERM
+          # mid-render), and the board targets 300. So cap it — and SAY what was
+          # skipped, because a silent truncation reads as "everything rendered".
+          TOTAL=$(grep -c . /tmp/fams.txt || echo 0)
+          CAP=4
+          if [ "$TOTAL" -gt "$CAP" ]; then
+            echo "::notice::Repo-wide change: rendering previews for the first ${CAP} of ${TOTAL} families. All ${TOTAL} were VALIDATED above — only the preview smoke render is capped, to stay inside the job timeout."
+            head -n "$CAP" /tmp/fams.txt > /tmp/fams_preview.txt
+          else
+            cp /tmp/fams.txt /tmp/fams_preview.txt
+          fi
           while read -r fam; do
             [ -d "designs/$fam" ] && (uv run bench2 preview "$fam" --per-diff 3 || true)
-          done < /tmp/fams.txt
+          done < /tmp/fams_preview.txt
       - uses: actions/upload-artifact@v4
-        if: always() && github.event_name == 'pull_request'
+        if: always() && steps.scope.outputs.run == 'true' && github.event_name == 'pull_request'
         with:
           name: previews
           path: designs/*/preview.png
           if-no-files-found: ignore
-      - name: post validate report as PR comment
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+      # The report COMMENT is posted by validate-report.yml (workflow_run): on
+      # fork PRs this job's token is read-only, so commenting from here fails
+      # with "Resource not accessible by integration" — exactly for the external
+      # contributors the report exists for. We hand the report + PR number over
+      # via an artifact instead.
+      - name: package report for validate-report.yml
+        if: always() && steps.scope.outputs.run == 'true' && github.event_name == 'pull_request'
+        run: |
+          mkdir -p /tmp/validate-report
+          cp report.md /tmp/validate-report/report.md 2>/dev/null || echo 'validate report missing — check the job log.' > /tmp/validate-report/report.md
+          echo "${{ github.event.pull_request.number }}" > /tmp/validate-report/pr.txt
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.run == 'true' && github.event_name == 'pull_request'
         with:
-          script: |
-            const fs = require('fs');
-            let body = '<!-- bench2-validate-report -->\n';
-            try { body += fs.readFileSync('report.md', 'utf8'); }
-            catch { body += 'validate report missing — check the job log.'; }
-            body += '\n_Previews: see the `previews` artifact on this run._';
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner, repo: context.repo.repo,
-              issue_number: context.issue.number, per_page: 100 });
-            const mine = comments.find(c =>
-              c.body.startsWith('<!-- bench2-validate-report -->'));
-            if (mine) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                comment_id: mine.id, body });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: context.issue.number, body });
-            }
+          name: validate-report
+          path: /tmp/validate-report/
 
   status-board:
     if: github.event_name == 'push'
@@ -112,5 +158,5 @@ jobs:
         run: |
           git config user.name "benchcad-bot"
           git config user.email "actions@github.com"
-          git add STATUS.md
+          git add docs/STATUS.md
           git diff --cached --quiet || (git commit -m "status: refresh board [skip ci]" && git push)

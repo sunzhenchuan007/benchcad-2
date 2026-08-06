@@ -54,9 +54,12 @@ Rules:
 - **named parameters** — every argument must be declared in `spec.py`'s `PARAM_SPEC`
 - bind `result`; use only `cq` / `math` / geomlib helpers / your own module-level
   `_helpers` and constants (no I/O, no randomness, no other imports)
-- deterministic: same arguments ⇒ same geometry, one non-degenerate solid, in
-  the pinned environment (`cadquery==2.3.0`) — an assembly family returns
-  several (see below)
+- deterministic: same arguments ⇒ same geometry, in the pinned environment
+  (`cadquery==2.3.0`)
+- `result` is a single non-degenerate solid **or**, for an assembly family, a
+  named `cq.Assembly` (folded to a compound on export). Every body must be a
+  real, non-degenerate solid; an assembly family declares its body count with
+  `"solids"` in `family.json` so a silently-vanished member is caught
 - a heterogeneous family branches on a `feature` param (`if form_b: …`) in
   ordinary `if`/`else` — the derived program keeps the branch, evaluated against
   that instance's values
@@ -79,7 +82,6 @@ required; the remaining keys tell the framework **how to draw** the value:
 | `integer` | – | draw as an integer in `range` (default is a float, 2 dp) |
 | `choices` | – | draw from a discrete set — `[0, 2, 4]`, or per-difficulty `{"easy": [0], "hard": [2, 4]}` |
 | `refine` | – | **not drawn** by the framework — computed in `refine()` (a coupled parameter). Still declares a `range` for the contract |
-| `askable` | – | `True` if a numeric QA question may target it |
 | `feature` | – | `True` if it toggles an optional feature (drives edit derivation) |
 | `coverage` | – | list of values sampling **must** be able to produce (e.g. every pitch row of the table); the validator fails if any never appears in ~120 draws |
 
@@ -150,15 +152,19 @@ Families with no coupling (like `example_tee_bracket`) omit `refine()` entirely.
 
 ## Assembly families (`<name>_asm`)
 
-A family whose real product is several parts returns them as **one
-`cq.Compound`, one solid per real component** — nothing is unioned across
-components, and nothing overlaps:
+A family whose real product is several parts returns a **named `cq.Assembly`**,
+one node per real component — nothing is unioned across components, and nothing
+overlaps:
 
 ```python
-result = cq.Compound.makeCompound([half_a.val(), half_b.val(), stud.val(), pin.val()])
+result = (cq.Assembly()
+          .add(half_a, name="half_link_01")
+          .add(half_b, name="half_link_02")
+          .add(stud,   name="centre_stud")
+          .add(pin,    name="taper_pin"))
 ```
 
-Build the list in a **fixed order** (a literal list or a `for i in range(n)`
+Add the nodes in a **fixed order** (a literal sequence or a `for i in range(n)`
 loop, never a set/dict iteration) — the derived program must stay
 byte-identical per seed. `family.json` then declares what shipped:
 
@@ -173,25 +179,55 @@ byte-identical per seed. `family.json` then declares what shipped:
 
 `solids` is the body count `validate` holds every instance to; `components` is
 the BOM — one row per *distinct* component, `quantity` for repeats, summing to
-`solids`. Both are machine-checked, and the component names label the panels of
-`preview_parts.png`.
+`solids`.
+
+**The naming contract.** Name every shape-bearing Assembly node either
+**exactly** after its component (`centre_stud` — the quantity-1 case) or
+`<component>_<NN>` for repeated instances (`half_link_01`, `half_link_02`). An
+exact declared name wins over suffix stripping; any other name fails. Keep
+semantically distinct components separate even when their geometry happens to
+match — two pins with different roles are `left_pin`/`right_pin` (two declared
+components), not `pin_01`/`pin_02`.
+
+A quantity may instead be the **name of an integer build parameter** when the
+instance count is itself a catalog value — a bearing's ball complement, a
+chain's link count:
+
+```json
+  "components": [
+    {"name": "outer_ring", "quantity": 1},
+    {"name": "inner_ring", "quantity": 1},
+    {"name": "ball", "quantity": "ball_count"}
+  ]
+```
+
+Such a family **omits `solids`** (the body count is instance-dependent); the
+referenced parameter must exist in `PARAM_SPEC` with `integer: true`, and every
+sampled instance is checked against the resolved quantity sum.
+
+A param-valued quantity may resolve to **zero**, because the parameter that
+sets it is often a feature axis rather than a count: an open deep-groove
+bearing draws `n_closures = 0` and ships no closure disc at all. The component
+is then simply absent from that instance — it builds no body and gets no panel
+in `preview_parts.png`. A *literal* `"quantity": 0` is still rejected:
+declaring a component that no instance can ever build is a mistake.
 
 What `bench2 validate` enforces on every sampled instance, from the exported
 STEP (not from the in-process shape — a body can build fine and still export
 inside-out):
 
-- **body count** equals `"solids"` — catches a component that a boolean ate, and
-  two components that silently fused;
+- **body count** equals `"solids"` (or the resolved BOM) — catches a component
+  that a boolean ate, and two components that silently fused;
 - **every body is a sane solid** — positive volume and `BRepCheck`-valid;
-- **no two bodies share volume** — `makeCompound` never merges, so interpenetrating
-  parts look perfectly normal in a render and in the STEP. Coincident faces are
-  fine (a bolt head bearing on a flange); shared *volume* is not.
+- **no two bodies share volume** — an assembly never merges its members, so
+  interpenetrating parts look perfectly normal in a render and in the STEP.
+  Coincident faces are fine (a bolt head bearing on a flange); shared *volume*
+  is not.
 
-`bench2 preview` adds `preview_parts.png` for any multi-body family: the
-assembly and one panel per distinct component, highlighted in place with the
-rest ghosted.
-Mating dimensions belong in `check()` like any other constraint — a clearance
-that only exists inside `part.py` is invisible to review.
+Component evidence has its own command — see
+[Assembly component previews](#assembly-component-previews-bench2-preview-parts)
+below. Mating dimensions belong in `check()` like any other constraint — a
+clearance that only exists inside `part.py` is invisible to review.
 
 ## Shared standards: `bench2.geomlib` (don't copy-paste tooth math)
 
@@ -232,10 +268,9 @@ allows bores to 0.58·df where Form A stops at 0.50·df).
 
 ## What you do NOT write
 
-No sampling loop (the framework samples from `PARAM_SPEC`), and no QA items or
-edit pairs — those are derived downstream (`askable` params seed numeric QA;
-`feature` params drive add/remove edits). Your jobs are `part.py`, `spec.py`,
-and `family.json`.
+No sampling loop (the framework samples from `PARAM_SPEC`), and no edit
+pairs — those are derived downstream (`feature` params drive add/remove
+edits). Your jobs are `part.py`, `spec.py`, and `family.json`.
 
 ## Machine gates (`bench2 validate`, same in CI)
 
@@ -253,8 +288,59 @@ and `family.json`.
 7. coverage: every value in a `coverage=[...]` list appears across a 120-draw pass
 8. geomlib: declared helpers exist in the registry and are inlined in the program
 
-`bench2 preview <family>` renders three PNGs: `preview.png` (difficulty × seed
+`bench2 preview <family>` renders four PNGs: `preview.png` (difficulty × seed
 overview), `preview_views.png` (the four diagonal benchmark views — what the
-model sees), and `preview_extremes.png` (smallest & largest sampled draw —
-acceptance evidence that both ends of your declared ranges produce sane
-geometry).
+model sees), `preview_hard_zoom.png` (front/side/top/iso three-view of a hard
+example plus a half-section cutaway — the axis-aligned views the diagonal isos
+hide), and `preview_extremes.png` (smallest & largest sampled draw — acceptance
+evidence that both ends of your declared ranges produce sane geometry).
+
+## Assembly component previews (`bench2 preview-parts`)
+
+The STEP export path folds an assembly into a compound — component names and
+hierarchy never reach the renderer — so component evidence has its own command:
+
+```bash
+uv run bench2 preview-parts <family>     # -> designs/<family>/preview_parts.png
+```
+
+It re-executes the derived stand-alone program for the deterministic
+**hard / seed 0** instance with an export harness that keeps the assembly tree
+(one STEP per shape-bearing node plus its absolute world transform), then
+renders the components as separate actors — the full pose and every
+parent/child `Location` transform survive. The grid shows, in `family.json`
+`components` order:
+
+1. one row per semantic component — its raw local shape in the four bench
+   views in its own frame plus a half-section CUTAWAY panel (a purely internal
+   concavity — a bearing ring's raceway, a thread, a circlip groove — is
+   invisible in every opaque exterior view), labeled with the component's
+   bounding box in mm;
+2. the complete assembly in its true pose, labeled with the instance's
+   parameters;
+3. one red-on-gray highlight row per component (correct depth occlusion, the
+   rest of the assembly stays in place). Repeated instances highlight together
+   with `quantity=N` by default; `--per-instance` renders one row per instance
+   (`half_link_01`, `half_link_02`, …) instead, and `--transparent` ghosts the
+   non-highlighted components (see-through) so an internal component — a
+   bushing pressed into its bore, a bolt shank inside its hole — stays visible
+   when highlighted.
+
+`bench2 preview` runs the same render automatically when `build()` returns a
+named assembly; single-part families are unaffected. Component order and image
+bytes are deterministic in the pinned environment. The command **fails clearly
+instead of producing a misleading image** when `result` is not a named
+assembly, an instance matches no declared component, instance names collide, or
+quantities drift from the declaration. The previous `preview_parts.png` is
+removed before every run, so a failed run never leaves a stale image behind as
+evidence.
+
+A complete runnable example — three semantic components, a repeated
+`bolt_01`/`bolt_02` pair, a nested and rotated sub-assembly — lives in
+[`docs/examples/preview_parts_demo/`](examples/preview_parts_demo/) with the
+grouped, [per-instance](examples/preview_parts_demo/preview_parts_per_instance.png),
+and [transparent](examples/preview_parts_demo/preview_parts_transparent.png)
+artifacts committed (a framework test keeps it runnable). The grouped default
+looks like this:
+
+![preview_parts example](examples/preview_parts_demo/preview_parts.png)

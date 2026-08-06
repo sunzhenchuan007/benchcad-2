@@ -7,28 +7,30 @@ welcome. These are the rules that make agent-drafted contributions mergeable.
 ## What this repo is
 
 The home of BenchCAD 2.0: a parametric CAD benchmark built from **explicit
-parametric designs** (200 part families target). A contribution is one
+parametric designs** (300 part families target). A contribution is one
 `designs/<family>/` with two source files — `part.py` (the parametric part: a
 `build(<named params>)` function) and `spec.py` (the benchmark generator:
 `PARAM_SPEC`, `check`, and an optional `refine`) — plus a `family.json`. Read
 `docs/DESIGN_SPEC.md` first; copy the shape of `designs/example_tee_bracket/`.
 
 ```
-DESIGN.md          decision record — why things are the way they are
+docs/DESIGN.md      decision record — why things are the way they are
 docs/DESIGN_SPEC.md the part + spec interface (the contract you implement)
-CONTRIBUTING.md    contributor loop
-REVIEWING.md       what human review checks
-framework/bench2/  the CLI: new / validate / preview
-designs/           one directory per family
+CONTRIBUTING.md     contributor loop
+docs/REVIEWING.md   what human review checks
+framework/bench2/   the CLI: new / edit / validate / preview / preview-parts
+designs/            one directory per family
 ```
 
 ## Workflow
 
 ```bash
 uv sync
-uv run bench2 new <family>        # scaffold
-uv run bench2 validate <family>   # every machine gate — must PASS before PR
-uv run bench2 preview <family>    # render the grid — a human must look at it
+uv run bench2 new <family>          # scaffold
+uv run bench2 edit <family>         # optional: live 3D in CQ-editor, F5 to re-render
+uv run bench2 validate <family>     # every machine gate — must PASS before PR
+uv run bench2 preview <family>      # render the grid — a human must look at it
+uv run bench2 preview-parts <fam>   # assembly families: per-component evidence
 ```
 
 ## Hard rules for agent-drafted designs
