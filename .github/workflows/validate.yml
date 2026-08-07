@@ -62,19 +62,53 @@ jobs:
       - name: framework unit tests
         if: steps.scope.outputs.run == 'true'
         run: uv run python -m unittest discover -s tests -v
-      # Only validate the families this change actually touches — a framework or
-      # pyproject change re-validates every family (it can affect any of them),
-      # but a family PR validates just that family. Keeps CI fast + scoped as the
-      # dataset grows to hundreds of families.
+      # WHICH families to validate. A family PR validates its own family — that
+      # part is obvious. The interesting case is a framework/pyproject change,
+      # which can affect ANY family:
+      #
+      #   on a PR  -> the changed families + a small SMOKE set (see env below)
+      #   on main  -> every family, because this is the version that lands
+      #
+      # Sweeping every family on every framework PR is what made this job 96% of
+      # the repo's CI spend: seven open PRs each carrying a framework diff meant
+      # seven full sweeps per round of pushes, all re-proving the same thing. It
+      # also does not scale — 13 families already take ~12 min, and the board
+      # only grows.
+      #
+      # The trade-off, stated plainly: a framework change that breaks a family
+      # OUTSIDE the smoke set is now caught when it merges rather than on the
+      # PR. The main-push sweep is a real gate and fails loudly, so it is still
+      # caught before anything is built on top of it — one sweep per merge
+      # instead of one per PR per push.
       - name: pick families to validate
         if: steps.scope.outputs.run == 'true'
+        env:
+          # Chosen for framework COVERAGE, not at random — between them these hit
+          # every code path a framework change is likely to break:
+          #   example_tee_bracket        no refine, no geomlib, no coverage — the plainest path
+          #   simplex_sprocket           geomlib inlining + refine + coverage (nothing else exercises geomlib)
+          #   weld_neck_flange           the widest table-driven spec (11 params, refine + coverage)
+          #   knurled_thumb_screw_din464 the heaviest booleans (compound cutter, thread rings)
+          # The assembly gates are covered by tests/ (hermetic fixture families),
+          # which run on every one of these jobs regardless.
+          SMOKE: "example_tee_bracket simplex_sprocket weld_neck_flange knurled_thumb_screw_din464"
         run: |
           DIFF=$(cat /tmp/diff.txt)
+          CHANGED=$(echo "$DIFF" | grep -oE '^designs/[^/]+/' | cut -d/ -f2 | sort -u || true)
           if [ -z "$DIFF" ] || echo "$DIFF" | grep -qE '^(framework/|pyproject\.toml)'; then
-            find designs -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort > /tmp/fams.txt
-            echo "framework/tooling change (or no diff) -> validating all families"
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              { echo "$CHANGED"
+                for f in $SMOKE; do [ -d "designs/$f" ] && echo "$f"; done
+              } | grep . | sort -u > /tmp/fams.txt
+              TOTAL=$(find designs -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+              PICKED=$(grep -c . /tmp/fams.txt || echo 0)
+              echo "::notice::Framework change on a PR: validating ${PICKED} of ${TOTAL} families — the ones this PR touches, plus a smoke set covering the geomlib / refine / coverage / boolean-heavy paths. The FULL sweep over all ${TOTAL} runs on merge to main."
+            else
+              find designs -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort > /tmp/fams.txt
+              echo "framework/tooling change on main -> validating every family"
+            fi
           else
-            echo "$DIFF" | grep -oE '^designs/[^/]+/' | cut -d/ -f2 | sort -u > /tmp/fams.txt
+            echo "$CHANGED" | grep . > /tmp/fams.txt || true
           fi
           echo "families to validate:"; cat /tmp/fams.txt
       - name: validate the changed families (same gates as `bench2 validate`)
