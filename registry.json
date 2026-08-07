@@ -21,6 +21,13 @@
 "anchor": "DIN 5415 (H series)"
 },
 {
+"name": "adjustable_clamping_lever",
+"status": "proposed",
+"ref": "#256",
+"category": "workholding",
+"anchor": ""
+},
+{
 "name": "adjustable_lever_body_gn300",
 "status": "wanted",
 "ref": "#35",
@@ -50,17 +57,17 @@
 },
 {
 "name": "an23_clevis_bolt",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#171",
 "category": "aero-auto",
-"anchor": "AN23–AN36"
+"anchor": ""
 },
 {
 "name": "an3_airframe_bolt",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#110",
 "category": "aero-auto",
-"anchor": "AN3–AN20"
+"anchor": ""
 },
 {
 "name": "an490_rod_end",
@@ -71,10 +78,10 @@
 },
 {
 "name": "an818_coupling_nut",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#211",
 "category": "aero-auto",
-"anchor": "AN818"
+"anchor": ""
 },
 {
 "name": "an970_wide_area_washer",
@@ -120,10 +127,10 @@
 },
 {
 "name": "at5_timing_pulley",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#188",
 "category": "drivetrain",
-"anchor": "BRECO AT series"
+"anchor": ""
 },
 {
 "name": "automotive_wheel_rim_profile",
@@ -204,24 +211,24 @@
 },
 {
 "name": "ballscrew_support_bk",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#236",
 "category": "pneumatics-motion",
-"anchor": "THK/Misumi BK"
+"anchor": ""
 },
 {
 "name": "banjo_bolt",
-"status": "wanted",
-"ref": "#33",
-"category": "pneumatics-motion",
-"anchor": "DIN 7643"
+"status": "merged",
+"ref": "designs/banjo_bolt",
+"category": "",
+"anchor": "DIN 7643 (banjo bolt / hollow screw)"
 },
 {
 "name": "banjo_fitting_body",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#244",
 "category": "pneumatics-motion",
-"anchor": "Festo QSL"
+"anchor": ""
 },
 {
 "name": "banjo_ring_fitting",
@@ -288,10 +295,10 @@
 },
 {
 "name": "blind_flange",
-"status": "wanted",
-"ref": "#32",
+"status": "proposed",
+"ref": "#176",
 "category": "piping",
-"anchor": "ASME B16.5"
+"anchor": ""
 },
 {
 "name": "blind_rivet",
@@ -301,11 +308,18 @@
 "anchor": "ISO 15983"
 },
 {
+"name": "blind_rivet_nut",
+"status": "proposed",
+"ref": "#252",
+"category": "fasteners",
+"anchor": ""
+},
+{
 "name": "bobbin_mount",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#191",
 "category": "springs-damping",
-"anchor": "norelem 26102 B"
+"anchor": ""
 },
 {
 "name": "brake_flare_union_screw",
@@ -322,6 +336,13 @@
 "anchor": "Oilite TT"
 },
 {
+"name": "bsp_stud_adapter",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "ISO 1179-2 / DIN 3852-2"
+},
+{
 "name": "bt40_taper_shank",
 "status": "wanted",
 "ref": "#38",
@@ -336,11 +357,18 @@
 "anchor": "EN 10067"
 },
 {
-"name": "bull_plug",
+"name": "bulkhead_union_body",
 "status": "wanted",
-"ref": "#32",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "DIN 2353 bulkhead (Schott)"
+},
+{
+"name": "bull_plug",
+"status": "proposed",
+"ref": "#179",
 "category": "piping",
-"anchor": "MSS SP-95"
+"anchor": ""
 },
 {
 "name": "busbar_flat_blank",
@@ -351,10 +379,10 @@
 },
 {
 "name": "busbar_support",
-"status": "wanted",
-"ref": "#40",
+"status": "proposed",
+"ref": "#241",
 "category": "electro",
-"anchor": "Rittal SV 9340"
+"anchor": ""
 },
 {
 "name": "butterfly_valve_body",
@@ -379,10 +407,10 @@
 },
 {
 "name": "cable_drag_chain_link",
-"status": "wanted",
-"ref": "#40",
+"status": "proposed",
+"ref": "#233",
 "category": "electro",
-"anchor": "igus e-chain"
+"anchor": ""
 },
 {
 "name": "cable_entry_plate",
@@ -484,10 +512,10 @@
 },
 {
 "name": "castellated_nut",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#162",
 "category": "fasteners",
-"anchor": "DIN 935"
+"anchor": ""
 },
 {
 "name": "caster_swivel_fork",
@@ -519,10 +547,10 @@
 },
 {
 "name": "centring_sleeve",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#210",
 "category": "mold-die",
-"anchor": "ISO 9449"
+"anchor": ""
 },
 {
 "name": "cetop_valve_subbase",
@@ -554,10 +582,10 @@
 },
 {
 "name": "cf_double_faced_flange",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#182",
 "category": "vacuum",
-"anchor": "Lesker CF"
+"anchor": ""
 },
 {
 "name": "cf_multiport_cluster_flange",
@@ -609,6 +637,13 @@
 "anchor": "item24 45224"
 },
 {
+"name": "clamping_fork_cf",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs CF125"
+},
+{
 "name": "claw_coupling_air",
 "status": "wanted",
 "ref": "#43",
@@ -617,10 +652,17 @@
 },
 {
 "name": "clevis_foot_bracket",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#206",
 "category": "pneumatics-motion",
-"anchor": "Festo LBG/LNG"
+"anchor": ""
+},
+{
+"name": "clevis_pin",
+"status": "proposed",
+"ref": "#80",
+"category": "fasteners",
+"anchor": ""
 },
 {
 "name": "clevis_rod_end",
@@ -645,10 +687,10 @@
 },
 {
 "name": "collar_nut_din6331",
-"status": "wanted",
-"ref": "#35",
+"status": "proposed",
+"ref": "#137",
 "category": "workholding",
-"anchor": "DIN 6331"
+"anchor": ""
 },
 {
 "name": "combi_shell_mill_arbor",
@@ -666,10 +708,10 @@
 },
 {
 "name": "compression_spring",
-"status": "wanted",
-"ref": "#34",
-"category": "springs-damping",
-"anchor": "DIN 2098-1"
+"status": "proposed",
+"ref": "#78",
+"category": "",
+"anchor": ""
 },
 {
 "name": "concealed_hinge",
@@ -708,10 +750,10 @@
 },
 {
 "name": "conical_rubber_buffer",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#190",
 "category": "springs-damping",
-"anchor": "norelem 26112"
+"anchor": ""
 },
 {
 "name": "constant_force_spring",
@@ -736,10 +778,10 @@
 },
 {
 "name": "conveyor_impact_idler",
-"status": "wanted",
-"ref": "#44",
+"status": "proposed",
+"ref": "#245",
 "category": "conveying-lab",
-"anchor": "Rulmeca catalog"
+"anchor": ""
 },
 {
 "name": "conveyor_return_roller",
@@ -771,10 +813,10 @@
 },
 {
 "name": "countersunk_socket_screw",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#136",
 "category": "fasteners",
-"anchor": "ISO 10642"
+"anchor": ""
 },
 {
 "name": "coupling_nut",
@@ -869,10 +911,10 @@
 },
 {
 "name": "cylinder_foot_bracket",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#170",
 "category": "pneumatics-motion",
-"anchor": "ISO 15552 MS1 (Festo HNC)"
+"anchor": ""
 },
 {
 "name": "cylinder_piston",
@@ -911,10 +953,10 @@
 },
 {
 "name": "cylindrical_rubber_mount",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#104",
 "category": "springs-damping",
-"anchor": "norelem 26100 A"
+"anchor": ""
 },
 {
 "name": "date_insert_body",
@@ -945,13 +987,6 @@
 "anchor": "DIN 82024"
 },
 {
-"name": "deep_groove_ball_bearing",
-"status": "proposed",
-"ref": "#30",
-"category": "bearings-seals",
-"anchor": ""
-},
-{
 "name": "die_button",
 "status": "wanted",
 "ref": "#37",
@@ -960,10 +995,10 @@
 },
 {
 "name": "die_spring",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#140",
 "category": "springs-damping",
-"anchor": "ISO 10243"
+"anchor": ""
 },
 {
 "name": "din11851_conical_liner",
@@ -974,10 +1009,10 @@
 },
 {
 "name": "din11851_slotted_nut",
-"status": "wanted",
-"ref": "#41",
+"status": "proposed",
+"ref": "#227",
 "category": "sanitary-process",
-"anchor": "DIN 11851"
+"anchor": ""
 },
 {
 "name": "din11851_threaded_male",
@@ -985,6 +1020,27 @@
 "ref": "#41",
 "category": "sanitary-process",
 "anchor": "DIN 11851"
+},
+{
+"name": "din2353_straight_union_body",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "DIN 2353 / ISO 8434-1"
+},
+{
+"name": "din3861_cutting_ring",
+"status": "proposed",
+"ref": "#200",
+"category": "hydraulics",
+"anchor": ""
+},
+{
+"name": "din3870_union_nut",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "DIN 3870"
 },
 {
 "name": "din_41612_connector_housing",
@@ -1016,10 +1072,10 @@
 },
 {
 "name": "disc_spring",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#165",
 "category": "springs-damping",
-"anchor": "DIN 2093"
+"anchor": ""
 },
 {
 "name": "dome_bumper",
@@ -1030,10 +1086,10 @@
 },
 {
 "name": "domed_cap_nut",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#152",
 "category": "fasteners",
-"anchor": "DIN 1587"
+"anchor": ""
 },
 {
 "name": "double_bit_lock_insert",
@@ -1048,6 +1104,13 @@
 "ref": "#34",
 "category": "springs-damping",
 "anchor": "Lee Spring double torsion"
+},
+{
+"name": "dowel_pin",
+"status": "proposed",
+"ref": "#72",
+"category": "",
+"anchor": ""
 },
 {
 "name": "drawbar_ball80",
@@ -1093,10 +1156,10 @@
 },
 {
 "name": "drill_chuck_taper_arbor",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#185",
 "category": "tooling",
-"anchor": "DIN 238 (B10–B24)"
+"anchor": ""
 },
 {
 "name": "drone_motor_mount",
@@ -1114,10 +1177,10 @@
 },
 {
 "name": "duplex_sprocket",
-"status": "proposed",
-"ref": "#1",
-"category": "drivetrain",
-"anchor": ""
+"status": "merged",
+"ref": "designs/duplex_sprocket",
+"category": "",
+"anchor": "ISO 606"
 },
 {
 "name": "dynamixel_horn",
@@ -1149,10 +1212,10 @@
 },
 {
 "name": "eccentric_reducer",
-"status": "wanted",
-"ref": "#32",
+"status": "proposed",
+"ref": "#177",
 "category": "piping",
-"anchor": "ASME B16.9"
+"anchor": ""
 },
 {
 "name": "ejector_pin_stepped",
@@ -1163,17 +1226,17 @@
 },
 {
 "name": "ejector_pin_straight",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#168",
 "category": "mold-die",
-"anchor": "DIN 1530 A / ISO 6751"
+"anchor": ""
 },
 {
 "name": "ejector_sleeve",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#193",
 "category": "mold-die",
-"anchor": "ISO 8405"
+"anchor": ""
 },
 {
 "name": "elastomer_pressure_spring",
@@ -1184,10 +1247,10 @@
 },
 {
 "name": "elevator_bucket_bolt",
-"status": "wanted",
-"ref": "#44",
+"status": "proposed",
+"ref": "#99",
 "category": "conveying-lab",
-"anchor": "DIN 15237"
+"anchor": ""
 },
 {
 "name": "encoder_code_disc",
@@ -1219,24 +1282,24 @@
 },
 {
 "name": "equal_leg_angle",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#230",
 "category": "structural",
-"anchor": "EN 10056-1"
+"anchor": ""
 },
 {
 "name": "er32_clamping_nut",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#163",
 "category": "tooling",
-"anchor": "DIN 6499 / ISO 15488"
+"anchor": ""
 },
 {
 "name": "er32_collet",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#143",
 "category": "tooling",
-"anchor": "DIN 6499 / ISO 15488"
+"anchor": ""
 },
 {
 "name": "er32_collet_chuck",
@@ -1275,9 +1338,9 @@
 },
 {
 "name": "extrusion_profile_4040",
-"status": "proposed",
-"ref": "#17",
-"category": "structural",
+"status": "merged",
+"ref": "designs/extrusion_profile_4040",
+"category": "",
 "anchor": ""
 },
 {
@@ -1309,11 +1372,25 @@
 "anchor": "SMC AF"
 },
 {
+"name": "fine_adjustment_screw",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs F25SS"
+},
+{
 "name": "finger_spring_washer",
 "status": "wanted",
 "ref": "#34",
 "category": "springs-damping",
 "anchor": "MW Components finger washers"
+},
+{
+"name": "fixed_lens_mount_lmr",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs LMR1"
 },
 {
 "name": "flange_gasket",
@@ -1324,10 +1401,10 @@
 },
 {
 "name": "flanged_bushing",
-"status": "proposed",
-"ref": "#13",
-"category": "bearings-seals",
-"anchor": ""
+"status": "merged",
+"ref": "designs/flanged_bushing",
+"category": "",
+"anchor": "ISO 3547 / DIN 1850 (proportion)"
 },
 {
 "name": "flat_bar_profile",
@@ -1342,6 +1419,13 @@
 "ref": "#7",
 "category": "drivetrain",
 "anchor": "DIN 111"
+},
+{
+"name": "flat_washer",
+"status": "proposed",
+"ref": "#68",
+"category": "",
+"anchor": ""
 },
 {
 "name": "floor_bracket_foot",
@@ -1415,10 +1499,10 @@
 },
 {
 "name": "full_coupling",
-"status": "wanted",
-"ref": "#32",
+"status": "proposed",
+"ref": "#166",
 "category": "piping",
-"anchor": "ASME B16.11"
+"anchor": ""
 },
 {
 "name": "funnel_type_grease_fitting",
@@ -1471,10 +1555,10 @@
 },
 {
 "name": "gas_strut_body",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#207",
 "category": "springs-damping",
-"anchor": "Stabilus Lift-O-Mat"
+"anchor": ""
 },
 {
 "name": "gate_valve_body",
@@ -1498,11 +1582,18 @@
 "anchor": "API 600"
 },
 {
+"name": "gauge_connector_en837",
+"status": "proposed",
+"ref": "#199",
+"category": "hydraulics",
+"anchor": ""
+},
+{
 "name": "gear_rack",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#164",
 "category": "drivetrain",
-"anchor": "DIN 867 / ISO 53 (Mädler)"
+"anchor": ""
 },
 {
 "name": "gear_segment",
@@ -1517,6 +1608,13 @@
 "ref": "#7",
 "category": "drivetrain",
 "anchor": "DIN 6887"
+},
+{
+"name": "gl45_bottle_cap",
+"status": "proposed",
+"ref": "#261",
+"category": "conveying-lab",
+"anchor": ""
 },
 {
 "name": "gland_follower",
@@ -1548,10 +1646,10 @@
 },
 {
 "name": "gravity_conveyor_roller",
-"status": "wanted",
-"ref": "#44",
+"status": "proposed",
+"ref": "#149",
 "category": "conveying-lab",
-"anchor": "Interroll 1700"
+"anchor": ""
 },
 {
 "name": "gripper_finger_blank_mhz2",
@@ -1604,10 +1702,10 @@
 },
 {
 "name": "guide_pillar",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#142",
 "category": "mold-die",
-"anchor": "ISO 9182-2 A / DIN 9825 (FIBRO 202.19)"
+"anchor": ""
 },
 {
 "name": "guillemin_half_body",
@@ -1645,6 +1743,13 @@
 "anchor": "Harmonic Drive CSF/CSG"
 },
 {
+"name": "heatsink_extrusion_profile",
+"status": "proposed",
+"ref": "#263",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "helical_beam_coupling",
 "status": "wanted",
 "ref": "#7",
@@ -1652,18 +1757,18 @@
 "anchor": "Ruland PSR"
 },
 {
-"name": "helical_gear_2",
+"name": "helical_wheel",
 "status": "proposed",
 "ref": "#3",
 "category": "drivetrain",
 "anchor": ""
 },
 {
-"name": "hex_bolt_2",
-"status": "proposed",
-"ref": "#8",
-"category": "fasteners",
-"anchor": ""
+"name": "hex_cap_bolt",
+"status": "merged",
+"ref": "designs/hex_cap_bolt",
+"category": "",
+"anchor": "ISO 4017"
 },
 {
 "name": "hex_flange_bolt",
@@ -1671,6 +1776,13 @@
 "ref": "#12",
 "category": "fasteners",
 "anchor": "DIN 6921"
+},
+{
+"name": "hex_flange_nut",
+"status": "proposed",
+"ref": "#150",
+"category": "fasteners",
+"anchor": ""
 },
 {
 "name": "hex_head_plug",
@@ -1685,6 +1797,13 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "EN 10242 Fig. 280"
+},
+{
+"name": "hex_nut",
+"status": "proposed",
+"ref": "#64",
+"category": "",
+"anchor": ""
 },
 {
 "name": "hilok_collar",
@@ -1702,10 +1821,10 @@
 },
 {
 "name": "hitch_linch_pin",
-"status": "wanted",
-"ref": "#43",
+"status": "proposed",
+"ref": "#148",
 "category": "agri-rail-marine",
-"anchor": "DIN 11023"
+"anchor": ""
 },
 {
 "name": "hitch_lower_link_ball",
@@ -1743,6 +1862,13 @@
 "anchor": "McMaster barbed fittings"
 },
 {
+"name": "hose_crimp_ferrule",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "EN 853/856 (Manuli / HANSA-FLEX)"
+},
+{
 "name": "hsk_a63_hollow_taper_shank",
 "status": "wanted",
 "ref": "#38",
@@ -1771,6 +1897,13 @@
 "anchor": "DIN 3223 C"
 },
 {
+"name": "hydraulic_plug_vsti",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "Parker VSTI (ISO 1179-2)"
+},
+{
 "name": "hygienic_leveling_foot",
 "status": "wanted",
 "ref": "#41",
@@ -1786,10 +1919,10 @@
 },
 {
 "name": "idler_sprocket",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#147",
 "category": "drivetrain",
-"anchor": "norelem 22280"
+"anchor": ""
 },
 {
 "name": "iec_b5_motor_flange",
@@ -1828,10 +1961,10 @@
 },
 {
 "name": "indexing_plunger",
-"status": "wanted",
-"ref": "#35",
+"status": "proposed",
+"ref": "#169",
 "category": "workholding",
-"anchor": "norelem 03092"
+"anchor": ""
 },
 {
 "name": "instrument_manifold",
@@ -1839,6 +1972,13 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "Parker/AS-Schneider 3-valve"
+},
+{
+"name": "internal_retaining_ring",
+"status": "proposed",
+"ref": "#154",
+"category": "bearings-seals",
+"anchor": ""
 },
 {
 "name": "internal_ring_gear",
@@ -1855,6 +1995,13 @@
 "anchor": "DIN 5480"
 },
 {
+"name": "iso7241a_coupling_body",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "ISO 7241-A"
+},
+{
 "name": "iso_f_bored_weld_flange",
 "status": "wanted",
 "ref": "#36",
@@ -1863,10 +2010,10 @@
 },
 {
 "name": "iso_k_blank_flange",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#167",
 "category": "vacuum",
-"anchor": "ISO 1609 / DIN 28404"
+"anchor": ""
 },
 {
 "name": "iso_k_centering_ring_carrier",
@@ -1874,6 +2021,13 @@
 "ref": "#36",
 "category": "vacuum",
 "anchor": "ISO 1609"
+},
+{
+"name": "iso_k_claw_clamp",
+"status": "proposed",
+"ref": "#259",
+"category": "vacuum",
+"anchor": ""
 },
 {
 "name": "iso_k_double_claw_clamp_body",
@@ -1911,6 +2065,13 @@
 "anchor": "KTR ROTEX T-PUR"
 },
 {
+"name": "jic_37_male_adapter",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "SAE J514 (JIC 37-deg)"
+},
+{
 "name": "jic_fitting_body",
 "status": "wanted",
 "ref": "#33",
@@ -1925,11 +2086,18 @@
 "anchor": "ISO 1704"
 },
 {
+"name": "kenter_shackle_asm",
+"status": "proposed",
+"ref": "#108",
+"category": "agri-rail-marine",
+"anchor": ""
+},
+{
 "name": "keyed_shaft_end",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#189",
 "category": "drivetrain",
-"anchor": "DIN 748-1 + DIN 6885"
+"anchor": ""
 },
 {
 "name": "kf_4way_cross",
@@ -1940,10 +2108,10 @@
 },
 {
 "name": "kf_90_elbow",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#181",
 "category": "vacuum",
-"anchor": "Lesker KF elbows"
+"anchor": ""
 },
 {
 "name": "kf_blank_flange",
@@ -1954,10 +2122,10 @@
 },
 {
 "name": "kf_bulkhead_clamp_ring",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#183",
 "category": "vacuum",
-"anchor": "Lesker KF clamps"
+"anchor": ""
 },
 {
 "name": "kf_cast_clamp_body",
@@ -1968,17 +2136,17 @@
 },
 {
 "name": "kf_centering_ring_carrier",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#144",
 "category": "vacuum",
-"anchor": "ISO 2861"
+"anchor": ""
 },
 {
 "name": "kf_conical_reducer_nipple",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#180",
 "category": "vacuum",
-"anchor": "Lesker KF reducers"
+"anchor": ""
 },
 {
 "name": "kf_full_nipple",
@@ -1996,10 +2164,17 @@
 },
 {
 "name": "kf_weld_stub_flange",
-"status": "wanted",
-"ref": "#36",
+"status": "proposed",
+"ref": "#106",
 "category": "vacuum",
-"anchor": "ISO 2861 (Lesker KF)"
+"anchor": ""
+},
+{
+"name": "kinematic_base_kb",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs KB25/M"
 },
 {
 "name": "kinematic_base_plate",
@@ -2010,10 +2185,10 @@
 },
 {
 "name": "km_bearing_locknut",
-"status": "wanted",
-"ref": "#16",
+"status": "proposed",
+"ref": "#98",
 "category": "bearings-seals",
-"anchor": "DIN 981 / ISO 2982 (KM)"
+"anchor": ""
 },
 {
 "name": "km_modular_taper_shank",
@@ -2024,17 +2199,17 @@
 },
 {
 "name": "knurled_nut_din466",
-"status": "wanted",
-"ref": "#35",
+"status": "proposed",
+"ref": "#138",
 "category": "workholding",
-"anchor": "DIN 466"
+"anchor": ""
 },
 {
 "name": "knurled_thumb_screw_din464",
-"status": "wanted",
-"ref": "#35",
-"category": "workholding",
-"anchor": "DIN 464 (Halder EH 24790)"
+"status": "merged",
+"ref": "designs/knurled_thumb_screw_din464",
+"category": "",
+"anchor": "DIN 464 (knurled thumb screw, high type)"
 },
 {
 "name": "lab_rod_clamp",
@@ -2052,10 +2227,10 @@
 },
 {
 "name": "lag_screw",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#174",
 "category": "fasteners",
-"anchor": "DIN 571"
+"anchor": ""
 },
 {
 "name": "lantern_ring",
@@ -2073,10 +2248,10 @@
 },
 {
 "name": "latch_lock_bar",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#209",
 "category": "mold-die",
-"anchor": "HASCO Z171"
+"anchor": ""
 },
 {
 "name": "lathe_dead_center_mt3",
@@ -2093,6 +2268,13 @@
 "anchor": "Elesa+Ganter GN 344"
 },
 {
+"name": "lift_off_hinge_asm",
+"status": "proposed",
+"ref": "#103",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "lift_off_hinge_half",
 "status": "wanted",
 "ref": "#40",
@@ -2101,17 +2283,17 @@
 },
 {
 "name": "lifting_eye_bolt",
-"status": "wanted",
-"ref": "#12",
-"category": "fasteners",
-"anchor": "DIN 580"
+"status": "merged",
+"ref": "designs/lifting_eye_bolt",
+"category": "",
+"anchor": "DIN 580 (lifting eye bolt)"
 },
 {
 "name": "lifting_eye_nut",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#95",
 "category": "structural",
-"anchor": "DIN 582"
+"anchor": ""
 },
 {
 "name": "linear_ball_bushing",
@@ -2122,17 +2304,17 @@
 },
 {
 "name": "linear_carriage_body",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#204",
 "category": "pneumatics-motion",
-"anchor": "Hiwin HGH20CA"
+"anchor": ""
 },
 {
 "name": "linear_guide_rail",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#255",
 "category": "pneumatics-motion",
-"anchor": "Hiwin HGR20"
+"anchor": ""
 },
 {
 "name": "linear_shaft",
@@ -2170,6 +2352,13 @@
 "anchor": "EMKA 1000"
 },
 {
+"name": "long_radius_elbow",
+"status": "proposed",
+"ref": "#253",
+"category": "piping",
+"anchor": ""
+},
+{
 "name": "m12_sensor_connector_body",
 "status": "wanted",
 "ref": "#40",
@@ -2192,10 +2381,10 @@
 },
 {
 "name": "machine_leveling_foot",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#141",
 "category": "structural",
-"anchor": "norelem 27700/27760"
+"anchor": ""
 },
 {
 "name": "machinist_parallel_din6346",
@@ -2234,10 +2423,10 @@
 },
 {
 "name": "mb_lock_washer",
-"status": "wanted",
-"ref": "#16",
+"status": "proposed",
+"ref": "#139",
 "category": "bearings-seals",
-"anchor": "DIN 5406 (MB)"
+"anchor": ""
 },
 {
 "name": "microplate_stage_insert",
@@ -2252,6 +2441,13 @@
 "ref": "#33",
 "category": "pneumatics-motion",
 "anchor": "ISO 6432"
+},
+{
+"name": "minimess_test_point",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "Hydrotechnik Minimess 1620"
 },
 {
 "name": "miter_gear",
@@ -2289,6 +2485,13 @@
 "anchor": "HASCO/DME lifter units"
 },
 {
+"name": "mold_locating_ring",
+"status": "proposed",
+"ref": "#258",
+"category": "mold-die",
+"anchor": ""
+},
+{
 "name": "mold_slide_retainer",
 "status": "wanted",
 "ref": "#37",
@@ -2297,10 +2500,10 @@
 },
 {
 "name": "morse_drill_drift",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#184",
 "category": "tooling",
-"anchor": "DIN 317"
+"anchor": ""
 },
 {
 "name": "morse_reduction_sleeve",
@@ -2324,11 +2527,18 @@
 "anchor": "DIN 18251"
 },
 {
-"name": "ms20426_flush_rivet",
+"name": "mounting_base_ba",
 "status": "wanted",
-"ref": "#42",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs BA1"
+},
+{
+"name": "ms20426_flush_rivet",
+"status": "proposed",
+"ref": "#197",
 "category": "aero-auto",
-"anchor": "MS20426"
+"anchor": ""
 },
 {
 "name": "ms20470_universal_rivet",
@@ -2402,10 +2612,10 @@
 },
 {
 "name": "nas6203_close_tol_bolt",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#198",
 "category": "aero-auto",
-"anchor": "NAS6203–6220"
+"anchor": ""
 },
 {
 "name": "needle_valve_body",
@@ -2430,10 +2640,10 @@
 },
 {
 "name": "nyloc_nut",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#173",
 "category": "fasteners",
-"anchor": "ISO 10511"
+"anchor": ""
 },
 {
 "name": "o_ring",
@@ -2471,11 +2681,25 @@
 "anchor": "Thorlabs MB/M"
 },
 {
+"name": "optical_breadboard_mb",
+"status": "proposed",
+"ref": "#202",
+"category": "optics",
+"anchor": ""
+},
+{
 "name": "optical_post",
 "status": "wanted",
 "ref": "#44",
 "category": "conveying-lab",
 "anchor": "Thorlabs TR/M"
+},
+{
+"name": "optical_post_tr",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs TR series"
 },
 {
 "name": "optical_rail_x95",
@@ -2492,6 +2716,13 @@
 "anchor": "ISO 8434-3 / SAE J1453"
 },
 {
+"name": "orfs_male_adapter",
+"status": "proposed",
+"ref": "#201",
+"category": "hydraulics",
+"anchor": ""
+},
+{
 "name": "orifice_flange",
 "status": "wanted",
 "ref": "#32",
@@ -2500,10 +2731,10 @@
 },
 {
 "name": "orifice_plate",
-"status": "wanted",
-"ref": "#32",
-"category": "piping",
-"anchor": "ISO 5167-2"
+"status": "proposed",
+"ref": "#260",
+"category": "sanitary-process",
+"anchor": ""
 },
 {
 "name": "oval_flange_unit",
@@ -2541,6 +2772,20 @@
 "anchor": "DIN 2094"
 },
 {
+"name": "parallel_key",
+"status": "proposed",
+"ref": "#70",
+"category": "",
+"anchor": ""
+},
+{
+"name": "pedestal_base_be",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs BE1"
+},
+{
 "name": "piano_hinge_leaf",
 "status": "wanted",
 "ref": "#40",
@@ -2548,11 +2793,11 @@
 "anchor": "ANSI/BHMA A156.26"
 },
 {
-"name": "pillow_block_2",
-"status": "proposed",
-"ref": "#14",
-"category": "bearings-seals",
-"anchor": ""
+"name": "pillar_post_p",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs P series (Ø38.1)"
 },
 {
 "name": "piloted_flange_cartridge",
@@ -2560,6 +2805,13 @@
 "ref": "#16",
 "category": "bearings-seals",
 "anchor": "JIS B 1559 (UCFC2xx)"
+},
+{
+"name": "pipe_clamp_asm",
+"status": "proposed",
+"ref": "#97",
+"category": "piping",
+"anchor": ""
 },
 {
 "name": "pipe_clamp_half",
@@ -2591,10 +2843,10 @@
 },
 {
 "name": "piston_rod_eye",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#146",
 "category": "pneumatics-motion",
-"anchor": "ISO 8139"
+"anchor": ""
 },
 {
 "name": "planetary_roller_screw_nut",
@@ -2639,6 +2891,13 @@
 "anchor": "ASME B18.9 No. 3"
 },
 {
+"name": "plummer_block",
+"status": "proposed",
+"ref": "#14",
+"category": "bearings-seals",
+"anchor": ""
+},
+{
 "name": "poly_v_pulley",
 "status": "wanted",
 "ref": "#7",
@@ -2665,6 +2924,13 @@
 "ref": "#44",
 "category": "conveying-lab",
 "anchor": "Thorlabs PH/M"
+},
+{
+"name": "post_holder_ph",
+"status": "wanted",
+"ref": "#161",
+"category": "optics",
+"anchor": "Thorlabs PH series"
 },
 {
 "name": "pot_magnet_housing",
@@ -2745,10 +3011,10 @@
 },
 {
 "name": "pull_stud_sk40",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#102",
 "category": "tooling",
-"anchor": "DIN 69872 / ISO 7388-3"
+"anchor": ""
 },
 {
 "name": "pump_bellhousing",
@@ -2836,10 +3102,10 @@
 },
 {
 "name": "rail_vignole_60e1",
-"status": "wanted",
-"ref": "#43",
+"status": "proposed",
+"ref": "#240",
 "category": "agri-rail-marine",
-"anchor": "EN 13674-1"
+"anchor": ""
 },
 {
 "name": "ratchet_pawl",
@@ -2864,10 +3130,10 @@
 },
 {
 "name": "rectangular_hollow_section",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#235",
 "category": "structural",
-"anchor": "EN 10210-2"
+"anchor": ""
 },
 {
 "name": "regulator_body",
@@ -2884,6 +3150,13 @@
 "anchor": "DIN 6321 A"
 },
 {
+"name": "retaining_ring_external",
+"status": "proposed",
+"ref": "#74",
+"category": "bearings-seals",
+"anchor": ""
+},
+{
 "name": "return_bend",
 "status": "wanted",
 "ref": "#32",
@@ -2898,6 +3171,20 @@
 "anchor": "DME return pins"
 },
 {
+"name": "rigging_screw",
+"status": "proposed",
+"ref": "#10",
+"category": "fasteners",
+"anchor": ""
+},
+{
+"name": "right_angle_bracket_ap90",
+"status": "proposed",
+"ref": "#203",
+"category": "optics",
+"anchor": ""
+},
+{
 "name": "rigid_flange_coupling",
 "status": "wanted",
 "ref": "#7",
@@ -2905,18 +3192,25 @@
 "anchor": "DIN 116"
 },
 {
+"name": "rigid_flange_coupling_asm",
+"status": "proposed",
+"ref": "#101",
+"category": "drivetrain",
+"anchor": ""
+},
+{
 "name": "ring_buffer",
-"status": "wanted",
-"ref": "#34",
+"status": "proposed",
+"ref": "#208",
 "category": "springs-damping",
-"anchor": "ContiTech MEGI ring"
+"anchor": ""
 },
 {
 "name": "ring_cable_lug",
-"status": "wanted",
-"ref": "#40",
+"status": "proposed",
+"ref": "#246",
 "category": "electro",
-"anchor": "DIN 46234"
+"anchor": ""
 },
 {
 "name": "ring_joint_gasket",
@@ -2948,10 +3242,10 @@
 },
 {
 "name": "robot_wrist_flange_plate",
-"status": "wanted",
-"ref": "#39",
+"status": "proposed",
+"ref": "#109",
 "category": "robotics",
-"anchor": "ISO 9409-1 (50-4-M6)"
+"anchor": ""
 },
 {
 "name": "robotiq_2f85_fingertip_blank",
@@ -2969,10 +3263,10 @@
 },
 {
 "name": "rod_wiper_seal",
-"status": "wanted",
-"ref": "#16",
+"status": "proposed",
+"ref": "#237",
 "category": "bearings-seals",
-"anchor": "ISO 6195 A"
+"anchor": ""
 },
 {
 "name": "rope_clip_saddle",
@@ -3046,10 +3340,10 @@
 },
 {
 "name": "sae_split_flange_half",
-"status": "wanted",
-"ref": "#33",
-"category": "pneumatics-motion",
-"anchor": "SAE J518"
+"status": "proposed",
+"ref": "#254",
+"category": "hydraulics",
+"anchor": ""
 },
 {
 "name": "sanitary_concentric_reducer",
@@ -3080,6 +3374,13 @@
 "anchor": "API 682"
 },
 {
+"name": "sealed_deep_groove_bearing_asm",
+"status": "proposed",
+"ref": "#30",
+"category": "bearings-seals",
+"anchor": ""
+},
+{
 "name": "self_aligning_ball_bearing",
 "status": "wanted",
 "ref": "#16",
@@ -3099,6 +3400,13 @@
 "ref": "#20",
 "category": "structural",
 "anchor": "DIN 82101"
+},
+{
+"name": "shaft_collar_clamp",
+"status": "proposed",
+"ref": "#250",
+"category": "drivetrain",
+"anchor": ""
 },
 {
 "name": "shaft_coupling_jaw",
@@ -3144,17 +3452,17 @@
 },
 {
 "name": "shoulder_screw",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#94",
 "category": "fasteners",
-"anchor": "ISO 7379"
+"anchor": ""
 },
 {
 "name": "side_clamp_body",
-"status": "wanted",
-"ref": "#35",
+"status": "proposed",
+"ref": "#194",
 "category": "workholding",
-"anchor": "norelem 04000-series"
+"anchor": ""
 },
 {
 "name": "side_interlock",
@@ -3207,10 +3515,10 @@
 },
 {
 "name": "sk40_steep_taper_shank",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#187",
 "category": "tooling",
-"anchor": "DIN 69871 / ISO 7388-1"
+"anchor": ""
 },
 {
 "name": "sk40_toolholder_blank",
@@ -3221,10 +3529,10 @@
 },
 {
 "name": "sk_shaft_support",
-"status": "wanted",
-"ref": "#33",
+"status": "proposed",
+"ref": "#205",
 "category": "pneumatics-motion",
-"anchor": "Misumi SK"
+"anchor": ""
 },
 {
 "name": "skate_wheel",
@@ -3256,10 +3564,10 @@
 },
 {
 "name": "slotted_spring_pin",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#153",
 "category": "fasteners",
-"anchor": "ISO 8752"
+"anchor": ""
 },
 {
 "name": "slotted_spring_plunger",
@@ -3270,17 +3578,17 @@
 },
 {
 "name": "sm1_lens_tube",
-"status": "wanted",
-"ref": "#44",
-"category": "conveying-lab",
-"anchor": "Thorlabs SM1"
+"status": "proposed",
+"ref": "#262",
+"category": "optics",
+"anchor": ""
 },
 {
 "name": "sms1145_union_nut",
-"status": "wanted",
-"ref": "#41",
+"status": "proposed",
+"ref": "#238",
 "category": "sanitary-process",
-"anchor": "SMS 1145"
+"anchor": ""
 },
 {
 "name": "sms1145_weld_liner",
@@ -3298,10 +3606,10 @@
 },
 {
 "name": "socket_head_cap_screw",
-"status": "wanted",
-"ref": "#12",
-"category": "fasteners",
-"anchor": "ISO 4762"
+"status": "merged",
+"ref": "designs/socket_head_cap_screw",
+"category": "",
+"anchor": "ISO 4762 (hexagon socket head cap screw)"
 },
 {
 "name": "socket_pipe_plug",
@@ -3312,10 +3620,10 @@
 },
 {
 "name": "socket_set_screw",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#156",
 "category": "fasteners",
-"anchor": "ISO 4029"
+"anchor": ""
 },
 {
 "name": "socket_wedge_insert",
@@ -3389,10 +3697,10 @@
 },
 {
 "name": "spherical_washer_din6319",
-"status": "wanted",
-"ref": "#35",
+"status": "proposed",
+"ref": "#195",
 "category": "workholding",
-"anchor": "DIN 6319 C/D"
+"anchor": ""
 },
 {
 "name": "spiral_bevel_pinion",
@@ -3466,10 +3774,10 @@
 },
 {
 "name": "sprue_bushing",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#105",
 "category": "mold-die",
-"anchor": "ISO 10072 (ex-DIN 16752) / HASCO Z51"
+"anchor": ""
 },
 {
 "name": "sprue_puller_pin",
@@ -3479,7 +3787,7 @@
 "anchor": "HASCO Z53"
 },
 {
-"name": "spur_gear_2",
+"name": "spur_wheel",
 "status": "proposed",
 "ref": "#2",
 "category": "drivetrain",
@@ -3557,10 +3865,10 @@
 },
 {
 "name": "storz_fixed_coupling_b",
-"status": "wanted",
-"ref": "#43",
+"status": "proposed",
+"ref": "#228",
 "category": "agri-rail-marine",
-"anchor": "DIN 14308"
+"anchor": ""
 },
 {
 "name": "storz_reducer_cd",
@@ -3647,6 +3955,13 @@
 "anchor": "DIN 7721 T10"
 },
 {
+"name": "t_slot_bolt",
+"status": "proposed",
+"ref": "#257",
+"category": "workholding",
+"anchor": ""
+},
+{
 "name": "t_slot_bolt_din787",
 "status": "wanted",
 "ref": "#35",
@@ -3655,10 +3970,10 @@
 },
 {
 "name": "t_slot_nut",
-"status": "proposed",
-"ref": "#9",
-"category": "fasteners",
-"anchor": ""
+"status": "merged",
+"ref": "designs/t_slot_nut",
+"category": "",
+"anchor": "DIN 508"
 },
 {
 "name": "take_up_unit",
@@ -3676,10 +3991,10 @@
 },
 {
 "name": "taper_lock_bush",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#229",
 "category": "drivetrain",
-"anchor": "Fenner Taper-Lock 1610"
+"anchor": ""
 },
 {
 "name": "tapered_roller_bearing",
@@ -3690,10 +4005,10 @@
 },
 {
 "name": "tapered_round_interlock",
-"status": "wanted",
-"ref": "#37",
+"status": "proposed",
+"ref": "#192",
 "category": "mold-die",
-"anchor": "DME tapered interlocks"
+"anchor": ""
 },
 {
 "name": "tapping_screw",
@@ -3711,10 +4026,10 @@
 },
 {
 "name": "tee_section_bar",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#243",
 "category": "structural",
-"anchor": "EN 10055"
+"anchor": ""
 },
 {
 "name": "tendon_pulley",
@@ -3746,10 +4061,17 @@
 },
 {
 "name": "threaded_rod",
-"status": "wanted",
-"ref": "#12",
-"category": "fasteners",
-"anchor": "DIN 976-1"
+"status": "proposed",
+"ref": "#82",
+"category": "",
+"anchor": ""
+},
+{
+"name": "three_point_linkage_ball",
+"status": "proposed",
+"ref": "#264",
+"category": "agri-rail-marine",
+"anchor": ""
 },
 {
 "name": "thrust_ball_bearing",
@@ -3816,10 +4138,10 @@
 },
 {
 "name": "toggle_latch_base_plate",
-"status": "wanted",
-"ref": "#40",
+"status": "proposed",
+"ref": "#145",
 "category": "electro",
-"anchor": "Ganter GN 831"
+"anchor": ""
 },
 {
 "name": "toggle_latch_catch",
@@ -3830,10 +4152,10 @@
 },
 {
 "name": "tool_changer_master_plate",
-"status": "wanted",
-"ref": "#39",
+"status": "proposed",
+"ref": "#234",
 "category": "robotics",
-"anchor": "ATI QC-11"
+"anchor": ""
 },
 {
 "name": "tool_changer_tool_plate",
@@ -3970,10 +4292,10 @@
 },
 {
 "name": "triclamp_ferrule",
-"status": "wanted",
-"ref": "#41",
+"status": "proposed",
+"ref": "#107",
 "category": "sanitary-process",
-"anchor": "DIN 32676 / ISO 2852 / ASME BPE"
+"anchor": ""
 },
 {
 "name": "triclamp_gasket",
@@ -4025,10 +4347,10 @@
 "anchor": "DIN 46235"
 },
 {
-"name": "turnbuckle_2",
+"name": "u_bolt",
 "status": "proposed",
-"ref": "#10",
-"category": "fasteners",
+"ref": "#155",
+"category": "piping",
 "anchor": ""
 },
 {
@@ -4061,17 +4383,24 @@
 },
 {
 "name": "union_nut",
-"status": "wanted",
-"ref": "#32",
+"status": "proposed",
+"ref": "#178",
 "category": "piping",
-"anchor": "MSS SP-83"
+"anchor": ""
+},
+{
+"name": "universal_joint_asm",
+"status": "proposed",
+"ref": "#251",
+"category": "drivetrain",
+"anchor": ""
 },
 {
 "name": "v_belt_pulley",
-"status": "proposed",
-"ref": "#5",
-"category": "drivetrain",
-"anchor": ""
+"status": "merged",
+"ref": "designs/v_belt_pulley",
+"category": "",
+"anchor": "ISO 4183"
 },
 {
 "name": "v_block_prism",
@@ -4082,10 +4411,10 @@
 },
 {
 "name": "v_ring_seal",
-"status": "wanted",
-"ref": "#16",
+"status": "proposed",
+"ref": "#239",
 "category": "bearings-seals",
-"anchor": "SKF VR1/VA"
+"anchor": ""
 },
 {
 "name": "vacuum_right_angle_valve_body",
@@ -4110,10 +4439,10 @@
 },
 {
 "name": "variable_pitch_sheave",
-"status": "wanted",
-"ref": "#7",
+"status": "proposed",
+"ref": "#196",
 "category": "drivetrain",
-"anchor": "Browning MVP"
+"anchor": ""
 },
 {
 "name": "vband_clamp_segment",
@@ -4124,10 +4453,10 @@
 },
 {
 "name": "vdi40_toolholder_shank",
-"status": "wanted",
-"ref": "#38",
+"status": "proposed",
+"ref": "#186",
 "category": "tooling",
-"anchor": "DIN 69880 / ISO 10889-1"
+"anchor": ""
 },
 {
 "name": "vibration_grommet",
@@ -4166,10 +4495,10 @@
 },
 {
 "name": "wedge_anchor",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#175",
 "category": "fasteners",
-"anchor": "fischer FAZ II"
+"anchor": ""
 },
 {
 "name": "wedge_belt_sheave",
@@ -4207,11 +4536,18 @@
 "anchor": "norelem 02320"
 },
 {
+"name": "weld_cone_nipple",
+"status": "wanted",
+"ref": "#160",
+"category": "hydraulics",
+"anchor": "Parker EO ASV (DIN 2353 system)"
+},
+{
 "name": "weld_neck_flange",
-"status": "proposed",
-"ref": "#29",
-"category": "fasteners",
-"anchor": ""
+"status": "merged",
+"ref": "designs/weld_neck_flange",
+"category": "",
+"anchor": "ASME B16.5"
 },
 {
 "name": "weld_on_hinge_leaf",
@@ -4222,10 +4558,10 @@
 },
 {
 "name": "weld_stud",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#172",
 "category": "fasteners",
-"anchor": "ISO 13918 PT"
+"anchor": ""
 },
 {
 "name": "welding_gas_nozzle",
@@ -4271,10 +4607,10 @@
 },
 {
 "name": "wheel_stud_serrated",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#212",
 "category": "aero-auto",
-"anchor": "Dorman/febi catalog"
+"anchor": ""
 },
 {
 "name": "wing_grip_knob",
@@ -4282,6 +4618,13 @@
 "ref": "#35",
 "category": "workholding",
 "anchor": "norelem 06133"
+},
+{
+"name": "wing_nut",
+"status": "proposed",
+"ref": "#151",
+"category": "fasteners",
+"anchor": ""
 },
 {
 "name": "wire_rope_thimble",
@@ -4299,17 +4642,17 @@
 },
 {
 "name": "wire_thread_insert",
-"status": "wanted",
-"ref": "#12",
+"status": "proposed",
+"ref": "#232",
 "category": "fasteners",
-"anchor": "DIN 8140"
+"anchor": ""
 },
 {
 "name": "withdrawal_sleeve",
-"status": "wanted",
-"ref": "#16",
+"status": "proposed",
+"ref": "#231",
 "category": "bearings-seals",
-"anchor": "DIN 5416 (AH series)"
+"anchor": ""
 },
 {
 "name": "woodruff_key",
