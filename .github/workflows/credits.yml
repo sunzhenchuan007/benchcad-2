@@ -1,9 +1,24 @@
 name: credits-board
 # Station 7 of the lifecycle (CONTRIBUTING.md, 📒): after a family PR merges, regenerate
 # CONTRIBUTORS.md from the actual issue/PR provenance records.
+#
+# `pull_request_target`, not `pull_request`: a PR from a FORK gets a read-only
+# GITHUB_TOKEN under `pull_request` no matter what `permissions:` asks for, so
+# the board push 403s and the contributor silently never lands on it — which is
+# the one thing this workflow exists to prevent. benchcad-2 hit exactly that on
+# its first four outside PRs (#35/#36/#38/#74).
+#
+# SECURITY: `pull_request_target` runs with a WRITE token in base-repo context,
+# so this job must never check out or execute PR code. It is safe because it
+# fires only after merge, checks out `main` explicitly (`ref: main` below), and
+# runs main's own script. Keep it that way — do not add `ref: ${{ github.event
+# .pull_request.head.sha }}` or run anything from the PR branch.
+#
+# NOTE: the push also needs "GitHub Actions" on the main ruleset's bypass list
+# if main is ever protected, else it is rejected with GH013.
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
     paths: ["designs/**"]
   workflow_dispatch:
