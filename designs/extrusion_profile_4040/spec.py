@@ -7,10 +7,19 @@ and the central ∅6.8 core bore — the dimensions that vary; the outer corners
 are always the catalog R4 (the profile has no sharp corners). Pairing a 40x40 body with the
 Profile-5/6 slot series (those are the 20x20 / 30x30 products) is dropped.
 
-Anchor: item Profile 8 40x40 (art. 0.0.026.03). item publishes the cross-section
-but not a full ortho dim table, so the chamber width/depth, the boss (12) and the
-web (4.5) are catalog-approximate (`proportion`); the slot opening (8), lip (4.5),
-core bore (∅6.8) and corner (R4) are the catalog values.
+Anchor: item Profile 8 40x40 (art. 0.0.026.03). Published on the drawing and used
+as published: overall 40, slot opening 8, lip 4.5, core bore ∅6.8, corner R4, and
+the chamber width — the drawing's 12.25 is measured from the chamber wall to the
+far face, so 20 - 12.25 = 7.75 per side and the chamber is 15.5 wide. An earlier
+revision carried 15.3 and called it "catalog-approximate"; the value is on the
+drawing.
+
+item does not publish a full ortho dim table, so four numbers remain genuine
+proportions and are named as such in part.py: the boss radius, where the chamber
+wall leaves the straight, the radius of the curve into the boss, and the angle
+each void stops short of the diagonal (which is what gives the web its width).
+They are set together so the section comes out 51.62 % solid against the ~52.1 %
+measured off the reference raster.
 """
 
 
