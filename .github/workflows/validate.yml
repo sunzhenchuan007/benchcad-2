@@ -185,6 +185,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the rebase below needs history, not a depth-1 clone
       - name: regenerate STATUS.md
         run: |
           python3 -c "import sys; sys.path.insert(0,'framework'); from pathlib import Path; from bench2.status import main; main(Path('.'))"
@@ -193,4 +195,10 @@ jobs:
           git config user.name "benchcad-bot"
           git config user.email "actions@github.com"
           git add docs/STATUS.md
-          git diff --cached --quiet || (git commit -m "status: refresh board [skip ci]" && git push)
+          # Rebase before pushing. This job checks out the pushed sha, so any
+          # merge that lands while it runs makes the push non-fast-forward and
+          # it dies with "! [rejected] main -> main (fetch first)" — which is
+          # what has been happening, so the board silently stopped refreshing.
+          # credits.yml and registry.yml already commit-then-rebase-then-push;
+          # this one never pulled at all.
+          git diff --cached --quiet || (git commit -m "status: refresh board [skip ci]" && git pull --rebase origin main && git push)
