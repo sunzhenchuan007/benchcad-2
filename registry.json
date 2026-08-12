@@ -280,6 +280,13 @@
 "anchor": "R+W BK2"
 },
 {
+"name": "bevel_epicyclic_differential_asm",
+"status": "proposed",
+"ref": "#339",
+"category": "drivetrain",
+"anchor": ""
+},
+{
 "name": "blade_ejector_pin",
 "status": "wanted",
 "ref": "#37",
@@ -1407,6 +1414,13 @@
 "anchor": "ISO 3547 / DIN 1850 (proportion)"
 },
 {
+"name": "flap_folding_rocker_mechanism_asm",
+"status": "proposed",
+"ref": "#341",
+"category": "pneumatics-motion",
+"anchor": ""
+},
+{
 "name": "flat_bar_profile",
 "status": "wanted",
 "ref": "#20",
@@ -1727,6 +1741,13 @@
 "ref": "#39",
 "category": "robotics",
 "anchor": "Harmonic Drive CSF/CSG"
+},
+{
+"name": "harmonic_cup_component_set_asm",
+"status": "proposed",
+"ref": "#340",
+"category": "drivetrain",
+"anchor": ""
 },
 {
 "name": "harmonic_flexspline",
