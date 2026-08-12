@@ -1750,6 +1750,20 @@
 "anchor": ""
 },
 {
+"name": "heavy_duty_mecanum_wheel_asm",
+"status": "proposed",
+"ref": "#336",
+"category": "",
+"anchor": ""
+},
+{
+"name": "heavy_duty_omni_wheel_asm",
+"status": "proposed",
+"ref": "#335",
+"category": "",
+"anchor": ""
+},
+{
 "name": "helical_beam_coupling",
 "status": "wanted",
 "ref": "#7",
