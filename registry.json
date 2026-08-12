@@ -3136,6 +3136,13 @@
 "anchor": "Mädler 22771200"
 },
 {
+"name": "ravigneaux_gear_set_asm",
+"status": "proposed",
+"ref": "#337",
+"category": "drivetrain",
+"anchor": ""
+},
+{
 "name": "rectangular_duct_tdc_flange",
 "status": "wanted",
 "ref": "#44",
@@ -3344,6 +3351,13 @@
 "ref": "#39",
 "category": "robotics",
 "anchor": "Nabtesco RV catalog"
+},
+{
+"name": "rv_reducer_two_stage_asm",
+"status": "proposed",
+"ref": "#338",
+"category": "drivetrain",
+"anchor": ""
 },
 {
 "name": "sae_flange_adapter",
