@@ -1,0 +1,15 @@
+{
+  "family": "stc_spc_channel_cushion_clamp_asm",
+  "standard": null,
+  "base_plane": "XY",
+  "description": "STAUFF STC/SPC four-component cushion clamp with two channel-engaging steel halves, one continuous elastomer insert, and a stud-aligned lock nut for 41.3 mm SCS rail.",
+  "source": "STAUFF Catalogue 1 - STAUFF Clamps, English, 06/2026, pages 172-173; heldout Issue #343; unmarked details use documented proportion rules",
+  "contributor": "sunzhenchuan007",
+  "solids": 4,
+  "components": [
+    {"name": "left_clamp_half", "quantity": 1},
+    {"name": "right_clamp_half", "quantity": 1},
+    {"name": "cushion_insert", "quantity": 1},
+    {"name": "lock_nut", "quantity": 1}
+  ]
+}
