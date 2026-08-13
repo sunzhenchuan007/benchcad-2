@@ -3871,6 +3871,13 @@
 "anchor": "DIN 557"
 },
 {
+"name": "srf_pipe_tube_bushing",
+"status": "proposed",
+"ref": "#344",
+"category": "",
+"anchor": ""
+},
+{
 "name": "star_grip_din6336",
 "status": "wanted",
 "ref": "#35",
