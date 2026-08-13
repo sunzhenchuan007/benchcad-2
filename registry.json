@@ -2625,6 +2625,13 @@
 "anchor": "MS24693"
 },
 {
+"name": "multi_line_pipe_clamp_body",
+"status": "proposed",
+"ref": "#342",
+"category": "",
+"anchor": ""
+},
+{
 "name": "multi_turn_wave_spring",
 "status": "wanted",
 "ref": "#34",
@@ -3876,6 +3883,13 @@
 "ref": "#41",
 "category": "sanitary-process",
 "anchor": "Alfa Laval LKRK"
+},
+{
+"name": "stc_spc_channel_cushion_clamp",
+"status": "proposed",
+"ref": "#343",
+"category": "",
+"anchor": ""
 },
 {
 "name": "steam_trap_body",
