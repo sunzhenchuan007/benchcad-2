@@ -1120,6 +1120,13 @@
 "anchor": "Lee Spring double torsion"
 },
 {
+"name": "double_wedge_clamp_asm",
+"status": "proposed",
+"ref": "#350",
+"category": "workholding",
+"anchor": ""
+},
+{
 "name": "dowel_pin",
 "status": "proposed",
 "ref": "#72",
@@ -3423,6 +3430,13 @@
 "anchor": ""
 },
 {
+"name": "safety_swivel_load_ring_asm",
+"status": "proposed",
+"ref": "#351",
+"category": "agri-rail-marine",
+"anchor": ""
+},
+{
 "name": "sanitary_concentric_reducer",
 "status": "wanted",
 "ref": "#41",
@@ -4037,6 +4051,13 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "BS 1868"
+},
+{
+"name": "swivel_clamp_connector_joint_asm",
+"status": "proposed",
+"ref": "#349",
+"category": "workholding",
+"anchor": ""
 },
 {
 "name": "t10_timing_pulley",
