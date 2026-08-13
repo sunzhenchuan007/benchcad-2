@@ -1057,6 +1057,13 @@
 "anchor": "DIN 3870"
 },
 {
+"name": "din_3015_profiled_tube_clamp_body_asm",
+"status": "proposed",
+"ref": "#355",
+"category": "hydraulics",
+"anchor": ""
+},
+{
 "name": "din_41612_connector_housing",
 "status": "wanted",
 "ref": "#40",
