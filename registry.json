@@ -2625,10 +2625,10 @@
 "anchor": "MS24693"
 },
 {
-"name": "multi_line_pipe_clamp_body",
+"name": "multi_line_pipe_clamp_body_asm",
 "status": "proposed",
 "ref": "#342",
-"category": "",
+"category": "hydraulics",
 "anchor": ""
 },
 {
@@ -3892,10 +3892,10 @@
 "anchor": "Alfa Laval LKRK"
 },
 {
-"name": "stc_spc_channel_cushion_clamp",
+"name": "stc_spc_channel_cushion_clamp_asm",
 "status": "proposed",
 "ref": "#343",
-"category": "",
+"category": "hydraulics",
 "anchor": ""
 },
 {
