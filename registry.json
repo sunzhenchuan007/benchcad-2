@@ -336,6 +336,13 @@
 "anchor": "DIN 74233-1"
 },
 {
+"name": "bridge_saddle_block_asm",
+"status": "proposed",
+"ref": "#345",
+"category": "music-hardware",
+"anchor": ""
+},
+{
 "name": "bronze_thrust_washer",
 "status": "wanted",
 "ref": "#16",
@@ -1727,6 +1734,13 @@
 "ref": "#43",
 "category": "agri-rail-marine",
 "anchor": "EN 14420-8"
+},
+{
+"name": "guitar_tuning_machine_head_asm",
+"status": "proposed",
+"ref": "#347",
+"category": "music-hardware",
+"anchor": ""
 },
 {
 "name": "half_coupling",
@@ -3330,6 +3344,13 @@
 "ref": "#40",
 "category": "electro",
 "anchor": "Southco R4"
+},
+{
+"name": "round_duct_worm_clamp",
+"status": "proposed",
+"ref": "#346",
+"category": "hvac-ductwork",
+"anchor": ""
 },
 {
 "name": "rubber_buffer_mount",
