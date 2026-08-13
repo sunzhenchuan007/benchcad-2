@@ -1,0 +1,14 @@
+{
+  "family": "din_3015_heavy_elastomer_insert_clamp_asm",
+  "standard": "DIN 3015 Part 2",
+  "base_plane": "XY",
+  "description": "Static three-component heavy-series clamp pose: two body halves and one connected two-lobe film-hinged elastomer insert. Material codes are metadata only; no polymer or hinge-motion simulation is claimed.",
+  "source": "STAUFF Catalogue 1 - STAUFF Clamps, English 06/2026, page 42; unmarked local details use documented proportions",
+  "contributor": "sunzhenchuan007",
+  "solids": 3,
+  "components": [
+    {"name": "upper_half", "quantity": 1, "role": "upper polymer clamp body"},
+    {"name": "lower_half", "quantity": 1, "role": "lower polymer clamp body"},
+    {"name": "insert", "quantity": 1, "role": "one connected film-hinged elastomer insert"}
+  ]
+}
