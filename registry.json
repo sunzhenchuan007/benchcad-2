@@ -1057,6 +1057,13 @@
 "anchor": "DIN 3870"
 },
 {
+"name": "din_3015_heavy_elastomer_insert_clamp_asm",
+"status": "proposed",
+"ref": "#356",
+"category": "hydraulics",
+"anchor": ""
+},
+{
 "name": "din_3015_profiled_tube_clamp_body_asm",
 "status": "proposed",
 "ref": "#355",
