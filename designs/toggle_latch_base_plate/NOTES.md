@@ -1,86 +1,48 @@
-# toggle_latch_base_plate — source notes (drawing → design mapping)
+# toggle_latch_base_plate — Step 2 reconstruction notes
 
-Primary input: **Ganter GN 832 toggle latches** (steel / stainless steel) —
-dimensioned catalog sketch + product photo, sizes **55 / 150 / 200**.
-Product page: <https://www.ganternorm.com/en/products/2.4-Tensioning-with-clamping-mechanisms/Toggle-latches/GN-832-Toggle-latches-Steel-Stainless-Steel>
+This implementation replaces the earlier base-plate-only abstraction with the
+complete visible GN 832 latch shown by the supplied Step-1 extreme files.
 
-The GN 832 assembly is: a stamped **base plate** with a formed **U-clevis** that
-pivots the toggle **lever**, whose **U-bolt hook** draws down onto a separate
-**catch bracket**. This family models the **base plate + clevis + holes** only —
-the prismatic, size-scalable sub-part named by the family. The lever, U-bolt and
-catch bracket are the mating pieces and are **out of scope**; their table columns
-(b4, b5, b6, l1, l3, m*, r, FH) are therefore not consumed here.
+Official sources:
 
-Every geometry variable is named after its GN 832 drawing symbol. Eight are
-**row-locked** to one catalog size (refine() sets the row, check() re-asserts the
-whole row is real); four are honest **`"proportion"`s** that give the family its
-geometric novelty and are bounded by check().
+- [Ganter GN 832 product page](https://www.ganternorm.com/en/products/product-family/Stainless-Steel-Quality-Class-2/GN-832-Toggle-latches-Steel-Stainless-Steel)
+- [GN 832 dimension drawing](https://live-katalog.ganternorm.com/pdf/ganter/en/832.pdf?dispositiontype=attachment)
 
-## Symbol → parameter → formula
+## Catalog row lock
 
-| GN 832 symbol | meaning | part.py / spec.py | status | value(s) 55 / 150 / 200 |
-|---|---|---|---|---|
-| `l2` | plate length, left end → pivot axis | `plate_l` | row-locked | 60 / 86 / 111 |
-| `b1` | plate width | `plate_w` (coverage) | row-locked | 23 / 34 / 43 |
-| `d2` | mounting-hole Ø (×2) | `mount_hole_d` | row-locked | 3.2 / 4.1 / 5.3 |
-| `d1` | pivot pin-hole Ø | `pin_d` | row-locked | 2 / 3 / 4 |
-| `h1` | overall height (base → clevis top) | `brk_h` | row-locked | 11 / 12.5 / 19 |
-| `b2` | clevis outer width | `brk_w` | row-locked | 17 / 23 / 30 |
-| `b3` | keeper-nose tab width | `nose_w` (feature) | row-locked | 14 / 20 / 26 |
-| `d3` | spring-cotter-pin bore Ø | `cotter_d` (feature) | row-locked | 2.6 / 3.1 / 5.3 |
-| `s` | stamped sheet thickness | `plate_t` | **proportion** | 1.0–3.0 mm, ≤ 0.15·b1 |
-| — | rounded plate-corner radius | `corner_r` | **proportion** | 1.0–4.0 mm |
-| — | clevis ear thickness | `wall_t` | **proportion** | 1.0–3.0 mm |
-| — | base↔clevis fold fillet | `fold_r` | **proportion** | 0.5–2.5 mm |
-| `r` | **U-bolt reach** (lever) | *not modeled* | — | 26 / 30 / 36 |
+`catalog_index` selects one entire official row. No dimensions are independently
+mixed across sizes.
 
-Internal construction proportions (fixed fractions of `plate_l` / `brk_h`, shared
-by build() and check() via `part._helpers` so they never drift):
+| index | size | FH (N) | b1 | b2 | b3 | b4 | b5 | b6 | d1 | d2 | d3 | h1 | h2 | l1 | l2 | l3 | m1 | m2 | m3 | m4 | r |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 55 | 550 | 23 | 17 | 14 | 44 | 13 | 30 | 2 | 3.2 | 2.6 | 11 | 9 | 102 | 60 | 34 | 9.5 | 12.5 | 5 | 12 | 26 |
+| 1 | 150 | 1500 | 34 | 23 | 20 | 70 | 19 | 43 | 3 | 4.1 | 3.1 | 12.5 | 11 | 140 | 86 | 38 | 13 | 22.5 | 8 | 20 | 30 |
+| 2 | 200 | 2000 | 43 | 30 | 26 | 90 | 27 | 66 | 4 | 5.3 | 5.3 | 19 | 15 | 191 | 111 | 57.5 | 10 | 31.5 | 15 | 25.5 | 36 |
 
-| helper | formula | role |
-|---|---|---|
-| `_brk_len` | `0.20·l2` | clevis length along X |
-| `_nose_len` | `0.14·l2` | keeper-nose tab length along X |
-| `_clevis_cx` | `l2 − 0.06·l2 − _brk_len/2` | pivot-axis X (clevis set against right end) |
-| `_mount_hole_x` | left + {0.24, 0.66}·span | the two mounting-hole X positions |
-| `_pin_z` | `s + 0.60·(h1 − s)` | pivot-pin axis height |
+## Visible modeled structure
 
-## Row-lock
+- rectangular formed latch body with upturned operating lip;
+- open clevis relief and transverse pivot pin;
+- continuous U-shaped elastic latch wire at diameter `d1`;
+- included catch bracket at `b6 × b5`, two `d2` holes using `m3/m4`;
+- raised formed catch nose and the body safety-pin drilling `d3`.
 
-`refine()` draws one index into `_GN832` and sets all eight locked dims from that
-row; `check()` constraint (1) fails unless the eight together match a catalog row
-(`abs(... ) < 1e-6`). So `plate_w = 34` can only ever occur with
-`plate_l = 86, mount_hole_d = 4.1, …` — a size can never be mixed across rows.
-`coverage=[23,34,43]` on `plate_w` forces the validator to confirm all three
-sizes are reachable.
+## Honest Step-2 simplifications
 
-## Deliberate deviations / interpretations
+The model returns one compound containing five visible, non-degenerate bodies:
+formed latch body, separate operating lip, transverse pivot pin, elastic
+U-wire, and catch bracket. The catch is placed in the closed/contact pose so
+the U-wire bears on its raised nose. No hidden connector is added, and the
+separate bodies are not claimed to be welded.
 
-1. **Base plate + clevis only.** The articulated lever + U-bolt hook (pose-
-   dependent, non-prismatic) and the separate catch bracket are mating parts,
-   modeled elsewhere in the assembly family set. This part is the stamped base.
-2. **`corner_r` is a modeled proportion, not the drawing's `r`.** Drawing `r`
-   (26/30/36) is the U-bolt reach of the lever; it is *not* a plate-corner
-   radius and is deliberately **not** reused as one (that would be a fabricated
-   dimension). Plate corner rounds are an honest `"proportion"`.
-3. **Sheet thickness `s` is a proportion.** GN 832's base-plate stock thickness
-   is not a tabulated column, so `plate_t` is a `"proportion"` bounded plate-like
-   (`≤ 0.15·b1`, `≥ 0.8 mm`), i.e. a stamping not a machined block.
-4. **Mounting-hole X positions are proportions** of the flat span between the
-   left/nose end and the clevis (the catalog `m*` pitch columns render
-   inconsistently on the source page, so they are not row-locked); hole Ø `d2`,
-   count (2) and the 1.5·d tear-out edge distance are enforced.
-5. **Clevis = two separate ears (open clevis)** carrying `d1`, unioned to the
-   plate and clipped inside the `l2 × b1 × h1` envelope; the outer bend line of
-   each ear gets the `fold_r` fillet (the visible formed fold), the inner base
-   inside the lever slot stays sharp.
-6. **Cotter bore modeled as a vertical through-hole** in the keeper-nose tab
-   (the catalog shows it in the formed lever-tail curl); diameter `d3` and
-   `≤ 0.5·b3` clearance are honored.
+The official table does not provide sheet thickness or every stamped transition
+radius. `sheet_t`, the operating-lip curve, catch-nose bend and small edge breaks
+are explicitly proportional. Hidden mechanisms, manufacturing embossing,
+textures and threads are omitted.
 
-## Envelope
-
-Declared envelope = `plate_l × plate_w × brk_h` (= l2 × b1 × h1). Probed bbox
-equals it exactly for all three rows × both feature states (x∈[0,l2],
-y∈[−b1/2, b1/2], z∈[0, h1]); the clevis (`b2 < b1`) and nose (`b3 < b1`) sit
-inside the width and nothing protrudes.
+The Size 55 / Size 200 STEP reference envelopes are respectively
+`105.813 × 11.941 × 22.636 mm` and `191.045 × 20.353 × 47.657 mm`. The CQ
+extremes preserve the official `l1` layout and match the two measured Y/Z
+cross-section envelopes; their X extents are `101.895 mm` and `190.805 mm`
+(3.918 mm and 0.240 mm shorter than the STEP bounding boxes because the imported
+STEP includes un-dimensioned formed end allowances beyond the catalog datum).
