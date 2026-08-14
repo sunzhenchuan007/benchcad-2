@@ -687,10 +687,10 @@
 },
 {
 "name": "clevis_pin",
-"status": "proposed",
-"ref": "#80",
-"category": "fasteners",
-"anchor": ""
+"status": "merged",
+"ref": "designs/clevis_pin",
+"category": "",
+"anchor": "ISO 2341 (clevis pin with head)"
 },
 {
 "name": "clevis_rod_end",
