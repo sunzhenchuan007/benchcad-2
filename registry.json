@@ -3388,6 +3388,13 @@
 "anchor": ""
 },
 {
+"name": "round_u_bolt_pipe_saddle_clamp",
+"status": "proposed",
+"ref": "#367",
+"category": "pipe-support",
+"anchor": ""
+},
+{
 "name": "rubber_buffer_mount",
 "status": "wanted",
 "ref": "#33",
