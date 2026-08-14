@@ -1,0 +1,8 @@
+{
+  "family": "orfs_male_adapter",
+  "standard": "SAE 520120; ISO 8434-3 / SAE J1453; SAE J1926-1",
+  "base_plane": "XY",
+  "description": "Parker Seal-Lok F5OLO straight male adapter: male ORFS face-seal tube end joined through a chamfered center wrench hex to a male SAE straight-thread O-ring-boss stud. The 39 current Catalog 4300 A14 ordering rows jointly lock both Unified threads, hex H, and overall L5; small, medium, and large rows define the difficulty tiers. The one connected metal body has visible 60-degree helical external threads, a transitioning axial flow passage, an ORFS face groove, and a radial ORB groove. O-rings are intentionally omitted. Bore, axial split, and groove profiles are honest visualization proportions because the public ordering page does not publish manufacturing groove dimensions.",
+  "source": "Parker Catalog 4300 p.A14, F5OLO Straight Thread Connector ORFS / SAE-ORB, SAE 520120 (39 row-locked part codes); ISO 8434-3 / SAE J1453 ORFS thread series; SAE J1926-1 straight-thread O-ring-boss stud. Proportion: bores, axial allocation, and both seal-groove profiles. Reference: issue #201.",
+  "contributor": "sunzhenchuan007"
+}
