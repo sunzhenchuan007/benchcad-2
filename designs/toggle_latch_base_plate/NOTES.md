@@ -46,3 +46,10 @@ extremes preserve the official `l1` layout and match the two measured Y/Z
 cross-section envelopes; their X extents are `101.895 mm` and `190.805 mm`
 (3.918 mm and 0.240 mm shorter than the STEP bounding boxes because the imported
 STEP includes un-dimensioned formed end allowances beyond the catalog datum).
+
+## Validation
+
+The completed Step-2 family passes `bench2 validate
+toggle_latch_base_plate --seeds 5`: all 15 sampled instances are valid,
+non-degenerate five-solid compounds, cover all three catalog rows, and produce
+15 distinct geometries.
