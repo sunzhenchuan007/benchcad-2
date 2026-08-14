@@ -1,0 +1,8 @@
+{
+  "family": "sk40_steep_taper_shank",
+  "standard": "DIN 69871 / ISO 7388-1",
+  "base_plane": "XY",
+  "description": "SK40 7:24 steep-taper tool-holder interface with source-locked V-flange and M16 pull-stud thread, integrated with the supplied reconstructed cylindrical body and six-slot ER25-style product end.",
+  "source": "KTA Spindle Toolings 2019 catalog p.101 (SK40 row and dimensioned interface drawing); supplied human reconstruction and untracked SCHUNK 0263396 ER25 SK 40x100 CAD used only as product-side geometric reference; non-standard ranges are labeled proportion",
+  "contributor": "AndrewLuan"
+}
