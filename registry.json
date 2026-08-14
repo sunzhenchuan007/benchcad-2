@@ -14,6 +14,13 @@
 "anchor": "ISO 15635 / EN 13743"
 },
 {
+"name": "act_field_tray_pipe_clamp",
+"status": "proposed",
+"ref": "#366",
+"category": "pipe-support",
+"anchor": ""
+},
+{
 "name": "act_twin_clamp_asm",
 "status": "proposed",
 "ref": "#357",
