@@ -384,10 +384,27 @@ def build(catalog_index, sheet_t):
     modeled_wire_d = d1
     wire = _u_wire(idx, modeled_wire_d, body_width)
 
+    # Preserve the five real assembly bodies without asking the validator to
+    # accept volumetric interference at fitted/contact locations.  The STEP
+    # references show the elastic wire passing through its dedicated shell
+    # holes, clearing the transverse pin and bearing on the catch nose.  Cut a
+    # 0.05 mm radial clearance envelope from those three mating bodies; the
+    # visible wire itself and its approved centreline are unchanged.
+    clearance_wire = _u_wire(idx, modeled_wire_d + 0.10, body_width).val()
+    body_shape = body_shape.cut(clearance_wire)
+    pin = pin.cut(clearance_wire)
+    catch = catch.cut(clearance_wire)
+
     # The wire begins and ends inside the two shell side faces and its closed
     # return bears on the raised catch nose. No exterior connector block is
     # added; this preserves the real visible topology of both STEP extremes.
-    visible_parts = result.val().Solids() + wire.val().Solids() + catch.val().Solids()
+    visible_parts = (
+        body_shape.Solids()
+        + tab.val().Solids()
+        + pin.Solids()
+        + wire.val().Solids()
+        + catch.val().Solids()
+    )
     # A Compound keeps the real modeled bodies visible without expensive and
     # fragile Boolean merging at the spring-wire contacts.
     result = cq.Workplane(obj=cq.Compound.makeCompound(visible_parts))
