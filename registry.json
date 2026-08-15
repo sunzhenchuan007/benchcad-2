@@ -1863,10 +1863,10 @@
 },
 {
 "name": "hex_flange_nut",
-"status": "proposed",
-"ref": "#150",
-"category": "fasteners",
-"anchor": ""
+"status": "merged",
+"ref": "designs/hex_flange_nut",
+"category": "",
+"anchor": "DIN 6923 (ISO 4161)"
 },
 {
 "name": "hex_head_plug",
