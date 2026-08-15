@@ -1,0 +1,9 @@
+{
+  "family": "toggle_latch_base_plate",
+  "standard": "Ganter GN 832",
+  "base_plane": "XY",
+  "description": "Five-body closed-position GN 832 toggle-latch assembly reconstructed for Step 2 from supplied Size 55 and Size 200 STEP references: formed latch body, separate operating lip, transverse pivot pin, elastic U-wire, and two-hole catch bracket with raised nose. catalog_index selects one complete official Size 55, 150, or 200 row.",
+  "source": "Official product page: https://www.ganternorm.com/en/products/product-family/Stainless-Steel-Quality-Class-2/GN-832-Toggle-latches-Steel-Stainless-Steel ; official drawing: https://live-katalog.ganternorm.com/pdf/ganter/en/832.pdf?dispositiontype=attachment ; Step-1 supplied Size 55 and Size 200 STEP files used as extreme-shape references.",
+  "simplifications": "The five visible bodies are kept separate in one compound assembly. The catch is shown in the closed/contact position where the modeled elastic U-wire bears on its raised nose. Unlisted sheet thickness, local bend transitions and small edge breaks are declared proportions. Threads, material textures and hidden mechanisms are not modeled.",
+  "contributor": "jiashunwu1030-oss"
+}
