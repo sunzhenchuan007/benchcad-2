@@ -4285,10 +4285,10 @@
 },
 {
 "name": "toggle_latch_base_plate",
-"status": "proposed",
-"ref": "#145",
-"category": "electro",
-"anchor": ""
+"status": "merged",
+"ref": "designs/toggle_latch_base_plate",
+"category": "",
+"anchor": "Ganter GN 832"
 },
 {
 "name": "toggle_latch_catch",
