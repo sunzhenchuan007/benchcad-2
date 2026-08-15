@@ -3641,10 +3641,10 @@
 },
 {
 "name": "sk40_steep_taper_shank",
-"status": "proposed",
-"ref": "#187",
-"category": "tooling",
-"anchor": ""
+"status": "merged",
+"ref": "designs/sk40_steep_taper_shank",
+"category": "",
+"anchor": "DIN 69871 / ISO 7388-1"
 },
 {
 "name": "sk40_toolholder_blank",
