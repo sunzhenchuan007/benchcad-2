@@ -30,7 +30,7 @@ PARAM_SPEC = {
     "span": {"desc": "Fastener passage spacing L3", "unit": "mm", "range": _r((20.0, 58.0), (20.0, 72.0), (20.0, 72.0)), "source": _CAT, "refine": True},
     "height": {"desc": "Total assembled height H", "unit": "mm", "range": _r((27.0, 33.0), (27.0, 37.0), (27.0, 37.0)), "source": _CAT, "refine": True},
     "fastener_passage_count": {"desc": "Through-fastener interfaces B", "unit": "", "range": _r((2, 2), (2, 3), (2, 3)), "source": _CAT, "integer": True, "refine": True},
-    "body_depth": {"desc": "Unmarked body extrusion depth", "unit": "mm", "range": _r((16.0, 23.2), (16.0, 28.8), (16.0, 28.8)), "source": "proportion", "refine": True},
+    "body_depth": {"desc": "Body extrusion depth anchored by supplied Group-1 STEP", "unit": "mm", "range": _r((30.0, 30.0), (30.0, 30.0), (30.0, 30.0)), "source": "STAUFF 6100246250 STEP gives B=30 mm for 2-line Group 1; proportion reused across MLC rows", "refine": True},
     "passage_d": {"desc": "Unmarked smooth fastener passage diameter", "unit": "mm", "range": _r((4.5, 6.0), (4.5, 8.0), (4.5, 8.0)), "source": "proportion", "refine": True},
     "counterbore_d": {"desc": "Unmarked outside-face counterbore diameter", "unit": "mm", "range": _r((8.0, 12.0), (8.0, 16.0), (8.0, 16.0)), "source": "proportion", "refine": True},
     "counterbore_depth": {"desc": "Unmarked counterbore depth", "unit": "mm", "range": _r((3.0, 4.0), (3.0, 5.0), (3.0, 5.0)), "source": "proportion", "refine": True},
@@ -52,7 +52,7 @@ def refine(p, difficulty, rng):
     required_d = {(2, 1): 6.0, (2, 2): 18.0, (2, 3): 15.0,
                   (6, 1): 12.0, (6, 2): 10.0, (6, 3): 25.4}
     p["tube_od"] = required_d.get(key, float(ds[int(rng.integers(0, len(ds)))]))
-    p["body_depth"] = {1: 16.0, 2: 23.2, 3: 28.8}[key[1]]
+    p["body_depth"] = 30.0
     p["passage_d"] = {1: 4.5, 2: 6.0, 3: 8.0}[key[1]]
     p["counterbore_d"] = {1: 8.0, 2: 12.0, 3: 16.0}[key[1]]
     p["counterbore_depth"] = {1: 3.0, 2: 4.0, 3: 5.0}[key[1]]
@@ -82,6 +82,8 @@ def check(p):
         bad.append("passage/counterbore hierarchy invades adjacent seat (proportion)")
     if p["body_depth"] <= p["counterbore_d"]:
         bad.append("body_depth lacks counterbore material (proportion)")
+    if p["body_depth"] != 30.0:
+        bad.append("body_depth drifted from the supplied STEP anchor/proportion")
     expected_thread = {1: (4.0, 0.7), 2: (6.0, 1.0), 3: (8.0, 1.25)}[key[1]]
     if (p["thread_nominal_d"], p["thread_pitch"]) != expected_thread:
         bad.append("tapped-hole M size/pitch does not match group proportion and ISO 261")

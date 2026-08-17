@@ -2,8 +2,8 @@
   "family": "multi_line_pipe_clamp_body_asm",
   "standard": null,
   "base_plane": "XY",
-  "description": "STAUFF type MLC 2-, 3-, 4-, or 6-line pipe-clamp body: separate upper/lower halves, fixed HV smooth seats, tension clearance, and fastener passages. Catalogue material codes PP, PA, and PA-VO do not change geometry.",
-  "source": "STAUFF Catalogue 1 - STAUFF Clamps, 06/2026, pages 114-117; documented proportion rules for unmarked local dimensions",
+  "description": "STAUFF type MLC 2-, 3-, 4-, or 6-line pipe-clamp body: separate upper/lower molded halves with outside ribbed reliefs and fastener bosses, fixed HV smooth seats, tension clearance, and fastener passages. Catalogue material codes PP, PA, and PA-VO do not change geometry.",
+  "source": "STAUFF Catalogue 1 - STAUFF Clamps, 06/2026, pages 114-117; supplied 6100246250 STEP for the 2-line Group-1 envelope and molded outside topology; documented proportion rules for unmarked local dimensions",
   "contributor": "sunzhenchuan007",
   "solids": 2,
   "components": [

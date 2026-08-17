@@ -3,6 +3,12 @@
 Source: *STAUFF Catalogue 1 - STAUFF Clamps*, English, 06/2026,
 pages 114-117, type MLC with standard smooth inside surface (`HV`).
 
+The supplied `6100246250.STEP` is the 2-line Group-1 physical anchor. It
+contains two valid solids and has an approximately 60.86 x 27 x 30 mm
+envelope. The 30 mm body depth, rounded plan corners, outside perimeter wall,
+fastener bosses, molded relief pockets, and longitudinal/cross-rib topology
+are taken from that STEP. Fine molding draft and tiny local radii are omitted.
+
 ## Catalogue mapping and coupling
 
 | Symbol | Build parameter | Meaning |
@@ -32,9 +38,9 @@ are therefore impossible. Coverage includes the catalogue minimum 6, maximum
 
 | Group | `body_depth` | upper `passage_d` | lower tapped hole | `counterbore_d` | `counterbore_depth` |
 |---:|---:|---:|---:|---:|---:|
-| 1 | 16.0 | 4.5 | M4 x 0.7 | 8.0 | 3.0 |
-| 2 | 23.2 | 6.0 | M6 x 1.0 | 12.0 | 4.0 |
-| 3 | 28.8 | 8.0 | M8 x 1.25 | 16.0 | 5.0 |
+| 1 | 30.0 | 4.5 | M4 x 0.7 | 8.0 | 3.0 |
+| 2 | 30.0 | 6.0 | M6 x 1.0 | 12.0 | 4.0 |
+| 3 | 30.0 | 8.0 | M8 x 1.25 | 16.0 | 5.0 |
 
 The split is fixed at the drawing's nominal 1.0 mm. `check()` preserves the
 passage/counterbore hierarchy, passage-to-seat clearance, surrounding wall,
@@ -55,8 +61,10 @@ specified 1.0 mm split and exact H=37 envelope.
 
 ## Deliberate deviations
 
-- Unmarked outer curvature, chamfers, fillets, and top weight-reduction pockets
-  are simplified to a rectangular envelope without pockets.
+- The STEP-visible outside pocket/rib/boss topology is retained. Pocket depth,
+  wall/rib widths, boss margin, and plan-corner radius are documented
+  proportions scaled across catalogue rows; fine draft and tiny radii remain
+  simplified.
 - Bolts, plates, and supported tubes are omitted. The upper half retains a
   smooth clearance passage; the lower half now contains a visible modeled
   internal metric thread after its outside counterbore. Thread size selection
