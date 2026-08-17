@@ -74,6 +74,8 @@ def check(p):
         bad.append(f"material_code must be W32/W4/W5 encoded 0/1/2 ({SOURCE})")
     if p["install_width_min"] <= p["tube_od"] + 2.0*p["edge_e"] + 0.7:
         bad.append(f"B leaves no positive cushion wall/clearance ({PROPORTION})")
+    if p["c"] <= p["tube_od"]/2.0 + 0.5:
+        bad.append(f"C leaves no positive cushion wall below the tube bore ({SOURCE}; {PROPORTION})")
     if p["height_d"] <= p["c"] + p["install_width_min"]/2.0:
         bad.append(f"D must clear wrapped profile and stud ear ({SOURCE}; {PROPORTION})")
     return bad

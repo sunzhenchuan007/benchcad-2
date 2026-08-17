@@ -1,4 +1,4 @@
-"""STAUFF STC/SPC cushion clamp for 41.3 mm SCS channel rail."""
+"""STAUFF STC/SPC channel cushion clamp as four real components."""
 
 import math
 
@@ -11,12 +11,25 @@ def _thread_diameter(thread_code):
 
 
 def _unc_pitch(thread_code):
-    """Return catalogue UNC pitch in mm from 20/18/16 threads per inch."""
+    """Catalogue UNC pitch in mm from 20/18/16 threads per inch."""
     return 25.4 / (20.0, 18.0, 16.0)[int(thread_code)]
 
 
+def _d_prism(half_width, bottom_z, depth):
+    """D-profile prism centred on Y, with the pipe centre at Z=0."""
+    return (
+        cq.Workplane("XZ", origin=(0.0, depth / 2.0, 0.0))
+        .moveTo(-half_width, bottom_z)
+        .lineTo(-half_width, 0.0)
+        .threePointArc((0.0, half_width), (half_width, 0.0))
+        .lineTo(half_width, bottom_z)
+        .close()
+        .extrude(depth)
+    )
+
+
 def _modeled_external_unc_thread(thread_d, pitch, length):
-    """Return a simplified visible 60-degree UNC external thread."""
+    """Simplified visible 60-degree UNC external thread along local +Z."""
     major_r = thread_d / 2.0
     root_r = (thread_d - 1.226869 * pitch) / 2.0
     radial_embed = min(0.08, 0.05 * pitch)
@@ -25,159 +38,225 @@ def _modeled_external_unc_thread(thread_d, pitch, length):
     path_h = length - 2.0 * half_width
     core = cq.Workplane("XY").circle(root_r).extrude(length)
     path = cq.Wire.makeHelix(pitch, path_h, path_r)
-    profile = (cq.Workplane("XZ")
-               .polyline([(root_r - radial_embed, -half_width),
-                          (major_r, 0.0),
-                          (root_r - radial_embed, half_width)])
-               .close())
+    profile = (
+        cq.Workplane("XZ")
+        .polyline(
+            [
+                (root_r - radial_embed, -half_width),
+                (major_r, 0.0),
+                (root_r - radial_embed, half_width),
+            ]
+        )
+        .close()
+    )
     ridge = profile.sweep(path, isFrenet=True).translate((0.0, 0.0, half_width))
     return core.union(ridge)
 
 
-def _modeled_internal_unc_groove(thread_d, pitch, length):
-    """Return a simplified visible 60-degree UNC internal-groove cutter."""
-    major_r = thread_d / 2.0
-    minor_r = (thread_d - 1.082532 * pitch) / 2.0
-    radial_embed = min(0.08, 0.05 * pitch)
-    half_width = (major_r - minor_r + radial_embed) / math.sqrt(3.0)
-    path = cq.Wire.makeHelix(pitch, length + 2.0 * half_width, minor_r)
-    profile = (cq.Workplane("XZ")
-               .polyline([(minor_r - radial_embed, -half_width),
-                          (major_r, 0.0),
-                          (minor_r - radial_embed, half_width)])
-               .close())
-    return profile.sweep(path, isFrenet=True).translate((0.0, 0.0, -half_width))
+def _make_cross_bolt_local(
+    thread_d, pitch, plain_length, threaded_length, head_r, head_h
+):
+    """Bolt along local +Z; the head bearing face is the Z=0 datum."""
+    plain = cq.Workplane("XY").circle(thread_d / 2.0).extrude(plain_length + 0.05)
+    threaded = _modeled_external_unc_thread(thread_d, pitch, threaded_length)
+    threaded = threaded.translate((0.0, 0.0, plain_length))
+    head = (
+        cq.Workplane("XY")
+        .workplane(offset=-head_h)
+        .circle(head_r)
+        .extrude(head_h)
+    )
+    return plain.union(threaded).union(head)
 
 
-def _make_unc_stud(thread_d, pitch, length, thread_length):
-    """Return a stud with a modeled UNC thread at its positive-Z end."""
-    plain_l = length - thread_length
-    plain = cq.Workplane("XY").circle(thread_d / 2.0).extrude(plain_l + 0.05)
-    threaded = (_modeled_external_unc_thread(thread_d, pitch, thread_length)
-                .translate((0.0, 0.0, plain_l)))
-    return plain.union(threaded)
-
-
-def _make_unc_lock_nut(thread_d, pitch, nut_af, nut_h):
-    """Return a chamfered hex lock-nut with a modeled UNC internal thread."""
+def _make_lock_nut_local(bolt_local, thread_d, nut_af, nut_h, bearing_z):
+    """Hex nut whose internal thread is cut by the exact mating bolt shape."""
     corner_d = nut_af / 0.8660254037844386
-    blank = cq.Workplane("XY").polygon(6, corner_d).extrude(nut_h).val()
+    blank = (
+        cq.Workplane("XY")
+        .workplane(offset=bearing_z)
+        .polygon(6, corner_d)
+        .extrude(nut_h)
+        .val()
+    )
     chamfer_h = min(0.12 * nut_h, 0.18 * thread_d)
     land_r = 0.475 * nut_af
     crown_r = corner_d / 2.0 + 0.01
-    envelope = (cq.Workplane("XZ")
-                .moveTo(0.0, 0.0)
-                .lineTo(land_r, 0.0)
-                .lineTo(crown_r, chamfer_h)
-                .lineTo(crown_r, nut_h - chamfer_h)
-                .lineTo(land_r, nut_h)
-                .lineTo(0.0, nut_h)
-                .close()
-                .revolve(360.0, (0.0, 0.0), (0.0, 1.0)).val())
-    nut = blank.intersect(envelope)
-    minor_d = thread_d - 1.082532 * pitch
-    bore = (cq.Workplane("XY").workplane(offset=-0.05)
-            .circle(minor_d / 2.0).extrude(nut_h + 0.10).val())
-    nut = nut.cut(bore)
-    nut = nut.cut(_modeled_internal_unc_groove(thread_d, pitch, nut_h).val())
+    envelope = (
+        cq.Workplane("XZ")
+        .moveTo(0.0, bearing_z)
+        .lineTo(land_r, bearing_z)
+        .lineTo(crown_r, bearing_z + chamfer_h)
+        .lineTo(crown_r, bearing_z + nut_h - chamfer_h)
+        .lineTo(land_r, bearing_z + nut_h)
+        .lineTo(0.0, bearing_z + nut_h)
+        .close()
+        .revolve(360.0, (0.0, bearing_z), (0.0, bearing_z + 1.0))
+        .val()
+    )
+    nut = blank.intersect(envelope).cut(bolt_local.val())
     return cq.Workplane(obj=nut)
 
 
-def _plate_frame(install_width_min, c, height_d, edge_e, thread_code, depth):
-    """Return the stamped inverted-U plate envelope in its local XY plane."""
-    outer_r = install_width_min / 2.0
-    inner_r = outer_r - edge_e
-    thread_d = _thread_diameter(thread_code)
-    ear_r = max(0.9 * thread_d, 1.35 * edge_e)
-    stud_y = height_d - ear_r
-    annulus = (cq.Workplane("XY").circle(outer_r).circle(inner_r).extrude(depth)
-               .translate((0.0, c, 0.0)))
-    upper = annulus.intersect(
-        cq.Workplane("XY").box(2.2 * outer_r, outer_r + edge_e, depth + 2.0,
-                                 centered=(True, False, True))
-        .translate((0.0, c, depth / 2.0)))
-    legs = (cq.Workplane("XY")
-            .pushPoints([(-outer_r + edge_e / 2.0, c / 2.0),
-                         (outer_r - edge_e / 2.0, c / 2.0)])
-            .rect(edge_e, max(c, edge_e)).extrude(depth))
-    neck_h = max(stud_y - (c + outer_r) + ear_r, ear_r)
-    neck = (cq.Workplane("XY").center(0.0, c + outer_r - 0.25 * edge_e)
-            .rect(1.6 * ear_r, neck_h).extrude(depth))
-    ear = cq.Workplane("XY").center(0.0, stud_y).circle(ear_r).extrude(depth)
-    return upper.union(legs).union(neck).union(ear), stud_y
-
-
-def build(catalog_row, material_code, tube_od, install_width_min, c, height_d,
-          edge_e, thread_code):
-    """Build the named four-solid clamp assembly; rail and tube are excluded."""
+def build(
+    catalog_row,
+    material_code,
+    tube_od,
+    install_width_min,
+    c,
+    height_d,
+    edge_e,
+    thread_code,
+):
+    """Build one steel clamp, one cushion, one cross-bolt, and one lock nut."""
     del catalog_row, material_code
+
+    # Global frame: pipe axis +Y, cross-bolt axis -X, rail/down direction -Z.
     channel_width = 41.3
-    plate_depth = min(6.0, 0.145 * channel_width)
-    axial_gap = 0.35
-    cushion_depth = channel_width - 2.0 * (plate_depth + axial_gap)
-    plate_offset = cushion_depth / 2.0 + axial_gap
+    cushion_depth = channel_width - 3.2
+    cushion_overhang = cushion_depth / 12.0
+    steel_depth = cushion_depth - 2.0 * cushion_overhang
+
     thread_d = _thread_diameter(thread_code)
     thread_pitch = _unc_pitch(thread_code)
-    plate, stud_y = _plate_frame(install_width_min, c, height_d, edge_e,
-                                  thread_code, plate_depth)
-    outer_r = install_width_min / 2.0
-    cushion_outer_r = outer_r - edge_e - 0.35
-    bore_r = tube_od / 2.0 + 0.20
-    cushion_outer = (cq.Workplane("XY").circle(cushion_outer_r)
-                     .extrude(cushion_depth).translate((0.0, c, -cushion_depth / 2.0)))
-    cushion_base = (cq.Workplane("XY").center(0.0, c / 2.0)
-                    .rect(2.0 * cushion_outer_r, max(c, edge_e))
-                    .extrude(cushion_depth).translate((0.0, 0.0, -cushion_depth / 2.0)))
-    tube_clearance = (cq.Workplane("XY").circle(bore_r).extrude(cushion_depth + 2.0)
-                      .translate((0.0, c, -cushion_depth / 2.0 - 1.0)))
-    cushion = cushion_outer.union(cushion_base).cut(tube_clearance)
-    slit_w = max(0.9, 0.55 * edge_e)
-    slit = (cq.Workplane("XY").center(0.0, c + cushion_outer_r / 2.0)
-            .rect(slit_w, cushion_outer_r + 1.0).extrude(cushion_depth + 2.0)
-            .translate((0.0, 0.0, -cushion_depth / 2.0 - 1.0)))
-    cushion = cushion.cut(slit)
+    steel_t = edge_e
+    outer_half = install_width_min / 2.0
+    cushion_half = outer_half - steel_t
+    bore_r = tube_od / 2.0
+    cushion_bottom = -c
 
-    left_z = -plate_offset - plate_depth
-    right_z = plate_offset
-    left_plate = plate.translate((0.0, 0.0, left_z))
-    right_plate = plate.translate((0.0, 0.0, right_z))
-    toe_h = max(1.2, 0.55 * edge_e)
-    toe_l = 2.4 * edge_e
-    toe_x = outer_r - edge_e / 2.0
-    toes = (cq.Workplane("XY").pushPoints([(-toe_x, toe_h / 2.0),
-                                             (toe_x, toe_h / 2.0)])
-            .rect(toe_l, toe_h).extrude(plate_depth + 1.8))
-    hook_relief = (cq.Workplane("XY")
-                   .pushPoints([(-outer_r - toe_l / 4.0, toe_h),
-                                (outer_r + toe_l / 4.0, toe_h)])
-                   .rect(toe_l / 2.0, 2.0 * toe_h)
-                   .extrude(plate_depth + 3.8))
-    toes = toes.cut(hook_relief)
-    left_plate = left_plate.union(toes.translate((0.0, 0.0, left_z - 1.8)))
-    right_plate = right_plate.union(toes.translate((0.0, 0.0, right_z)))
+    # The cushion is one D-profile extrusion.  The tube bore and tapered
+    # service opening pass through its full depth; its Y overhang retains it
+    # axially beyond the narrower steel clamp.
+    cushion_blank = _d_prism(cushion_half, cushion_bottom, cushion_depth)
+    thread_lug_half = min(0.78 * thread_d, 0.60 * cushion_half)
+    slot_half_inner = min(
+        cushion_half - 0.55 * steel_t,
+        max(0.42 * bore_r, thread_lug_half + 0.18 * steel_t),
+    )
+    slot_half_outer = min(
+        cushion_half - 0.30 * steel_t,
+        slot_half_inner + 0.45 * steel_t,
+    )
+    slot_start = max(0.55 * bore_r, bore_r - 0.45 * steel_t)
+    slot = (
+        cq.Workplane("XZ", origin=(0.0, cushion_depth / 2.0 + 0.5, 0.0))
+        .moveTo(-slot_half_inner, slot_start)
+        .lineTo(-slot_half_outer, cushion_half + 1.0)
+        .lineTo(slot_half_outer, cushion_half + 1.0)
+        .lineTo(slot_half_inner, slot_start)
+        .close()
+        .extrude(cushion_depth + 1.0)
+    )
+    tube_bore = (
+        cq.Workplane("XZ", origin=(0.0, cushion_depth / 2.0 + 0.5, 0.0))
+        .circle(bore_r)
+        .extrude(cushion_depth + 1.0)
+    )
+    cushion = cushion_blank.cut(tube_bore).cut(slot)
 
+    # The steel inner surface is cut with the same unperforated D blank used to
+    # make the cushion.  This gives exact side/crown bearing surfaces without
+    # overlap, while the lower centre stays open.
+    steel_outer = _d_prism(outer_half, cushion_bottom, steel_depth)
+    steel_inner = _d_prism(cushion_half, cushion_bottom, steel_depth)
+    steel = steel_outer.cut(steel_inner)
+
+    headroom = height_d - c - outer_half
+    leg_drop = max(1.5 * steel_t, min(0.12 * install_width_min, 0.35 * headroom))
+    leg_bottom = cushion_bottom - leg_drop
+    leg_h = cushion_bottom - leg_bottom + 0.10
+    leg_x = outer_half - steel_t / 2.0
+    legs = (
+        cq.Workplane("XY")
+        .pushPoints([(-leg_x, 0.0), (leg_x, 0.0)])
+        .box(steel_t, steel_depth, leg_h)
+        .translate((0.0, 0.0, leg_bottom + leg_h / 2.0))
+    )
+    steel = steel.union(legs)
+
+    # Two lower seats touch the cushion's flat underside.  Their reduced Y span
+    # matches local support patches instead of falsely closing the whole base.
+    seat_w = min(1.30 * steel_t, 0.22 * cushion_half)
+    seat_depth = 0.65 * steel_depth
+    seat_x = cushion_half - seat_w / 2.0
+    seats = (
+        cq.Workplane("XY")
+        .pushPoints([(-seat_x, 0.0), (seat_x, 0.0)])
+        .box(seat_w, seat_depth, 0.70 * steel_t)
+        .translate((0.0, 0.0, cushion_bottom - 0.35 * steel_t))
+    )
+    steel = steel.union(seats)
+
+    # Inward lips create the down-facing channel engagement.  They remain below
+    # the cushion datum and cannot intersect the elastomer.
+    hook_reach = min(2.1 * steel_t, 0.18 * cushion_half)
+    hook_h = 0.34 * leg_drop
+    hook_x = cushion_half - hook_reach / 2.0
+    hooks = (
+        cq.Workplane("XY")
+        .pushPoints([(-hook_x, 0.0), (hook_x, 0.0)])
+        .box(hook_reach, steel_depth, hook_h)
+        .translate((0.0, 0.0, leg_bottom + 0.58 * leg_drop))
+    )
+    steel = steel.union(hooks)
+
+    # A central transverse lug joins both sides of the steel shell.  Its planar
+    # +/-X faces are the bolt-head and nut bearing datums.
+    overall_top = leg_bottom + height_d
+    crown_h = min(0.80 * thread_d, 0.42 * (overall_top - outer_half))
+    bolt_z = overall_top - 0.55 * crown_h
+    lug_bottom = outer_half - 0.75 * steel_t
+    lug_half_x = thread_lug_half
+    lug_width_x = 2.0 * lug_half_x
+    shoulder_z = bolt_z + 0.12 * crown_h
+    top_half_y = 0.58 * steel_depth / 2.0
+    lug = (
+        cq.Workplane("YZ", origin=(-lug_half_x, 0.0, 0.0))
+        .moveTo(-steel_depth / 2.0, lug_bottom)
+        .lineTo(steel_depth / 2.0, lug_bottom)
+        .lineTo(steel_depth / 2.0, shoulder_z)
+        .lineTo(top_half_y, overall_top)
+        .lineTo(-top_half_y, overall_top)
+        .lineTo(-steel_depth / 2.0, shoulder_z)
+        .close()
+        .extrude(lug_width_x)
+    )
+    bolt_hole = (
+        cq.Workplane("YZ", origin=(-lug_half_x - 0.5, 0.0, bolt_z))
+        .circle(thread_d / 2.0)
+        .extrude(lug_width_x + 1.0)
+    )
+    steel = steel.union(lug).cut(bolt_hole)
+
+    # The local bolt +Z axis is rotated onto global -X.  Its head face lands on
+    # +X of the lug and the nut starts exactly on the -X lug face.
     nut_h = 0.82 * thread_d
-    nut_z = right_z + plate_depth + 0.45
-    stud_start = left_z - 0.6
-    stud_end = nut_z + nut_h + 1.5
-    stud_length = stud_end - stud_start
-    modeled_thread_length = min(stud_length - 0.5, nut_h + 3.0 * thread_pitch)
-    stud = (_make_unc_stud(thread_d, thread_pitch, stud_length,
-                           modeled_thread_length)
-            .translate((0.0, stud_y, stud_start)))
-    left_plate = left_plate.union(stud)
-    clearance = (cq.Workplane("XY").center(0.0, stud_y)
-                 .circle(thread_d / 2.0 + 0.18).extrude(plate_depth + 1.0)
-                 .translate((0.0, 0.0, right_z - 0.5)))
-    right_plate = right_plate.cut(clearance)
-
+    projection = max(1.5, 0.85 * thread_pitch)
+    threaded_length = nut_h + projection
+    head_r = 0.82 * thread_d
+    head_h = 0.45 * thread_d
+    bolt_local = _make_cross_bolt_local(
+        thread_d,
+        thread_pitch,
+        lug_width_x,
+        threaded_length,
+        head_r,
+        head_h,
+    )
     nut_af = 1.62 * thread_d
-    nut = (_make_unc_lock_nut(thread_d, thread_pitch, nut_af, nut_h)
-           .translate((0.0, stud_y, nut_z)))
+    nut_local = _make_lock_nut_local(
+        bolt_local, thread_d, nut_af, nut_h, lug_width_x
+    )
+    orient_axis = (0.0, 1.0, 0.0)
+    bolt = bolt_local.rotate((0.0, 0.0, 0.0), orient_axis, -90.0)
+    bolt = bolt.translate((lug_half_x, 0.0, bolt_z))
+    nut = nut_local.rotate((0.0, 0.0, 0.0), orient_axis, -90.0)
+    nut = nut.translate((lug_half_x, 0.0, bolt_z))
 
     result = cq.Assembly(name="stc_spc_channel_cushion_clamp_asm")
-    result.add(left_plate, name="left_clamp_half")
-    result.add(right_plate, name="right_clamp_half")
-    result.add(cushion, name="cushion_insert")
-    result.add(nut, name="lock_nut")
+    result.add(steel, name="steel_strut_clamp", color=cq.Color(0.62, 0.67, 0.72))
+    result.add(cushion, name="cushion_insert", color=cq.Color(0.12, 0.27, 0.30))
+    result.add(bolt, name="cross_bolt", color=cq.Color(0.78, 0.70, 0.45))
+    result.add(nut, name="lock_nut", color=cq.Color(0.62, 0.48, 0.26))
     return result
