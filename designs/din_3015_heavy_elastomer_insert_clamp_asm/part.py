@@ -259,12 +259,6 @@ def build(
         rib_width,
     )
 
-    # Align with the supplied 4006_PPR STEP: X=length, Y=height, Z=width.
-    rotation_axis = ((0.0, 0.0, 0.0), (1.0, 0.0, 0.0), -90.0)
-    upper = upper.rotate(*rotation_axis)
-    lower = lower.rotate(*rotation_axis)
-    insert = insert.rotate(*rotation_axis)
-
     result = cq.Assembly(name="din_3015_heavy_elastomer_insert_clamp_asm")
     result.add(upper, name="upper_half", color=cq.Color(0.18, 0.20, 0.22))
     result.add(lower, name="lower_half", color=cq.Color(0.18, 0.20, 0.22))

@@ -38,10 +38,12 @@ other printed rows:
 - simplified molded outside relief depth: `0.408` of one body-half height,
   volume-calibrated against the supplied STEP's deeper drafted pockets.
 
-The assembly uses the source STEP axes: X is L1, Y is H, and Z is B.  Fine
-molding draft, product lettering and tiny local radii are omitted, but the
-main envelope, three-solid topology, stepped insert, mounting interfaces and
-deep ribbed cavities are retained.
+The source STEP axes are X=L1, Y=H and Z=B.  The BenchCAD catalogue pose is
+reoriented to X=L1, Y=B and Z=H so the tube axis is horizontal, the two body
+halves remain upper/lower, and the molded lattices stay on the outside top and
+bottom faces.  Fine molding draft, product lettering and tiny local radii are
+omitted, but the main envelope, three-solid topology, stepped insert, mounting
+interfaces and deep ribbed cavities are retained.
 
 ## Sampled rows
 
