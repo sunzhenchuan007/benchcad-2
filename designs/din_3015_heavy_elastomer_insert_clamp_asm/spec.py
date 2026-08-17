@@ -1,6 +1,5 @@
 """Catalog-row sampling for the DIN 3015 Part 2 heavy RI clamp."""
 
-
 CATALOG_ROWS = [
     # group, D, D1, L1, L2, H, B, insert material (0=SA73, 1=E70)
     (4, 6.0, 25.0, 70.0, 45.0, 46.5, 30.5, 0),
@@ -80,7 +79,10 @@ CATALOG_SOURCE = (
     "STAUFF Catalogue 1 - STAUFF Clamps, English 06/2026, p.42, "
     "Heavy Series DIN 3015 Part 2 type RI drawing and table"
 )
-PROPORTION_SOURCE = "proportion; exact value is unmarked in STAUFF p.42"
+PROPORTION_SOURCE = (
+    "STAUFF 1110008634 STEP, 4006_PPR Group 4; "
+    "other catalogue groups use documented proportional scaling"
+)
 
 
 def _row_range(column):
@@ -95,30 +97,30 @@ def _row_range(column):
 
 
 def _row_index_range():
-    return {
-        difficulty: (min(rows), max(rows))
-        for difficulty, rows in DIFFICULTY_ROWS.items()
-    }
+    return {difficulty: (min(rows), max(rows)) for difficulty, rows in DIFFICULTY_ROWS.items()}
 
 
 def _derived_geometry(row):
     _, pipe_od, insert_outer_d, length, mount_spacing, height, width, _ = row
-    split_gap = max(0.25, min(0.8, 0.010 * height))
-    radial_clearance = max(0.20, 0.006 * insert_outer_d)
-    axial_clearance = 0.08 * width
-    insert_width = width - 2.0 * axial_clearance
-    seat_groove_depth = 1.50 * radial_clearance
-    seat_groove_width = 0.09 * width
-    mount_hole_d = min(0.24 * width, 0.28 * (length - mount_spacing))
-    counterbore_d = min(1.65 * mount_hole_d, 0.46 * width)
+    split_gap = 0.0
+    radial_clearance = 0.0
+    axial_clearance = 0.0
+    insert_width = width
+    seat_groove_depth = 0.13 * insert_outer_d
+    seat_groove_width = 0.50 * width
+    cavity_radius = insert_outer_d / 2.0 + seat_groove_depth
+    cavity_limited_hole_d = 2.0 * (mount_spacing / 2.0 - cavity_radius - 0.5)
+    mount_hole_d = min(
+        0.341 * width,
+        0.416 * (length - mount_spacing),
+        cavity_limited_hole_d,
+    )
+    counterbore_d = min(0.590 * width, 0.720 * (length - mount_spacing))
     half_height = (height - split_gap) / 2.0
-    counterbore_depth = 0.12 * half_height
-    corner_radius = min(0.09 * width, 0.06 * height)
-    insert_wall = (insert_outer_d - pipe_od) / 2.0
-    hinge_thickness = min(0.30 * insert_wall, 0.12 * insert_outer_d)
-    hinge_overlap = max(0.50, 0.015 * insert_outer_d)
-    rib_height = 1.25 * radial_clearance
-    rib_width = 0.06 * width
+    counterbore_depth = 0.387 * half_height
+    corner_radius = 0.262 * width
+    rib_height = seat_groove_depth
+    rib_width = seat_groove_width
     return {
         "split_gap": split_gap,
         "radial_clearance": radial_clearance,
@@ -130,8 +132,6 @@ def _derived_geometry(row):
         "counterbore_d": counterbore_d,
         "counterbore_depth": counterbore_depth,
         "corner_radius": corner_radius,
-        "hinge_thickness": hinge_thickness,
-        "hinge_overlap": hinge_overlap,
         "rib_height": rib_height,
         "rib_width": rib_width,
     }
@@ -149,10 +149,7 @@ def _derived_range(name):
 
 PARAM_SPEC = {
     "catalog_row": dict(
-        desc=(
-            "selector for one of 40 material-complete p.42 rows; "
-            "eight 7S rows are held"
-        ),
+        desc=("selector for one of 40 material-complete p.42 rows; eight 7S rows are held"),
         unit="",
         range=_row_index_range(),
         choices=DIFFICULTY_ROWS,
@@ -203,10 +200,7 @@ PARAM_SPEC = {
         source=CATALOG_SOURCE,
     ),
     "body_material": dict(
-        desc=(
-            "metadata-only body material code: 0=PP-R, 1=PA-R; "
-            "no constitutive simulation"
-        ),
+        desc=("metadata-only body material code: 0=PP-R, 1=PA-R; no constitutive simulation"),
         unit="",
         range={"easy": (0, 0), "medium": (0, 1), "hard": (0, 1)},
         choices={"easy": [0], "medium": [0, 1], "hard": [0, 1]},
@@ -224,20 +218,18 @@ PARAM_SPEC = {
 }
 
 for _name, _desc in (
-    ("split_gap", "positive gap separating the two clamp halves"),
-    ("radial_clearance", "body-cavity radial clearance beyond insert D1"),
-    ("axial_clearance", "clearance at each axial end of the insert"),
-    ("insert_width", "insert axial width after two end clearances"),
-    ("seat_groove_depth", "radial depth of the source-visible seating grooves"),
-    ("seat_groove_width", "axial width of the source-visible seating grooves"),
-    ("mount_hole_d", "unmarked mounting through-passage diameter"),
-    ("counterbore_d", "unmarked outside counterbore diameter"),
-    ("counterbore_depth", "unmarked outside counterbore depth"),
-    ("corner_radius", "unmarked clamp-body vertical corner radius"),
-    ("hinge_thickness", "radial thickness of the visible insert film hinge"),
-    ("hinge_overlap", "positive bridge overlap into each insert lobe"),
-    ("rib_height", "radial height of the visible insert retention bands"),
-    ("rib_width", "axial width of each visible insert retention band"),
+    ("split_gap", "closed-pose separation at the clamp split plane"),
+    ("radial_clearance", "nominal radial clearance at the insert core"),
+    ("axial_clearance", "nominal axial clearance at each insert end"),
+    ("insert_width", "full axial width of the stepped insert"),
+    ("seat_groove_depth", "radial depth of the central retention groove"),
+    ("seat_groove_width", "axial width of the central retention groove"),
+    ("mount_hole_d", "mounting through-passage diameter"),
+    ("counterbore_d", "outside counterbore diameter"),
+    ("counterbore_depth", "outside counterbore depth"),
+    ("corner_radius", "clamp-body plan corner radius"),
+    ("rib_height", "radial height of the insert central band"),
+    ("rib_width", "axial width of the insert central band"),
 ):
     PARAM_SPEC[_name] = dict(
         desc=_desc,
@@ -290,45 +282,24 @@ def check(p):
         bad.append("insert_material must be metadata code SA73 or E70")
 
     split_gap = p["split_gap"]
-    if split_gap <= 0.0 or split_gap >= p["height"]:
-        bad.append("split gap must be positive and smaller than assembled height")
+    if split_gap < 0.0 or split_gap >= p["height"]:
+        bad.append("split gap must be nonnegative and smaller than assembled height")
 
     insert_wall = (p["insert_outer_d"] - p["pipe_od"]) / 2.0
     if insert_wall <= 0.0:
         bad.append("D must be smaller than D1 so the insert has positive radial wall")
-    if p["radial_clearance"] <= 0.0:
-        bad.append("insert-to-body radial clearance must be positive")
-    if p["axial_clearance"] <= 0.0:
-        bad.append("insert-to-body axial end clearance must be positive")
-    if _different(
-        p["width"] - p["insert_width"], 2.0 * p["axial_clearance"]
-    ):
+    if p["radial_clearance"] < 0.0:
+        bad.append("insert-to-body radial clearance must be nonnegative")
+    if p["axial_clearance"] < 0.0:
+        bad.append("insert-to-body axial end clearance must be nonnegative")
+    if _different(p["width"] - p["insert_width"], 2.0 * p["axial_clearance"]):
         bad.append("insert width must leave the declared clearance at both axial ends")
-    if p["rib_height"] <= p["radial_clearance"]:
-        bad.append(
-            "retention ribs must project beyond the ordinary body-cavity clearance"
-        )
-    if p["seat_groove_depth"] <= p["rib_height"]:
-        bad.append("seating grooves must clear the insert retention-rib crests")
-    if p["seat_groove_width"] <= p["rib_width"]:
-        bad.append("seating grooves must be axially wider than the retention ribs")
-
-    if p["hinge_thickness"] <= 0.0:
-        bad.append("film hinge thickness must be positive")
-    if p["hinge_thickness"] >= insert_wall:
-        bad.append("film hinge must remain inside the positive insert wall")
-    if p["hinge_overlap"] <= 0.0:
-        bad.append("film hinge must overlap each lobe by a positive amount")
-    outer_radius = p["insert_outer_d"] / 2.0
-    overlap_probe_z = split_gap / 2.0 + p["hinge_overlap"] / 2.0
-    if (
-        (outer_radius - p["hinge_thickness"]) ** 2
-        + overlap_probe_z ** 2
-        >= outer_radius ** 2
-    ):
-        bad.append("film hinge lacks positive-volume overlap with both insert lobes")
-    if split_gap / 2.0 + p["hinge_overlap"] >= outer_radius:
-        bad.append("film hinge overlap must terminate within both semicircular lobes")
+    if p["rib_height"] <= 0.0 or p["rib_width"] <= 0.0:
+        bad.append("the insert central retention band must have positive dimensions")
+    if _different(p["seat_groove_depth"], p["rib_height"]):
+        bad.append("the body groove must match the insert central-band height")
+    if _different(p["seat_groove_width"], p["rib_width"]):
+        bad.append("the body groove must match the insert central-band width")
 
     half_height = (p["height"] - split_gap) / 2.0
     if p["counterbore_depth"] <= 0.0 or p["counterbore_depth"] >= half_height:
@@ -347,6 +318,6 @@ def check(p):
     if cavity_radius >= p["height"] / 2.0:
         bad.append("insert seating grooves must leave positive top and bottom walls")
     hole_centre_radius = p["mount_spacing"] / 2.0
-    if hole_centre_radius <= cavity_radius + p["counterbore_d"] / 2.0:
-        bad.append("mounting holes and counterbores must clear the insert cavity")
+    if hole_centre_radius <= cavity_radius + p["mount_hole_d"] / 2.0:
+        bad.append("mounting through holes must clear the insert cavity")
     return bad

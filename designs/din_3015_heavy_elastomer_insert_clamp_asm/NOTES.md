@@ -1,55 +1,62 @@
-# Source and proportion map
+# Source and STEP anchor
 
-The dimensional anchor is STAUFF Catalogue 1 - STAUFF Clamps, English,
-version 06/2026, page 42 (DIN 3015 Part 2, Heavy Series, type RI). The official
-drawing and product image show two separate clamp-body halves and **one**
-elastomer insert made from two semicircular lobes joined by a visible film
-hinge. The model therefore returns exactly three named solids; the insert is a
-connected component, not two loose rings or a merely slit cylinder.
+The dimensional table is STAUFF *Catalogue 1 - STAUFF Clamps*, English,
+06/2026, page 42 (DIN 3015 Part 2, Heavy Series, type RI).  The supplied
+official `1110008634.STEP` identifies its product geometry as `4006_PPR` and
+anchors the unmarked local features for the Group-4 / D=6 mm row.
 
-| Model quantity / feature | Source boundary |
+The STEP contains exactly three solids and has a 70 x 46.5 x 30.5 mm envelope:
+two molded body halves and one connected stepped annular insert.  It does not
+contain a split or film-hinged two-lobe insert.
+
+## Catalogue and STEP mapping
+
+| Quantity / feature | Evidence |
 |---|---|
 | D, D1, L1, L2, H, B and group | printed page-42 table |
 | PP-R / PA-R body material codes | printed page-42 ordering key; metadata only |
 | SA73 for 4S-6S; E70 for 8S-10S | printed page-42 insert-material entries; metadata only |
-| two insert lobes and visible film hinge | official page-42 drawing/product image |
-| small retention bands | visible official insert detail; count/size unmarked |
-| annular cavity seating grooves | visible official clamp detail; depth/width unmarked |
-| split gap | `proportion`: `clamp(0.010 H, 0.25 mm, 0.80 mm)` |
-| insert radial clearance | `proportion`: `max(0.20 mm, 0.006 D1)` |
-| insert axial end clearance | `proportion`: `0.08 B` at each end |
-| seating-groove radial depth | `proportion`: 150% of radial clearance |
-| seating-groove axial width | `proportion`: `0.09 B` |
-| mounting passage diameter | `proportion`: `min(0.24 B, 0.28 (L1-L2))` |
-| counterbore diameter | `proportion`: `min(1.65 passage_d, 0.46 B)` |
-| counterbore depth | `proportion`: 12% of one clamp-half height |
-| outside corner radius | `proportion`: `min(0.09 B, 0.06 H)` |
-| hinge radial thickness | `proportion`: `min(0.30 insert_wall, 0.12 D1)` |
-| hinge overlap into each lobe | `proportion`: `max(0.50 mm, 0.015 D1)` |
-| retention-band radial height | `proportion`: 125% of radial clearance |
-| retention-band axial width | `proportion`: `0.06 B` |
+| two body halves plus one insert | `1110008634.STEP`, three valid solids |
+| Group-4 insert core | STEP: OD 25, ID 6, full width 30.5 mm |
+| Group-4 central insert band | STEP: OD 31.5, axial width 15.25 mm |
+| Group-4 split gap / axial clearance | STEP: zero in the fixed closed pose |
+| Group-4 mounting passage | STEP cylindrical surface: diameter 10.4 mm |
+| Group-4 outside counterbore | STEP: diameter 18 mm, floor 9 mm from outside |
+| Group-4 plan corner radius | STEP cylindrical surface: radius 8 mm |
+| outside molded lattice | STEP: perimeter wall, centre/cross ribs and circular lands |
 
-`CATALOG_ROWS` contains 40 complete, sampleable rows: 4S, 5S, 6S, 8S, 9S
-and 10S. The following eight printed 7S rows are retained explicitly in
-`HELD_7S_ROWS`, but are not sampled because page 42 does not assign their
-insert material:
+The STEP-observed Group-4 proportions are applied deterministically to the
+other printed rows:
 
-| Group | D values (mm) | D1 / L1 / L2 / H / B (mm) | Status |
-|---|---|---|---|
-| 7S | 55, 57, 60, 63.5, 65, 70, 72, 76 | 88 / 154 / 122 / 120 / 60 | held: insert-material gap |
+- central-band radial height and matching body groove depth: `0.13 D1`;
+- central-band and matching groove width: `0.50 B`;
+- mounting passage: the minimum of `0.341 B`, `0.416 (L1-L2)`, and the
+  positive-clearance limit beside the insert cavity;
+- outside counterbore: `min(0.590 B, 0.720 (L1-L2))`;
+- counterbore depth: `0.387` of one body-half height;
+- plan corner radius: `0.262 B`;
+- simplified molded outside relief depth: `0.408` of one body-half height,
+  volume-calibrated against the supplied STEP's deeper drafted pockets.
 
-The assembly is a fixed catalog pose. Polymer names remain categorical
-metadata: geometry does not model stiffness, compression, friction, ageing or
-the film hinge's motion. The supported pipe/tube/hose and mounting hardware
-are context, not shipped component bodies.
+The assembly uses the source STEP axes: X is L1, Y is H, and Z is B.  Fine
+molding draft, product lettering and tiny local radii are omitted, but the
+main envelope, three-solid topology, stepped insert, mounting interfaces and
+deep ribbed cavities are retained.
+
+## Sampled rows
+
+`CATALOG_ROWS` contains 40 material-complete rows: 4S, 5S, 6S, 8S, 9S and
+10S.  The catalogue's eight Group-7S dimensional rows remain explicit in
+`HELD_7S_ROWS` but are not sampled because page 42 does not assign their insert
+material.
+
+The supported pipe/tube/hose and mounting hardware are context, not shipped
+component bodies.  Material codes do not simulate stiffness, compression,
+friction, ageing or tolerances.
 
 ## Reuse boundary with Issue #355
 
-The local `_half_blank`, `_mounting_points`, mounting through-hole cutter and
-outside counterbore cutter intentionally follow the same signatures and duties
-as the adjacent DIN 3015 implementation. Those generic rectangular-half and
-mounting-cut primitives can later be promoted to `bench2.geomlib`. Catalog
-rows, material rules, cavity/insert profiles, the connected film-hinged insert
-and its retention details remain family-specific. No Issue #355 annular
-profile relief was copied; the only bands here are source-visible details on
-the elastomer insert.
+The half blank, mounting-point layout, through-hole cutter and outside
+counterbore cutter keep the same narrow duties as the adjacent DIN 3015
+family.  The RI stepped insert, matching central groove and molded relief
+remain family-specific.
