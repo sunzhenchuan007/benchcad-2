@@ -798,6 +798,13 @@
 "anchor": "Lee Spring 301 SS"
 },
 {
+"name": "control_handle_switch_led_asm",
+"status": "proposed",
+"ref": "#386",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "conveyor_belt_sprocket",
 "status": "wanted",
 "ref": "#44",
@@ -1300,6 +1307,13 @@
 "ref": "#34",
 "category": "springs-damping",
 "anchor": "ISO 10069-1"
+},
+{
+"name": "electrical_oil_level_indicator_asm",
+"status": "proposed",
+"ref": "#387",
+"category": "hydraulics",
+"anchor": ""
 },
 {
 "name": "elevator_bucket_bolt",
@@ -3822,6 +3836,13 @@
 "anchor": "ASME B16.5"
 },
 {
+"name": "soft_return_damping_hinge_asm",
+"status": "proposed",
+"ref": "#389",
+"category": "springs-damping",
+"anchor": ""
+},
+{
 "name": "solar_end_clamp",
 "status": "wanted",
 "ref": "#44",
@@ -4688,6 +4709,13 @@
 "ref": "#39",
 "category": "robotics",
 "anchor": "Basler ace mount"
+},
+{
+"name": "visual_flow_indicator_asm",
+"status": "proposed",
+"ref": "#388",
+"category": "hydraulics",
+"anchor": ""
 },
 {
 "name": "wave_washer",
