@@ -1820,6 +1820,13 @@
 "anchor": ""
 },
 {
+"name": "heavy_duty_mecanum_wheel",
+"status": "merged",
+"ref": "designs/heavy_duty_mecanum_wheel",
+"category": "",
+"anchor": ""
+},
+{
 "name": "heavy_duty_mecanum_wheel_asm",
 "status": "proposed",
 "ref": "#336",
