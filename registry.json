@@ -2717,9 +2717,9 @@
 },
 {
 "name": "multi_line_pipe_clamp_body_asm",
-"status": "proposed",
-"ref": "#342",
-"category": "hydraulics",
+"status": "merged",
+"ref": "designs/multi_line_pipe_clamp_body_asm",
+"category": "",
 "anchor": ""
 },
 {
