@@ -1,0 +1,8 @@
+{
+  "family": "nas6203_close_tol_bolt",
+  "standard": "NAS6203-NAS6220 Rev. 10",
+  "base_plane": "XY",
+  "description": "NAS6203 through NAS6220 alloy-steel close-tolerance tension bolt with washed hex head, precision plain grip and short reduced-major-diameter UNJF thread; baseline undrilled, nonlocking configuration.",
+  "source": "NAS6203 THRU NAS6220 Revision 10, Figure 1 and Tables I-II; all 13 basic numbers and the 66-entry grip ladder are represented; oversize X/Y repair dimensions are excluded because source sheet 7 is unavailable; see NOTES.md",
+  "contributor": "wangbinqing"
+}
