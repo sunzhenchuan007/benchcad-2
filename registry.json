@@ -49,6 +49,13 @@
 "anchor": "Ganter GN 300"
 },
 {
+"name": "adjustable_torque_limiting_knob_asm",
+"status": "proposed",
+"ref": "#400",
+"category": "workholding",
+"anchor": ""
+},
+{
 "name": "agchain_detachable_link",
 "status": "wanted",
 "ref": "#43",
@@ -1880,6 +1887,13 @@
 "status": "proposed",
 "ref": "#335",
 "category": "",
+"anchor": ""
+},
+{
+"name": "heavy_duty_vertical_toggle_clamp_asm",
+"status": "proposed",
+"ref": "#402",
+"category": "workholding",
 "anchor": ""
 },
 {
@@ -4431,6 +4445,13 @@
 "anchor": "Kipp K0660"
 },
 {
+"name": "toggle_joint_mechanism_asm",
+"status": "proposed",
+"ref": "#401",
+"category": "workholding",
+"anchor": ""
+},
+{
 "name": "toggle_latch_base_plate",
 "status": "merged",
 "ref": "designs/toggle_latch_base_plate",
@@ -4708,6 +4729,13 @@
 "status": "proposed",
 "ref": "#239",
 "category": "bearings-seals",
+"anchor": ""
+},
+{
+"name": "vacuum_breaker_breather_cap_asm",
+"status": "proposed",
+"ref": "#399",
+"category": "hydraulics",
 "anchor": ""
 },
 {
