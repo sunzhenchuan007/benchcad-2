@@ -1,0 +1,14 @@
+{
+  "family": "din_3015_heavy_elastomer_insert_clamp_asm",
+  "standard": "DIN 3015 Part 2",
+  "base_plane": "XY",
+  "description": "Static three-component heavy-series clamp pose: two deeply ribbed molded body halves and one stepped annular elastomer insert with a central retention band. Material codes are metadata only.",
+  "source": "STAUFF Catalogue 1 - STAUFF Clamps, English 06/2026, page 42; supplied STAUFF 1110008634 STEP (4006_PPR Group 4); other groups use documented proportional scaling",
+  "contributor": "sunzhenchuan007",
+  "solids": 3,
+  "components": [
+    {"name": "upper_half", "quantity": 1, "role": "upper polymer clamp body"},
+    {"name": "lower_half", "quantity": 1, "role": "lower polymer clamp body"},
+    {"name": "insert", "quantity": 1, "role": "one stepped annular elastomer insert"}
+  ]
+}
