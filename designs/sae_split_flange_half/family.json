@@ -1,0 +1,8 @@
+{
+  "family": "sae_split_flange_half",
+  "standard": "SAE J518-1 / ISO 6162-1",
+  "base_plane": "XY",
+  "description": "Code 61 forged split-flange clamp half with two bolt holes, an open stepped A/B bore, catalog lip depth, and the specified split-face setback; two identical halves complete the four-bolt pattern.",
+  "source": "Anfield Industries Flange Catalog / Split Flanges Rev. C p. 1, Code 61 Split Flange; Anchor Fluid Power Flange Catalog pp. 83-84 for SAE J518-1 / ISO 6162-1 and three-decimal bolt spacings through 4 in; see NOTES.md",
+  "contributor": "wangbinqing"
+}
