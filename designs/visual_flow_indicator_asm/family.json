@@ -1,0 +1,19 @@
+{
+  "family": "visual_flow_indicator_asm",
+  "standard": null,
+  "base_plane": "XY",
+  "description": "ELESA HVF inline flow indicator with two molded ends, captured borosilicate tube, pitched rotor and axle, female BSPP/NPT bosses, end seals, and a catalog-dependent two- or four-tie-rod fastener set.",
+  "source": "ELESA HVF official datasheet 10/2025 and verified official STEP SKU 111301; ISO 228-1 and ASME B1.20.1 thread tables; unpublished reconstruction dimensions use documented proportion rules",
+  "contributor": "sunzhenchuan007",
+  "components": [
+    {"name": "end_body", "quantity": 2, "role": "molded polypropylene end and chamber retainer"},
+    {"name": "tubular_window", "quantity": 1, "role": "borosilicate inspection tube"},
+    {"name": "rotor_propeller", "quantity": 1, "role": "visible freely rotating flow indicator"},
+    {"name": "rotor_axle", "quantity": 1, "role": "coaxial rotor support"},
+    {"name": "threaded_boss", "quantity": 2, "role": "female BSPP or NPT inlet/outlet insert"},
+    {"name": "end_seal", "quantity": 2, "role": "annular chamber packing ring"},
+    {"name": "tie_rod", "quantity": "rod_count", "role": "hollow AISI 316L end-body spacer"},
+    {"name": "screw", "quantity": "rod_count", "role": "zinc-plated through screw with recessed drive"},
+    {"name": "nut", "quantity": "rod_count", "role": "zinc-plated lower retaining nut"}
+  ]
+}
