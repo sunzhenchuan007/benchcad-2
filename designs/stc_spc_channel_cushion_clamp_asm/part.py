@@ -207,48 +207,48 @@ def build(
     overall_top = leg_bottom + height_d
     crown_h = min(0.80 * thread_d, 0.42 * (overall_top - outer_half))
     bolt_z = overall_top - 0.55 * crown_h
-    lug_bottom = outer_half - 0.75 * steel_t
     center_gap = max(0.75 * thread_d, 1.50 * steel_t)
-    ear_width = thread_lug_half
+    ear_width = steel_t
     ear_outer_x = center_gap / 2.0 + ear_width
-    ear_boss_r = 0.68 * thread_d
-    shoulder_z = bolt_z + 0.12 * crown_h
-    top_half_y = 0.58 * steel_depth / 2.0
+    upright_half_h = 0.85 * thread_d
+    ear_top_z = bolt_z + upright_half_h
+    ear_curve_z = bolt_z - upright_half_h
+
+    # A long upright hole zone flows into the circular strap through a pair of
+    # tangent splines.  The radial join segment overlaps the original annular
+    # shell, so the result is one continuous bent plate rather than a block
+    # attached to the crown.
+    outer_join_x = min(
+        0.65 * outer_half,
+        ear_outer_x + 1.50 * thread_d,
+    )
+    outer_join_z = math.sqrt(outer_half * outer_half - outer_join_x * outer_join_x)
+    join_scale = cushion_half / outer_half
+    inner_join_x = outer_join_x * join_scale
+    inner_join_z = outer_join_z * join_scale
 
     right_ear = (
-        cq.Workplane("YZ", origin=(center_gap / 2.0, 0.0, 0.0))
-        .moveTo(-steel_depth / 2.0, lug_bottom)
-        .lineTo(steel_depth / 2.0, lug_bottom)
-        .lineTo(steel_depth / 2.0, shoulder_z)
-        .lineTo(top_half_y, overall_top)
-        .lineTo(-top_half_y, overall_top)
-        .lineTo(-steel_depth / 2.0, shoulder_z)
+        cq.Workplane("XZ", origin=(0.0, steel_depth / 2.0, 0.0))
+        .moveTo(center_gap / 2.0, ear_top_z)
+        .lineTo(ear_outer_x, ear_top_z)
+        .lineTo(ear_outer_x, ear_curve_z)
+        .spline(
+            [(outer_join_x, outer_join_z)],
+            tangents=[(0.0, -1.0), (outer_join_z, -outer_join_x)],
+            includeCurrent=True,
+        )
+        .lineTo(inner_join_x, inner_join_z)
+        .spline(
+            [(center_gap / 2.0, ear_curve_z)],
+            tangents=[(-inner_join_z, inner_join_x), (0.0, 1.0)],
+            includeCurrent=True,
+        )
+        .lineTo(center_gap / 2.0, ear_top_z)
         .close()
-        .extrude(ear_width)
+        .extrude(steel_depth)
     )
-    right_ear_boss = (
-        cq.Workplane("YZ", origin=(center_gap / 2.0, 0.0, bolt_z))
-        .circle(ear_boss_r)
-        .extrude(ear_width)
-    )
-    right_ear = right_ear.union(right_ear_boss)
-    left_ear = (
-        cq.Workplane("YZ", origin=(-center_gap / 2.0, 0.0, 0.0))
-        .moveTo(-steel_depth / 2.0, lug_bottom)
-        .lineTo(steel_depth / 2.0, lug_bottom)
-        .lineTo(steel_depth / 2.0, shoulder_z)
-        .lineTo(top_half_y, overall_top)
-        .lineTo(-top_half_y, overall_top)
-        .lineTo(-steel_depth / 2.0, shoulder_z)
-        .close()
-        .extrude(-ear_width)
-    )
-    left_ear_boss = (
-        cq.Workplane("YZ", origin=(-center_gap / 2.0, 0.0, bolt_z))
-        .circle(ear_boss_r)
-        .extrude(-ear_width)
-    )
-    left_ear = left_ear.union(left_ear_boss)
+    right_ear = right_ear.cut(cushion)
+    left_ear = right_ear.mirror("YZ")
 
     mask_pad = 2.0 * steel_t
     mask_width = outer_half + mask_pad - center_gap / 2.0
