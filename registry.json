@@ -2703,10 +2703,10 @@
 },
 {
 "name": "nas6203_close_tol_bolt",
-"status": "proposed",
-"ref": "#198",
-"category": "aero-auto",
-"anchor": ""
+"status": "merged",
+"ref": "designs/nas6203_close_tol_bolt",
+"category": "",
+"anchor": "NAS6203-NAS6220 Rev. 10"
 },
 {
 "name": "needle_valve_body",
