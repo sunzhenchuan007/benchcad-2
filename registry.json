@@ -1316,6 +1316,13 @@
 "anchor": ""
 },
 {
+"name": "electronic_digital_position_indicator_asm",
+"status": "proposed",
+"ref": "#390",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "elevator_bucket_bolt",
 "status": "proposed",
 "ref": "#99",
@@ -1524,6 +1531,13 @@
 "ref": "#32",
 "category": "piping",
 "anchor": "ISO 5167-3"
+},
+{
+"name": "flush_pull_handle_lever_latch_asm",
+"status": "proposed",
+"ref": "#392",
+"category": "electro",
+"anchor": ""
 },
 {
 "name": "folding_prop_hub",
@@ -2734,6 +2748,13 @@
 "status": "merged",
 "ref": "designs/multi_line_pipe_clamp_body_asm",
 "category": "",
+"anchor": ""
+},
+{
+"name": "multi_output_angular_gearbox_asm",
+"status": "proposed",
+"ref": "#391",
+"category": "drivetrain",
 "anchor": ""
 },
 {
