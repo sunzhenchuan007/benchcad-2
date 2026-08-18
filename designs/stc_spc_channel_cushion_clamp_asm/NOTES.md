@@ -1,9 +1,10 @@
 # STC / SPC geometry notes
 
 The catalogue rows are atomic: `catalog_row` selects D1, B, C, D, E and the
-UNC thread together. No interpolation is used. The assembly has four real,
-named components: one continuous steel strut clamp, one D-shaped elastomer
-insert, one transverse cross-bolt, and one lock nut.
+UNC thread together. No interpolation is used. The assembly has five real,
+named components: two separated left/right steel strut-clamp halves, one
+D-shaped elastomer insert, one transverse cross-bolt, and one lock nut. The
+steel halves remain separated by a visible centre gap through the crown.
 
 The catalogue does not dimension clamp depth, cushion overhang, service-slit
 width, channel-hook reach, bolt-head proportions, nut AF/height, or thread
@@ -33,11 +34,12 @@ strut-mounted clamp, not a STAUFF catalogue model, so none of its dimensions
 replace a printed STAUFF D1/B/C/D/E/thread value.
 
 The AP242 file stores one fused `MANIFOLD_SOLID_BREP`, not an assembly tree.
-An exact geometric partition nevertheless recovers four non-overlapping
-logical bodies whose union reproduces the source: `steel_strut_clamp`,
-`cushion_insert`, `cross_bolt`, and `lock_nut`. Component names and material
-semantics additionally rely on the product specification and visible fastening
-arrangement; they are not claimed as STEP assembly metadata.
+Its recoverable contact arrangement informs the fastener and cushion mating
+surfaces, but its continuous steel topology is not transferred to the STAUFF
+model. The STAUFF catalogue drawing and product photograph show the top-centred
+fastener between separately terminated left/right clamp halves. Component names
+and material semantics rely on that product evidence, not on STEP assembly
+metadata.
 
 Reference axes and recovered relations:
 
@@ -52,19 +54,19 @@ Reference axes and recovered relations:
 The model derives every mating pair from a shared datum rather than positioning
 independently generated shapes afterward:
 
-1. The steel cavity is cut with the same unperforated D blank used to build the
-   cushion. This gives coincident cylindrical/planar side contacts with zero
+1. Both steel halves are cut from the same unperforated D blank used to build
+   the cushion. This gives coincident cylindrical/planar side contacts with zero
    shared volume. Two reduced-depth seats touch the cushion's flat underside.
-2. The cross-bolt plain shank and steel lug hole use the same nominal radius.
-   The bolt-head bearing face is the +X lug face.
-3. The nut begins on the -X lug face, so its bearing face is exactly coincident
-   with the steel face.
+2. The cross-bolt plain shank and both top-ear holes use the same nominal
+   radius. The shank crosses the visible centre gap, and the bolt-head bearing
+   face is the +X outer-ear face.
+3. The nut begins on the -X outer-ear face, so its bearing face is exactly
+   coincident with the left steel half.
 4. The nut bore is cut by the actual external thread of the same cross-bolt.
    This guarantees coaxial mating and zero thread interference.
 5. The cushion has no nominal contact with either bolt or nut.
 
-The recovered HoldRite reference has the same contact graph. Its measured
-nominal shared areas are 2459.106 mm2 (steel/cushion), 272.235 mm2
-(steel/bolt), 76.500 mm2 (steel/nut), and 116.543 mm2 (bolt/nut). Areas in the
-parametric STAUFF family vary with the catalogue row; the graph and zero-volume
-interference are invariant.
+The recovered HoldRite reference supports these mating-interface types, but not
+the count or continuity of the STAUFF steel parts. Areas in the parametric
+STAUFF family vary with the catalogue row; the zero-volume interference rule is
+invariant.

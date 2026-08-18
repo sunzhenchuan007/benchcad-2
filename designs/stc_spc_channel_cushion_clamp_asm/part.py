@@ -1,4 +1,4 @@
-"""STAUFF STC/SPC channel cushion clamp as four real components."""
+"""STAUFF STC/SPC channel cushion clamp as five real components."""
 
 import math
 
@@ -108,7 +108,7 @@ def build(
     edge_e,
     thread_code,
 ):
-    """Build one steel clamp, one cushion, one cross-bolt, and one lock nut."""
+    """Build two steel clamp halves, one cushion, one cross-bolt, and one nut."""
     del catalog_row, material_code
 
     # Global frame: pipe axis +Y, cross-bolt axis -X, rail/down direction -Z.
@@ -160,7 +160,7 @@ def build(
     # overlap, while the lower centre stays open.
     steel_outer = _d_prism(outer_half, cushion_bottom, steel_depth)
     steel_inner = _d_prism(cushion_half, cushion_bottom, steel_depth)
-    steel = steel_outer.cut(steel_inner)
+    steel_frame = steel_outer.cut(steel_inner)
 
     headroom = height_d - c - outer_half
     leg_drop = max(1.5 * steel_t, min(0.12 * install_width_min, 0.35 * headroom))
@@ -173,7 +173,7 @@ def build(
         .box(steel_t, steel_depth, leg_h)
         .translate((0.0, 0.0, leg_bottom + leg_h / 2.0))
     )
-    steel = steel.union(legs)
+    steel_frame = steel_frame.union(legs)
 
     # Two lower seats touch the cushion's flat underside.  Their reduced Y span
     # matches local support patches instead of falsely closing the whole base.
@@ -186,7 +186,7 @@ def build(
         .box(seat_w, seat_depth, 0.70 * steel_t)
         .translate((0.0, 0.0, cushion_bottom - 0.35 * steel_t))
     )
-    steel = steel.union(seats)
+    steel_frame = steel_frame.union(seats)
 
     # Inward lips create the down-facing channel engagement.  They remain below
     # the cushion datum and cannot intersect the elastomer.
@@ -199,20 +199,24 @@ def build(
         .box(hook_reach, steel_depth, hook_h)
         .translate((0.0, 0.0, leg_bottom + 0.58 * leg_drop))
     )
-    steel = steel.union(hooks)
+    steel_frame = steel_frame.union(hooks)
 
-    # A central transverse lug joins both sides of the steel shell.  Its planar
-    # +/-X faces are the bolt-head and nut bearing datums.
+    # The steel strap is supplied as two independent left/right halves.  A
+    # visible centre gap separates the halves through the crown, while a lug on
+    # each half carries the transverse fastener at the top centre.
     overall_top = leg_bottom + height_d
     crown_h = min(0.80 * thread_d, 0.42 * (overall_top - outer_half))
     bolt_z = overall_top - 0.55 * crown_h
     lug_bottom = outer_half - 0.75 * steel_t
-    lug_half_x = thread_lug_half
-    lug_width_x = 2.0 * lug_half_x
+    center_gap = max(0.75 * thread_d, 1.50 * steel_t)
+    ear_width = thread_lug_half
+    ear_outer_x = center_gap / 2.0 + ear_width
+    ear_boss_r = 0.68 * thread_d
     shoulder_z = bolt_z + 0.12 * crown_h
     top_half_y = 0.58 * steel_depth / 2.0
-    lug = (
-        cq.Workplane("YZ", origin=(-lug_half_x, 0.0, 0.0))
+
+    right_ear = (
+        cq.Workplane("YZ", origin=(center_gap / 2.0, 0.0, 0.0))
         .moveTo(-steel_depth / 2.0, lug_bottom)
         .lineTo(steel_depth / 2.0, lug_bottom)
         .lineTo(steel_depth / 2.0, shoulder_z)
@@ -220,17 +224,69 @@ def build(
         .lineTo(-top_half_y, overall_top)
         .lineTo(-steel_depth / 2.0, shoulder_z)
         .close()
-        .extrude(lug_width_x)
+        .extrude(ear_width)
     )
+    right_ear_boss = (
+        cq.Workplane("YZ", origin=(center_gap / 2.0, 0.0, bolt_z))
+        .circle(ear_boss_r)
+        .extrude(ear_width)
+    )
+    right_ear = right_ear.union(right_ear_boss)
+    left_ear = (
+        cq.Workplane("YZ", origin=(-center_gap / 2.0, 0.0, 0.0))
+        .moveTo(-steel_depth / 2.0, lug_bottom)
+        .lineTo(steel_depth / 2.0, lug_bottom)
+        .lineTo(steel_depth / 2.0, shoulder_z)
+        .lineTo(top_half_y, overall_top)
+        .lineTo(-top_half_y, overall_top)
+        .lineTo(-steel_depth / 2.0, shoulder_z)
+        .close()
+        .extrude(-ear_width)
+    )
+    left_ear_boss = (
+        cq.Workplane("YZ", origin=(-center_gap / 2.0, 0.0, bolt_z))
+        .circle(ear_boss_r)
+        .extrude(-ear_width)
+    )
+    left_ear = left_ear.union(left_ear_boss)
+
+    mask_pad = 2.0 * steel_t
+    mask_width = outer_half + mask_pad - center_gap / 2.0
+    mask_height = overall_top - leg_bottom + 2.0 * mask_pad
+    mask_center_z = (overall_top + leg_bottom) / 2.0
+    left_mask = (
+        cq.Workplane("XY")
+        .box(mask_width, steel_depth + 2.0 * mask_pad, mask_height)
+        .translate(
+            (
+                -(outer_half + mask_pad + center_gap / 2.0) / 2.0,
+                0.0,
+                mask_center_z,
+            )
+        )
+    )
+    right_mask = (
+        cq.Workplane("XY")
+        .box(mask_width, steel_depth + 2.0 * mask_pad, mask_height)
+        .translate(
+            (
+                (outer_half + mask_pad + center_gap / 2.0) / 2.0,
+                0.0,
+                mask_center_z,
+            )
+        )
+    )
+
     bolt_hole = (
-        cq.Workplane("YZ", origin=(-lug_half_x - 0.5, 0.0, bolt_z))
+        cq.Workplane("YZ", origin=(-ear_outer_x - 0.5, 0.0, bolt_z))
         .circle(thread_d / 2.0)
-        .extrude(lug_width_x + 1.0)
+        .extrude(2.0 * ear_outer_x + 1.0)
     )
-    steel = steel.union(lug).cut(bolt_hole)
+    steel_left = steel_frame.intersect(left_mask).union(left_ear).cut(bolt_hole)
+    steel_right = steel_frame.intersect(right_mask).union(right_ear).cut(bolt_hole)
 
     # The local bolt +Z axis is rotated onto global -X.  Its head face lands on
-    # +X of the lug and the nut starts exactly on the -X lug face.
+    # the +X outer ear face and the nut starts on the -X outer ear face.
     nut_h = 0.82 * thread_d
     projection = max(1.5, 0.85 * thread_pitch)
     threaded_length = nut_h + projection
@@ -239,23 +295,32 @@ def build(
     bolt_local = _make_cross_bolt_local(
         thread_d,
         thread_pitch,
-        lug_width_x,
+        2.0 * ear_outer_x,
         threaded_length,
         head_r,
         head_h,
     )
     nut_af = 1.62 * thread_d
     nut_local = _make_lock_nut_local(
-        bolt_local, thread_d, nut_af, nut_h, lug_width_x
+        bolt_local, thread_d, nut_af, nut_h, 2.0 * ear_outer_x
     )
     orient_axis = (0.0, 1.0, 0.0)
     bolt = bolt_local.rotate((0.0, 0.0, 0.0), orient_axis, -90.0)
-    bolt = bolt.translate((lug_half_x, 0.0, bolt_z))
+    bolt = bolt.translate((ear_outer_x, 0.0, bolt_z))
     nut = nut_local.rotate((0.0, 0.0, 0.0), orient_axis, -90.0)
-    nut = nut.translate((lug_half_x, 0.0, bolt_z))
+    nut = nut.translate((ear_outer_x, 0.0, bolt_z))
 
     result = cq.Assembly(name="stc_spc_channel_cushion_clamp_asm")
-    result.add(steel, name="steel_strut_clamp", color=cq.Color(0.62, 0.67, 0.72))
+    result.add(
+        steel_left,
+        name="steel_strut_clamp_half_01",
+        color=cq.Color(0.62, 0.67, 0.72),
+    )
+    result.add(
+        steel_right,
+        name="steel_strut_clamp_half_02",
+        color=cq.Color(0.62, 0.67, 0.72),
+    )
     result.add(cushion, name="cushion_insert", color=cq.Color(0.12, 0.27, 0.30))
     result.add(bolt, name="cross_bolt", color=cq.Color(0.78, 0.70, 0.45))
     result.add(nut, name="lock_nut", color=cq.Color(0.62, 0.48, 0.26))
