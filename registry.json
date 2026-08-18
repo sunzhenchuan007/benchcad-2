@@ -735,6 +735,13 @@
 "anchor": ""
 },
 {
+"name": "compression_latch_asm",
+"status": "proposed",
+"ref": "#397",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "compression_latch_body",
 "status": "wanted",
 "ref": "#40",
@@ -2107,6 +2114,20 @@
 "anchor": ""
 },
 {
+"name": "industrial_ball_valve_asm",
+"status": "proposed",
+"ref": "#394",
+"category": "hydraulics",
+"anchor": ""
+},
+{
+"name": "industrial_monitor_mount_asm",
+"status": "proposed",
+"ref": "#395",
+"category": "robotics",
+"anchor": ""
+},
+{
 "name": "instrument_manifold",
 "status": "wanted",
 "ref": "#32",
@@ -2436,6 +2457,13 @@
 "anchor": ""
 },
 {
+"name": "linear_actuator_connecting_unit_asm",
+"status": "proposed",
+"ref": "#396",
+"category": "robotics",
+"anchor": ""
+},
+{
 "name": "linear_ball_bushing",
 "status": "wanted",
 "ref": "#16",
@@ -2755,6 +2783,13 @@
 "status": "proposed",
 "ref": "#391",
 "category": "drivetrain",
+"anchor": ""
+},
+{
+"name": "multi_point_rod_latch_control_asm",
+"status": "proposed",
+"ref": "#393",
+"category": "electro",
 "anchor": ""
 },
 {
@@ -3554,6 +3589,13 @@
 "ref": "designs/sae_split_flange_half",
 "category": "",
 "anchor": "SAE J518-1 / ISO 6162-1"
+},
+{
+"name": "safety_locking_pull_handle_asm",
+"status": "proposed",
+"ref": "#398",
+"category": "electro",
+"anchor": ""
 },
 {
 "name": "safety_swivel_load_ring_asm",
