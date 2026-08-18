@@ -1079,10 +1079,10 @@
 },
 {
 "name": "din_3015_heavy_elastomer_insert_clamp_asm",
-"status": "proposed",
-"ref": "#356",
-"category": "hydraulics",
-"anchor": ""
+"status": "merged",
+"ref": "designs/din_3015_heavy_elastomer_insert_clamp_asm",
+"category": "",
+"anchor": "DIN 3015 Part 2"
 },
 {
 "name": "din_3015_profiled_tube_clamp_body_asm",
