@@ -4005,9 +4005,9 @@
 },
 {
 "name": "srf_pipe_tube_bushing",
-"status": "proposed",
-"ref": "#344",
-"category": "hydraulics",
+"status": "merged",
+"ref": "designs/srf_pipe_tube_bushing",
+"category": "",
 "anchor": ""
 },
 {
