@@ -3459,10 +3459,10 @@
 },
 {
 "name": "sae_split_flange_half",
-"status": "proposed",
-"ref": "#254",
-"category": "hydraulics",
-"anchor": ""
+"status": "merged",
+"ref": "designs/sae_split_flange_half",
+"category": "",
+"anchor": "SAE J518-1 / ISO 6162-1"
 },
 {
 "name": "safety_swivel_load_ring_asm",
