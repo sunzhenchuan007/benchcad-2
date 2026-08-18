@@ -2857,10 +2857,10 @@
 },
 {
 "name": "orfs_male_adapter",
-"status": "proposed",
-"ref": "#201",
-"category": "hydraulics",
-"anchor": ""
+"status": "merged",
+"ref": "designs/orfs_male_adapter",
+"category": "",
+"anchor": "SAE 520120; ISO 8434-3 / SAE J1453; SAE J1926-1"
 },
 {
 "name": "orifice_flange",
