@@ -1247,10 +1247,10 @@
 },
 {
 "name": "ear_clamp_stepless",
-"status": "wanted",
-"ref": "#42",
+"status": "proposed",
+"ref": "#381",
 "category": "aero-auto",
-"anchor": "Oetiker 167 StepLess"
+"anchor": ""
 },
 {
 "name": "earthing_pipe_clamp",
@@ -4047,10 +4047,10 @@
 },
 {
 "name": "strut_channel_section",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#379",
 "category": "structural",
-"anchor": "Unistrut P1000T"
+"anchor": ""
 },
 {
 "name": "stub_end",
@@ -4859,10 +4859,10 @@
 },
 {
 "name": "z_section_purlin",
-"status": "wanted",
-"ref": "#20",
+"status": "proposed",
+"ref": "#380",
 "category": "structural",
-"anchor": "EN 10162"
+"anchor": ""
 },
 {
 "name": "zero_point_stud",
