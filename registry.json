@@ -2618,6 +2618,13 @@
 "anchor": "HASCO/DME slide retainers"
 },
 {
+"name": "molded_safety_switch_hinge",
+"status": "proposed",
+"ref": "#385",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "morse_drill_drift",
 "status": "proposed",
 "ref": "#184",
@@ -2875,6 +2882,13 @@
 "ref": "#16",
 "category": "bearings-seals",
 "anchor": "JIS B 1559 (UCFL205)"
+},
+{
+"name": "overmolded_handheld_battery_enclosure",
+"status": "proposed",
+"ref": "#383",
+"category": "electro",
+"anchor": ""
 },
 {
 "name": "panama_chock",
@@ -3939,6 +3953,13 @@
 "ref": "#35",
 "category": "workholding",
 "anchor": "norelem 03070"
+},
+{
+"name": "spring_return_recessed_folding_handle",
+"status": "proposed",
+"ref": "#384",
+"category": "electro",
+"anchor": ""
 },
 {
 "name": "sprue_bushing",
