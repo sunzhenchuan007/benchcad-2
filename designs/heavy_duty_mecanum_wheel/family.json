@@ -1,0 +1,16 @@
+{
+  "family": "heavy_duty_mecanum_wheel",
+  "standard": null,
+  "base_plane": "XY",
+  "description": "Nineteen-body NEXUS NM heavy-duty mecanum-wheel reconstruction with two mostly closed circular side plates, one stepped eight-bolt hub, eight STEP-profiled barrel rollers captured by integrated rim mounting seats, eight coaxial pins, and left/right handedness defined by one consistent mirrored 45-degree skew.",
+  "source": "NEXUS Robot official NM127A, NM152A, NM203A, NM254A, and NM305A dimensioned PDFs and official STEP ZIPs; STEP files are measurement evidence only and are not imported; undimensioned external details are documented proportions",
+  "contributor": "eteledbat",
+  "solids": 19,
+  "components": [
+    {"name": "front_plate", "quantity": 1},
+    {"name": "rear_plate", "quantity": 1},
+    {"name": "hub_body", "quantity": 1},
+    {"name": "roller", "quantity": 8},
+    {"name": "pin", "quantity": 8}
+  ]
+}
