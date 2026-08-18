@@ -728,6 +728,13 @@
 "anchor": "DIN 6358"
 },
 {
+"name": "compact_sheet_steel_enclosure",
+"status": "proposed",
+"ref": "#380",
+"category": "electro",
+"anchor": ""
+},
+{
 "name": "compression_latch_body",
 "status": "wanted",
 "ref": "#40",
@@ -1247,10 +1254,10 @@
 },
 {
 "name": "ear_clamp_stepless",
-"status": "proposed",
-"ref": "#381",
+"status": "wanted",
+"ref": "#42",
 "category": "aero-auto",
-"anchor": ""
+"anchor": "Oetiker 167 StepLess"
 },
 {
 "name": "earthing_pipe_clamp",
@@ -2450,6 +2457,13 @@
 "anchor": "EMKA 1000"
 },
 {
+"name": "locking_folding_shelf_bracket",
+"status": "proposed",
+"ref": "#379",
+"category": "structural",
+"anchor": ""
+},
+{
 "name": "long_radius_elbow",
 "status": "proposed",
 "ref": "#253",
@@ -2777,6 +2791,13 @@
 "ref": "#7",
 "category": "drivetrain",
 "anchor": "Ruland OD-AT"
+},
+{
+"name": "opposed_blade_control_damper",
+"status": "proposed",
+"ref": "#381",
+"category": "hvac-ductwork",
+"anchor": ""
 },
 {
 "name": "optical_breadboard",
@@ -4054,10 +4075,10 @@
 },
 {
 "name": "strut_channel_section",
-"status": "proposed",
-"ref": "#379",
+"status": "wanted",
+"ref": "#20",
 "category": "structural",
-"anchor": ""
+"anchor": "Unistrut P1000T"
 },
 {
 "name": "stub_end",
@@ -4866,10 +4887,10 @@
 },
 {
 "name": "z_section_purlin",
-"status": "proposed",
-"ref": "#380",
+"status": "wanted",
+"ref": "#20",
 "category": "structural",
-"anchor": ""
+"anchor": "EN 10162"
 },
 {
 "name": "zero_point_stud",
