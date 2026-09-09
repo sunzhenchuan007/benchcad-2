@@ -6,7 +6,7 @@ constant-section prisms whose sections are the manufacturer's own die-cast
 cross-sections (the OEM solid is itself a stack of flat-z extrusions).  Each
 section was measured from the 342-face OEM solid (face census + planar
 cross-sections), ordered into closed contours, and stored below as resampled
-polylines; the cam hook, the thick cage wall, the connecting webs, the radial
+points, fitted to bounded-error lines and circular arcs; the cam hook, the thick cage wall, the connecting webs, the radial
 mouth lip, the rotation-direction arrows and the splayed bottom fork are all
 baked into those contours rather than approximated by concept primitives.
 
@@ -130,10 +130,162 @@ def _mapz(z0, A, depth):
     return cp[-1][1]
 
 
+# Coordinates are quantised to 0.01 mm.  A 0.02 mm fit allowance covers that
+# noise, but also bounds deviation from the original polygon BETWEEN vertices.
+# Work in contour units; build() applies the same radial scale to both forms.
+_CONTOUR_TOL = 0.02
+
+
+def _radial_bounds(pts, cx, cy):
+    """Exact radial range of the polygon edges about a candidate centre."""
+    radii = [math.hypot(x - cx, y - cy) for x, y in pts]
+    low = min(radii)
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        dx, dy = bx - ax, by - ay
+        length2 = dx * dx + dy * dy
+        if length2:
+            t = max(0.0, min(1.0, ((cx - ax) * dx + (cy - ay) * dy) / length2))
+            low = min(low, math.hypot(ax + t * dx - cx, ay + t * dy - cy))
+    return low, max(radii)
+
+
+def _sweep(pts, cx, cy):
+    """Signed, monotone angular walk; reject reversals and ambiguous jumps."""
+    angles = [math.atan2(y - cy, x - cx) for x, y in pts]
+    steps = [(b - a + math.pi) % (2.0 * math.pi) - math.pi
+             for a, b in zip(angles, angles[1:])]
+    if not steps or abs(steps[0]) < 1e-9:
+        return None
+    sign = 1.0 if steps[0] > 0.0 else -1.0
+    if any(sign * step <= 1e-9 or abs(step) >= math.pi - 1e-9 for step in steps):
+        return None
+    return sum(steps)
+
+
+def _fit_circle(pts):
+    """Least-squares centre, then minimax radius over the polygon edges."""
+    mx = sum(x for x, y in pts) / len(pts)
+    my = sum(y for x, y in pts) / len(pts)
+    xy = [(x - mx, y - my) for x, y in pts]
+    xx = sum(x * x for x, y in xy)
+    yy = sum(y * y for x, y in xy)
+    cross = sum(x * y for x, y in xy)
+    xr = sum(x * (x * x + y * y) for x, y in xy) / 2.0
+    yr = sum(y * (x * x + y * y) for x, y in xy) / 2.0
+    det = xx * yy - cross * cross
+    if det <= 1e-12:
+        return None
+    cx = mx + (xr * yy - yr * cross) / det
+    cy = my + (yr * xx - xr * cross) / det
+    closed = pts + pts[:1]
+    sweep = _sweep(closed, cx, cy)
+    if sweep is None or abs(abs(sweep) - 2.0 * math.pi) > 1e-7:
+        return None
+    low, high = _radial_bounds(closed, cx, cy)
+    if high - low > 2.0 * _CONTOUR_TOL:
+        return None
+    return cx, cy, (low + high) / 2.0
+
+
+def _fit_line(pts):
+    ax, ay = pts[0]
+    dx, dy = pts[-1][0] - ax, pts[-1][1] - ay
+    length = math.hypot(dx, dy)
+    if length < 1e-9:
+        return False
+    previous = 0.0
+    for x, y in pts:
+        along = ((x - ax) * dx + (y - ay) * dy) / length
+        across = abs((x - ax) * dy - (y - ay) * dx) / length
+        if across > _CONTOUR_TOL or along < previous - 1e-9 or along > length + 1e-9:
+            return False
+        previous = along
+    return True
+
+
+def _fit_arc(pts):
+    """Stable three-point circle fit; return its exact halfway arc point."""
+    if len(pts) < 4:  # Three arbitrary corner points always define a circle.
+        return None
+    ax, ay = pts[0]
+    bx, by = pts[-1]
+    chord = math.hypot(bx - ax, by - ay)
+    if chord < 1e-9:
+        return None
+    mx, my = (ax + bx) / 2.0, (ay + by) / 2.0
+    nx, ny = -(by - ay) / chord, (bx - ax) / chord
+    # The centre is constrained to the endpoint chord's perpendicular bisector.
+    # Use the interior sample farthest from the chord as the third point:
+    # maximum leverage limits roundoff / quantisation amplification. All other
+    # samples AND edge interiors still have to meet the distance bound.
+    x, y = max(pts[1:-1], key=lambda p: abs((p[0] - mx) * nx + (p[1] - my) * ny))
+    dx, dy = x - mx, y - my
+    normal = dx * nx + dy * ny
+    if abs(normal) < 1e-9:
+        return None
+    offset = (dx * dx + dy * dy - chord * chord / 4.0) / (2.0 * normal)
+    cx, cy = mx + offset * nx, my + offset * ny
+    radius = math.hypot(ax - cx, ay - cy)
+    sweep = _sweep(pts, cx, cy)
+    if sweep is None or abs(sweep) >= 2.0 * math.pi - 1e-7:
+        return None
+    low, high = _radial_bounds(pts, cx, cy)
+    if max(radius - low, high - radius) > _CONTOUR_TOL:
+        return None
+    # Monotone polar angles plus the exact radial bound also bound arc-to-
+    # polygon distance: each ray meets the corresponding original chord.
+    angle = math.atan2(ay - cy, ax - cx) + sweep / 2.0
+    return cx + radius * math.cos(angle), cy + radius * math.sin(angle)
+
+def _segments(pts):
+    """Walk one closed ring, greedily consuming the longest admissible run."""
+    # Put the seam at the sharpest vertex so smooth runs can span the input seam.
+    turns = []
+    for i, (x, y) in enumerate(pts):
+        ax, ay = x - pts[i - 1][0], y - pts[i - 1][1]
+        bx, by = pts[(i + 1) % len(pts)][0] - x, pts[(i + 1) % len(pts)][1] - y
+        turns.append(abs(math.atan2(ax * by - ay * bx, ax * bx + ay * by)))
+    start = max(range(len(pts)), key=lambda i: turns[i])
+    ring = pts[start:] + pts[:start] + [pts[start]]
+    # An arc needs at least a quarter of the ring's measured points behind it.
+    # These sections are 48-point resamples of a die-cast contour: a run shorter
+    # than that is not evidence of a real arc, and rounding one leaves a
+    # near-tangent sliver in the prism stack that the pinned OCC's mesher cannot
+    # triangulate (seen on the thin z=8.777 and z=11.2 web sections).
+    support = max(6, len(pts) // 4)
+    segments = []
+    i = 0
+    while i < len(pts):
+        for end in range(len(pts), i, -1):
+            run = ring[i:end + 1]
+            # Prefer a line on equal-length fits; retain individual edges when
+            # no longer line or arc fits. Corners are never forcibly rounded.
+            if _fit_line(run):
+                segments.append(("line", ring[end], None))
+                break
+            mid = _fit_arc(run) if len(run) >= support else None
+            if mid is not None:
+                segments.append(("arc", ring[end], mid))
+                break
+        i = end
+    return ring[0], segments
+
+
 def _prism(pts, z0, h, s):
-    wp = cq.Workplane("XY").workplane(offset=z0).moveTo(pts[0][0] * s, pts[0][1] * s)
-    for x, y in pts[1:]:
-        wp = wp.lineTo(x * s, y * s)
+    # Callers pass the already clipped / held contour from _prep() and build().
+    pts = [tuple(p) for p in pts]
+    wp = cq.Workplane("XY").workplane(offset=z0)
+    circle = _fit_circle(pts)
+    if circle is not None:
+        cx, cy, radius = circle
+        return wp.center(cx * s, cy * s).circle(radius * s).extrude(h).val()
+    start, segments = _segments(pts)
+    wp = wp.moveTo(start[0] * s, start[1] * s)
+    for kind, end, mid in segments:
+        if kind == "arc":
+            wp = wp.threePointArc((mid[0] * s, mid[1] * s), (end[0] * s, end[1] * s))
+        else:
+            wp = wp.lineTo(end[0] * s, end[1] * s)
     return wp.close().extrude(h).val()
 
 
