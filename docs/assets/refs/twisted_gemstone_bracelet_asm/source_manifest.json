@@ -1,0 +1,18 @@
+{
+  "archive": "new-twisted-bracelet-04-1.snapshot.4.zip",
+  "sha256": "EF7866754A649840932288BF5DB22D159AED49A5B0EA7769296155C43C146721",
+  "source_type": "User-supplied native SOLIDWORKS assembly and parts; original author and redistribution license not established",
+  "inspection": "SOLIDWORKS 2023 SP5, source units converted from metres to mm",
+  "scope": "Derived inspection evidence; native archive is not republished",
+  "native_components": {
+    "bracelet": 1,
+    "gem": 4
+  },
+  "excluded": "Hidden construction disc",
+  "authorized_repairs": [
+    "Open the fourth spherical cavity",
+    "Terminate braid strips inside seats",
+    "Regularize four seat positions"
+  ],
+  "ranges": "proportion; one native example does not establish catalog ranges"
+}
