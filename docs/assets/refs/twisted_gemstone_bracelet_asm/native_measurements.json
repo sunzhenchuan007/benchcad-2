@@ -1,0 +1,1604 @@
+{
+  "units": "SW API: metres and radians; mass properties queried at unit density",
+  "revision": "31.5.0",
+  "documents": [
+    {
+      "filename": "ELMAS.SLDPRT",
+      "features": [
+        {
+          "name": "Yorumlar",
+          "type": "CommentsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sık Kullanılanlar",
+          "type": "FavoriteFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Geçmiş",
+          "type": "HistoryFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Seçim Setleri",
+          "type": "SelectionSetFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sensörler",
+          "type": "SensorFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Design Binder",
+          "type": "DocsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Detaylandırmalar",
+          "type": "DetailCabinet",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Not Alanı",
+          "type": "AnnotationViewFeat",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar1___EndTag___",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "İşaretlemeler",
+          "type": "InkMarkupFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Yüzey Gövdeleri",
+          "type": "SurfaceBodyFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Katı Gövdeler",
+          "type": "SolidBodyFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Işıklar, Kamera ve Sahne",
+          "type": "EnvFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ortam",
+          "type": "AmbientLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal1",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal2",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Denklemler",
+          "type": "EqnFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Material <not specified>",
+          "type": "MaterialFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ön Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Üst Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sağ Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Orijin",
+          "type": "OriginProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim1",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim1@ELMAS.Part",
+              "value": 0.006
+            }
+          ]
+        },
+        {
+          "name": "Yükseklik-Ekstrüzyon1",
+          "type": "Extrusion",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Yükseklik-Ekstrüzyon1@ELMAS.Part",
+              "value": 0.0043
+            },
+            {
+              "name": "D3@Yükseklik-Ekstrüzyon1@ELMAS.Part",
+              "value": 0.8552113334772233
+            },
+            {
+              "name": "D1@Çizim1@ELMAS.Part",
+              "value": 0.006
+            }
+          ]
+        },
+        {
+          "name": "Çizim1",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim1@ELMAS.Part",
+              "value": 0.006
+            }
+          ]
+        },
+        {
+          "name": "Çizim2",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim2@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Yükseklik-Ekstrüzyon2",
+          "type": "ICE",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Yükseklik-Ekstrüzyon2@ELMAS.Part",
+              "value": 0.00025
+            },
+            {
+              "name": "D1@Çizim2@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim2",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim2@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim3",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim3@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Yükseklik-Ekstrüzyon3",
+          "type": "ICE",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Yükseklik-Ekstrüzyon3@ELMAS.Part",
+              "value": 0.0015
+            },
+            {
+              "name": "D3@Yükseklik-Ekstrüzyon3@ELMAS.Part",
+              "value": 0.6981317007977333
+            },
+            {
+              "name": "D1@Çizim3@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim3",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim3@ELMAS.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim4",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim6",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim7",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem1",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim8",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Kes-Ekstrüzyon1",
+          "type": "ICE",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Ekstrüzyon1@ELMAS.Part",
+              "value": 0.0015
+            }
+          ]
+        },
+        {
+          "name": "Çizim8",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Eksen1",
+          "type": "RefAxis",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Dairesel Kaplama1",
+          "type": "CirPattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D3@Dairesel Kaplama1@ELMAS.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Dairesel Kaplama1@ELMAS.Part",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "name": "Ölçek1",
+          "type": "Scale",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim9",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Kes-Ekstrüzyon2",
+          "type": "ICE",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Ekstrüzyon2@ELMAS.Part",
+              "value": 5e-05
+            }
+          ]
+        },
+        {
+          "name": "Çizim9",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        }
+      ],
+      "bodies": [
+        {
+          "name": "Kes-Ekstrüzyon2",
+          "box_m": [
+            -0.0030584930769003626,
+            -0.0026078602134486624,
+            -0.003058493076900364,
+            0.0030584930769003626,
+            0.001750000000000001,
+            0.0030584930769003626
+          ],
+          "faces": 59,
+          "mass": [
+            7.732403672741519e-19,
+            0.00013273214186979365,
+            -2.0782730586235288e-18,
+            5.9024772197757114e-08,
+            8.184354541627372e-05,
+            5.9024772197757114e-08,
+            1.3371044919502038e-13,
+            1.8638580636458358e-13,
+            1.3371044919502013e-13,
+            -1.8140275443818287e-29,
+            -7.80972296168801e-29,
+            2.277431159489952e-29
+          ]
+        }
+      ],
+      "visible_bodies": [
+        "Kes-Ekstrüzyon2"
+      ]
+    },
+    {
+      "filename": "YENİ-BİLEZİK-04.SLDPRT",
+      "features": [
+        {
+          "name": "Yorumlar",
+          "type": "CommentsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sık Kullanılanlar",
+          "type": "FavoriteFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Geçmiş",
+          "type": "HistoryFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Seçim Setleri",
+          "type": "SelectionSetFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sensörler",
+          "type": "SensorFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Design Binder",
+          "type": "DocsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Detaylandırmalar",
+          "type": "DetailCabinet",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Not Alanı",
+          "type": "AnnotationViewFeat",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar1___EndTag___",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "İşaretlemeler",
+          "type": "InkMarkupFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Yüzey Gövdeleri",
+          "type": "SurfaceBodyFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Katı Gövdeler",
+          "type": "SolidBodyFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Işık, Kamera ve Sahne",
+          "type": "EnvFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ortam",
+          "type": "AmbientLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal1",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal2",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Denklemler",
+          "type": "EqnFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sade Karbon Çeliği",
+          "type": "MaterialFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ön Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Üst Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sağ Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Orijin",
+          "type": "OriginProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim1",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim2",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D3@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.0762
+            },
+            {
+              "name": "D1@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Düzlem4",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim5",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem5",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem6",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim6",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem7",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim7",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem8",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim8",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim8@YENİ-BİLEZİK-04.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim9",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim10",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim10@YENİ-BİLEZİK-04.Part",
+              "value": 0.0
+            },
+            {
+              "name": "D2@Çizim10@YENİ-BİLEZİK-04.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Düzlem9",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Süpür4",
+          "type": "Sweep",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D4@Süpür4@YENİ-BİLEZİK-04.Part",
+              "value": 25.1327412287184
+            },
+            {
+              "name": "D1@Çizim1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            },
+            {
+              "name": "D3@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.0762
+            },
+            {
+              "name": "D1@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Çizim1",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim2",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D3@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.0762
+            },
+            {
+              "name": "D1@Çizim2@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Çizim24",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim25",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Süpür6",
+          "type": "Sweep",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D4@Süpür6@YENİ-BİLEZİK-04.Part",
+              "value": 25.1327412287184
+            },
+            {
+              "name": "D1@Çizim1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim1<5>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim25",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim38",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Süpür7",
+          "type": "Sweep",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D3@Süpür7@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim38",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Dairesel Kaplama5",
+          "type": "CirPattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D3@Dairesel Kaplama5@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Dairesel Kaplama5@YENİ-BİLEZİK-04.Part",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "name": "Aynalama8",
+          "type": "MirrorSolid",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Birleştir5",
+          "type": "CombineBodies",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Esnet2",
+          "type": "Bending",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D0@Esnet2@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Esnet2@YENİ-BİLEZİK-04.Part",
+              "value": 0.0
+            },
+            {
+              "name": "D2@Esnet2@YENİ-BİLEZİK-04.Part",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "name": "3B Çizim2",
+          "type": "3DProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem10",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim50",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Döndür1",
+          "type": "Revolution",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Döndür1@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim50",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Döndür2",
+          "type": "Revolution",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Döndür2@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim50<5>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Döndür3",
+          "type": "Revolution",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Döndür3@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim50<6>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Döndür4",
+          "type": "Revolution",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Döndür4@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim50<8>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 0.003048
+            },
+            {
+              "name": "D2@Çizim50@YENİ-BİLEZİK-04.Part",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "name": "Çizim52",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Düzlem11",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim53",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Kes-Döndür1",
+          "type": "RevCut",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Döndür1@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            }
+          ]
+        },
+        {
+          "name": "Çizim53",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Çizim54",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim54@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Kes-Döndür2",
+          "type": "RevCut",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Döndür2@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim54@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Çizim54",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim54@YENİ-BİLEZİK-04.Part",
+              "value": 0.00254
+            }
+          ]
+        },
+        {
+          "name": "Çizim56",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Kes-Döndür4",
+          "type": "RevCut",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Döndür4@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim56",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Kes-Döndür8",
+          "type": "RevCut",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Döndür8@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim56<3>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Kes-Döndür9",
+          "type": "RevCut",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Kes-Döndür9@YENİ-BİLEZİK-04.Part",
+              "value": 6.2831853071796
+            },
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim56<4>",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Çizim56@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim57",
+          "type": "ProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Yükseklik-Ekstrüzyon1",
+          "type": "ICE",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Yükseklik-Ekstrüzyon1@YENİ-BİLEZİK-04.Part",
+              "value": 0.00127
+            }
+          ]
+        },
+        {
+          "name": "Çizim57",
+          "type": "ProfileFeature",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        }
+      ],
+      "bodies": [
+        {
+          "name": "Kes-Döndür9",
+          "box_m": [
+            -0.011471609218521653,
+            0.022725533758004204,
+            -0.026946617135103785,
+            0.006160237333086831,
+            0.05315969314350616,
+            0.003817109238680659
+          ],
+          "faces": 234,
+          "mass": [
+            -0.0020416032742498883,
+            0.03794528410263763,
+            -0.01000427226154179,
+            1.333559230990882e-06,
+            0.00310393596479643,
+            1.333559230990882e-06,
+            1.9107410559103503e-10,
+            1.1951467610033018e-10,
+            1.0681807847607151e-10,
+            -3.2956392705987986e-13,
+            3.1885509855050826e-11,
+            -2.6277470750355636e-13
+          ]
+        },
+        {
+          "name": "Yükseklik-Ekstrüzyon1",
+          "box_m": [
+            -0.002769896930599051,
+            0.037610487042150816,
+            -0.012520328197237323,
+            -0.0013056609893237138,
+            0.0384316715812978,
+            -0.011341127953642179
+          ],
+          "faces": 3,
+          "mass": [
+            -0.0020377789599613826,
+            0.038021079311724305,
+            -0.011930728075439748,
+            6.641794517065401e-10,
+            4.301690354555431e-06,
+            6.641794517065401e-10,
+            6.158239007313205e-17,
+            1.1691145262263843e-16,
+            1.1061356346427761e-16,
+            2.382021300010841e-19,
+            -1.8668677024027274e-17,
+            -8.037071310164819e-20
+          ]
+        }
+      ],
+      "visible_bodies": [
+        "Kes-Döndür9"
+      ]
+    },
+    {
+      "filename": "YENİ-BİLEZİK-MONTAJ-04.SLDASM",
+      "features": [
+        {
+          "name": "Yorumlar",
+          "type": "CommentsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sık Kullanılanlar",
+          "type": "FavoriteFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Klasör ",
+          "type": "HistoryFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Seçim Setleri",
+          "type": "SelectionSetFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sensörler",
+          "type": "SensorFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Canlı Kesit Düzlemleri",
+          "type": "LiveSectionFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Design Binder",
+          "type": "DocsFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Detaylandırmalar",
+          "type": "DetailCabinet",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Notlar1___EndTag___",
+          "type": "NotesAreaFtrFolder",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Işıklar, Kamera ve Sahne",
+          "type": "EnvFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ortam",
+          "type": "AmbientLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal3",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Doğrusal4",
+          "type": "DirectionLight",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "İşaretlemeler",
+          "type": "InkMarkupFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Denklemler",
+          "type": "EqnFolder",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Ön Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Üst Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Sağ Düzlem",
+          "type": "RefPlane",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Orijin",
+          "type": "OriginProfileFeature",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "CompCurve3",
+          "type": "CompositeCurve",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "CompCurve4",
+          "type": "CompositeCurve",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "YENİ-BİLEZİK-04-1",
+          "type": "Reference",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-1",
+          "type": "Reference",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-2",
+          "type": "ReferencePattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-3",
+          "type": "ReferencePattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-4",
+          "type": "ReferencePattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Montaj İlişkileri",
+          "type": "MateGroup",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Eş Merkezli1",
+          "type": "MateConcentric",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "Pah1",
+          "type": "Chamfer",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@Pah1@YENİ-BİLEZİK-MONTAJ-04.Assembly",
+              "value": 0.0006
+            },
+            {
+              "name": "D2@Pah1@YENİ-BİLEZİK-MONTAJ-04.Assembly",
+              "value": 0.78539816339745
+            }
+          ]
+        },
+        {
+          "name": "YerelDaireselÇoğaltma1",
+          "type": "LocalCirPattern",
+          "depth": 0,
+          "suppressed": false,
+          "dimensions": [
+            {
+              "name": "D1@YerelDaireselÇoğaltma1@YENİ-BİLEZİK-MONTAJ-04.Assembly",
+              "value": 4.0
+            },
+            {
+              "name": "D3@YerelDaireselÇoğaltma1@YENİ-BİLEZİK-MONTAJ-04.Assembly",
+              "value": 6.2831853071796
+            }
+          ]
+        },
+        {
+          "name": "ELMAS-2",
+          "type": "ReferencePattern",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-3",
+          "type": "ReferencePattern",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        },
+        {
+          "name": "ELMAS-4",
+          "type": "ReferencePattern",
+          "depth": 1,
+          "suppressed": false,
+          "dimensions": []
+        }
+      ]
+    }
+  ]
+}

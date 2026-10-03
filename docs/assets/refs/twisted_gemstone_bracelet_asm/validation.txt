@@ -1,0 +1,11 @@
+PASS family.json: keys + base_plane valid
+PASS family.json components: 2 component type(s), quantities sum to solids=5
+PASS pieces: build(6 params) + PARAM_SPEC + check present
+PASS PARAM_SPEC: 6 params, all entries complete
+PASS easy: 4/4 seeds sample+check+build+execute clean
+PASS medium: 4/4 seeds sample+check+build+execute clean
+PASS hard: 4/4 seeds sample+check+build+execute clean
+PASS difficulty separation: difficulties produce distinct programs
+PASS geometry novelty: 12/12 unique shapes (0% duplicate)
+PASS solids: every instance non-degenerate, 5 solid(s) each (declares solids=5)
+PASS — 1386.3 seconds

@@ -1,0 +1,105 @@
+{
+  "params": {
+    "ring_radius_R": 12.6281512226808,
+    "seat_radius_B": 4.77865369955271,
+    "seat_wall_W": 1.27,
+    "gem_diameter_G": 6.11754694,
+    "gem_height_H": 4.357860213,
+    "setting_clearance_C": 0.02447018776
+  },
+  "build_seconds": 49.72661256790161,
+  "components": [
+    {
+      "name": "bracelet",
+      "solids": 1,
+      "valid": true,
+      "volume": 1143.2727359173712
+    },
+    {
+      "name": "gem_01",
+      "solids": 1,
+      "valid": true,
+      "volume": 59.02477206576384
+    },
+    {
+      "name": "gem_02",
+      "solids": 1,
+      "valid": true,
+      "volume": 59.02477206576384
+    },
+    {
+      "name": "gem_03",
+      "solids": 1,
+      "valid": true,
+      "volume": 59.02477206576384
+    },
+    {
+      "name": "gem_04",
+      "solids": 1,
+      "valid": true,
+      "volume": 59.02477206576385
+    }
+  ],
+  "pairs": [
+    {
+      "a": "bracelet",
+      "b": "gem_01",
+      "distance": 0.015774098523834677,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "bracelet",
+      "b": "gem_02",
+      "distance": 0.015774098523834677,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "bracelet",
+      "b": "gem_03",
+      "distance": 0.015774098523834986,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "bracelet",
+      "b": "gem_04",
+      "distance": 0.015774098523834598,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_01",
+      "b": "gem_02",
+      "distance": 16.483834294881703,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_01",
+      "b": "gem_03",
+      "distance": 24.21263341829309,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_01",
+      "b": "gem_04",
+      "distance": 16.483834294881706,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_02",
+      "b": "gem_03",
+      "distance": 16.483834294881703,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_02",
+      "b": "gem_04",
+      "distance": 24.21263341829309,
+      "intersection_volume": 0.0
+    },
+    {
+      "a": "gem_03",
+      "b": "gem_04",
+      "distance": 16.483834294881703,
+      "intersection_volume": 0.0
+    }
+  ]
+}
